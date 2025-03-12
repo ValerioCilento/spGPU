@@ -4,9 +4,7 @@
 const int screenWidth = 800;
 const int screenHeight = 600;
 
-
-
-// Funzione per disegnare una linea usando l'algoritmo di Bresenham
+// Algoritmo di Bresenham
 void myDrawLine(Vector2 p1, Vector2 p2, Color color) {
     int dx = abs(p2.x - p1.x);
     int dy = abs(p2.y - p1.y);
@@ -32,9 +30,7 @@ int main(void) {
         BeginDrawing();
         ClearBackground(RAYWHITE);
         
-        // Definizione dei vertici per il triangolo da riempire:
-        // In questo esempio, il triangolo ha vertici (100,100), (700,100), (700,500)
-      
+        // Vector2: (x, y) coordinates
      	Vector2 p1 = {100, 100};
      	Vector2 p2 = {700, 100};
      	Vector2 p3 = {700, 500};
