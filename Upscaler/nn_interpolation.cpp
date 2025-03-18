@@ -15,7 +15,7 @@ Mat nearestNeighborResize(const Mat& input, int scaleX, int scaleY) {
         for (int x = 0; x < newWidth; ++x) {
             // Trova il pixel più vicino nell'immagine originale
             int srcX = x / scaleX;
-            int srcY = y / scaleY
+            int srcY = y / scaleY;
 
             // Copia il valore del pixel
             output.at<Vec3b>(y, x) = input.at<Vec3b>(srcY, srcX);
