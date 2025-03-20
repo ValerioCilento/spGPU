@@ -1,4 +1,4 @@
-#include "raylib.h"
+#include <raylib.h>
 #include <stdlib.h>
 
 const int screenWidth = 800;
@@ -61,8 +61,8 @@ int main(void) {
         BeginDrawing();
         ClearBackground(RAYWHITE);
         Vector2 p1 = {100, 100};
-        Vector2 p2 = {500, 200};
-        Vector2 p3 = {700, 500};
+        Vector2 p2 = {200, 200};
+        Vector2 p3 = {300, 150};
         // Disegna il contorno del triangolo e lo riempie con il BLUE
         myDrawTriangle(p1, p2, p3, RED, BLUE);
         
