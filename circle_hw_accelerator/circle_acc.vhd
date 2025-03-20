@@ -18,7 +18,7 @@ end entity circle_acc;
 architecture Behavioral of circle_acc is
     type state_type is (IDLE, DRAW1, DRAW2, DRAW3, DRAW4, DRAW5, DRAW6, DRAW7, DRAW8, COMPUTE1, COMPUTE2, DONE);
     signal state : state_type := IDLE;
-    signal d: integer;
+    signal d: integer := 0;
     signal x, y : std_logic_vector(7 downto 0);
     
 begin
@@ -96,7 +96,7 @@ begin
                 end if;
              
             when COMPUTE1 => 
-                d <= d + (4*to_integer(unsigned(x) - unsigned(y))) + 10;
+                d <= d + (4 * to_integer(signed(x) - signed(y))) + 10;
                 x <= std_logic_vector(unsigned(x) + 1);
                 state <= DRAW1;
             
