@@ -66,9 +66,9 @@ begin
 
 rst <= '1', '0' after 20 ns;
 start <= '1', '0' after 30 ns;
-xc <= std_logic_vector(to_unsigned(100, 8));
-yc <= std_logic_vector(to_unsigned(100, 8));
-r <= std_logic_vector(to_unsigned(20, 8));
+xc <= std_logic_vector(to_unsigned(120, 8));
+yc <= std_logic_vector(to_unsigned(70, 8));
+r <= std_logic_vector(to_unsigned(90, 8));
 
 color<= x"FF0000";
 end Behavioral;
