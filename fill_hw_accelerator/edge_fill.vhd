@@ -80,7 +80,6 @@ begin
     end process;
     
     data_path : process(clk, rst) 
-        variable tmp3 : signed(8 downto 0) := (others => '0');
     begin
         if rst = '1' then
             reg <= (others => '0');
