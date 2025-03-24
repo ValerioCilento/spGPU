@@ -38,14 +38,14 @@ end tb_edge_fill;
 architecture Behavioral of tb_edge_fill is
     component edge_fill is
     Port ( 
-        x1, y1, x2, y2, px, py : in std_logic_vector(8 downto 0); 
+        x1, y1, x2, y2, px, py : in std_logic_vector(7 downto 0); 
         clk, rst, start : in std_logic;
         done : out std_logic;
         area : out std_logic_vector(17 downto 0)
     );
     end component;
     
-    signal x1, y1, x2, y2, px, py : std_logic_vector(8 downto 0);
+    signal x1, y1, x2, y2, px, py : std_logic_vector(7 downto 0);
     signal clk, rst, start, done : std_logic;
     signal area : std_logic_vector(17 downto 0);
 begin
@@ -71,11 +71,11 @@ begin
 
 rst <= '1', '0' after 20 ns;
 start <= '1', '0' after 40 ns;
-x1 <= std_logic_vector(to_unsigned(100, 9));
-y1 <= std_logic_vector(to_unsigned(100, 9));
-x2 <= std_logic_vector(to_unsigned(70, 9));
-y2 <= std_logic_vector(to_unsigned(240, 9));
-px <= std_logic_vector(to_unsigned(150, 9));
-py <= std_logic_vector(to_unsigned(150, 9));
+x1 <= std_logic_vector(to_unsigned(150, 8));
+y1 <= std_logic_vector(to_unsigned(150, 8));
+x2 <= std_logic_vector(to_unsigned(100, 8));
+y2 <= std_logic_vector(to_unsigned(100, 8));
+px <= std_logic_vector(to_unsigned(70, 8));
+py <= std_logic_vector(to_unsigned(100, 8));
 
 end Behavioral;
