@@ -49,7 +49,7 @@ begin
         wait for 5 ns;
     end process;
     
-   write_file: process(clk) is file my_output : TEXT open WRITE_MODE is "C:\Users\vale0\Desktop\University2\University2\DSP\Prj\spGPU\circle_hw_accelerator\tb.txt";
+   write_file: process(clk) is file my_output : TEXT open WRITE_MODE is "C:\Users\Valerio\Desktop\University2\DSP\Prj\spGPU\circle_hw_accelerator\tbfilled.txt";
        
       variable my_output_circ : line;
     begin
