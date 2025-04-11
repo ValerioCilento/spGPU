@@ -22,8 +22,7 @@ architecture Behavioral of tb_circ_acc is
     signal clk : std_logic;
     signal rst : std_logic;
     signal start : std_logic;
-    signal xc, yc, r : std_logic_vector(7 downto 0);
-    signal pixel_x, pixel_y : std_logic_vector(7 downto 0);
+    signal xc, yc, r, pixel_x, pixel_y : std_logic_vector(7 downto 0);
     signal color, pixel_color : std_logic_vector(23 downto 0);
     signal finish, z_in, z_out : std_logic;
 begin
@@ -50,7 +49,7 @@ begin
         wait for 5 ns;
     end process;
     
-   write_file: process(clk) is file my_output : TEXT open WRITE_MODE is "/home/luca/gpu_prj/spGPU/sw/tb_circle_filled.txt";
+   write_file: process(clk) is file my_output : TEXT open WRITE_MODE is "C:\Users\Valerio\Desktop\University2\DSP\Prj\spGPU\software_sim\tb_circ_filled.txt";
        
       variable my_output_circ : line;
     begin
