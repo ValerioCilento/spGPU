@@ -5,6 +5,7 @@ use ieee.numeric_std.all;
 entity frame_buf is
 generic (
 	FRAME_DIM : integer := 32400;
+	ADDR_DIM : integer := 15;
 	RGB : integer := 24
 );
 port(
@@ -12,9 +13,9 @@ clk : in std_logic;
 en : in std_logic;
 we : in std_logic;
 rst : in std_logic;
-addr : in std_logic_vector(9 downto 0);
-di : in std_logic_vector(15 downto 0);
-do : out std_logic_vector(15 downto 0)
+addr : in std_logic_vector((ADDR_DIM-1) downto 0);
+di : in std_logic_vector((RGB-1) downto 0);
+do : out std_logic_vector((RGB-1) downto 0)
 );
 end frame_buf;
 
