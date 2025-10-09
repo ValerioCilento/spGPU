@@ -5,40 +5,40 @@ use ieee.NUMERIC_STD.all;
 
 entity spPIPE is 
 generic(
-	INSTR_LENGTH : integer := 64; --Number of bits of the instruction
-	N_opcode : integer := 4;
-	N_color : integer := 24; --Number of bits of color vector
-	N_pixel : integer := 8; --Number of bits of every coordinate
-	N_Accelerators : integer := 5 --Number of accelerators in the Execution Unit
+	INSTR_LENGTH : integer   := 64; --Number of bits of the instruction
+	N_opcode : integer       := 4;
+	N_color : integer        := 24; --Number of bits of color vector
+	N_pixel : integer        := 8; --Number of bits of every coordinate
+	N_Accelerators : integer := 6 --Number of accelerators in the Execution Unit
 );
-Port(
+port(
 	clk, rst 				: in std_logic;
 	instr_valid 			: in std_logic;
 	instr_word      		: in std_logic_vector(INSTR_LENGTH-1 downto 0);
 	busy_exec	    		: in std_logic;
 	core_halt               : in std_logic;
 	instr_req   			: out std_logic;
-	x1, y1, x2, y2, x3, y3  : out std_logic_vector(N_pixel-1 downto 0);
+	--x1, y1, x2, y2, x3, y3  : out std_logic_vector(N_pixel-1 downto 0);
 	dec_instr_o             : out instr_isa;
 	instr_o                 : out std_logic_vector(INSTR_LENGTH-1 downto 0)
 );
 end entity;
 
-
 architecture RTL of spPIPE is 
 
 	type instr_isa is (DRAWPIXEL, DRAWLINE, DRAWTRIANGLE, DRAWTRIANGLE_F NOP, DRAWCIRCLE, DRAWCIRCLE_F, SETCOLOR);
-	signal instr : std_logic_vector(INSTR_LENGTH-1 downto 0);
-	signal opcode : std_logic_vector(N_opcode-1 downto 0);
 	signal dec_instr : instr_isa;
+	signal instr     : std_logic_vector(INSTR_LENGTH-1 downto 0);
+	signal opcode    : std_logic_vector(N_opcode-1 downto 0);
+
 begin
-	instr <= instr_word when instr_req = '1' else (others => '0');
+	instr  <= instr_word when instr_req = '1' else (others => '0');
 	opcode <= instr(N_opcode-1 downto 0); 
 
 	fetch_proc : process(core_halt, busy_exec, rst)
 	begin 
 		if rst = '1' then
-			instr <= (others => '0');
+			instr     <= (others => '0');
 			instr_req <= '0';
 		else 
 			if core_halt = '0' and busy_exec = '0' then
@@ -74,7 +74,7 @@ begin
 					dec_instr <= NOP;
 			end case;
 		else 
-			instr_o <= (others => '0');
+			instr_o   <= (others => '0');
 			dec_instr <= NOP;
 		end if;
 	end process;
