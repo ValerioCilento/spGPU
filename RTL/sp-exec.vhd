@@ -30,9 +30,6 @@ end entity;
 architecture RTL of spEXEC is
 
 	type instr_isa is (DRAWPIXEL, DRAWLINE, DRAWTRIANGLE, DRAWTRIANGLE_F NOP, DRAWCIRCLE, DRAWCIRCLE_F, SETCOLOR);
-	--signal x1, y1, x2, y2, x3, y3 : std_logic_vector(N_pixel-1 downto 0);
-	--signal color                  : std_logic_vector(N_color-1 downto 0);
-	--signal acc_enable_vec         : std_logic_vector(N_Accelerators-1 downto 0);
 	signal acc_busy_vec           : std_logic_vector(N_Accelerators-1 downto 0); --1Pixel|2Line|3Triangle|4Filled Triangle|5Circle|6Filled Circle
 
 	component LINE_ACC is --Line accelerator
@@ -86,6 +83,8 @@ architecture RTL of spEXEC is
 	end component;
 	
 begin
+
+	busy_exec <= '1' when acc_busy_vec /= "000000" else '0';
 
 	LINE_ : LINE_ACC
 	port map(

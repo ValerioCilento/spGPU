@@ -29,11 +29,13 @@ end entity;
 architecture RTL of spPIPE is 
 
 	type instr_isa is (DRAWPIXEL, DRAWLINE, DRAWTRIANGLE, DRAWTRIANGLE_F NOP, DRAWCIRCLE, DRAWCIRCLE_F, SETCOLOR);
-	signal dec_instr : instr_isa;
-	signal instr     : std_logic_vector(INSTR_LENGTH-1 downto 0);
-	signal opcode    : std_logic_vector(N_opcode-1 downto 0);
+	signal dec_instr    : instr_isa;
+	signal color_reg_en : std_logic;
+	signal instr        : std_logic_vector(INSTR_LENGTH-1 downto 0);
+	signal opcode       : std_logic_vector(N_opcode-1 downto 0);
 
 begin
+
 	instr  <= instr_word when instr_req = '1' else (others => '0');
 	opcode <= instr(N_opcode-1 downto 0); 
 
@@ -49,7 +51,7 @@ begin
 				instr_req <= '0';
 			end if;
 		end if;
-	end process;
+	end process fetch_proc;
 
 	decode_proc : process(opcode, instr_valid)
 	begin 
@@ -64,12 +66,17 @@ begin
 					y2             <= (others => '0');
 					x3             <= (others => '0');
 					y3             <= (others => '0');
-					color          <= (others => '0');
-					acc_enable_vec <= (others => '0');
+					color_reg_en   <= '0';
+					acc_enable_vec <= "000000";
 				when "0001" =>
 					dec_instr      <= DRAWPIXEL;
 					x1             <= instr_i((N_pixel+N_opcode)-1 downto N_opcode);
 					y1             <= instr_i(((2*N_pixel)+N_opcode)-1 downto (N_pixel+N_opcode);
+				    x2             <= (others => '0');
+					y2             <= (others => '0');
+					x3             <= (others => '0');
+					y3             <= (others => '0');
+					color_reg_en   <= '0';
 					acc_enable_vec <= "000001";
 				when "0010" =>
 					dec_instr      <= DRAWLINE;
@@ -77,6 +84,9 @@ begin
 					y1             <= instr_i(((2*N_pixel)+N_opcode)-1 downto (N_pixel+N_opcode));
 					x2             <= instr_i(((3*N_pixel)+N_opcode)-1 downto ((2*N_pixel)+N_opcode));
 					y2             <= instr_i(((4*N_pixel)+N_opcode)-1 downto ((3*N_pixel)+N_opcode));
+					x3             <= (others => '0');
+					y3             <= (others => '0');
+					color_reg_en   <= '0';
 					acc_enable_vec <= "000010";
 				when "0011" => 
 					dec_instr      <= DRAWTRIANGLE;
@@ -86,6 +96,7 @@ begin
 					y2             <= instr_i(((4*N_pixel)+N_opcode)-1 downto ((3*N_pixel)+N_opcode));
 					x3             <= instr_i(((5*N_pixel)+N_opcode)-1 downto ((4*N_pixel)+N_opcode));
 					y3             <= instr_i(((6*N_pixel)+N_opcode)-1 downto ((5*N_pixel)+N_opcode));
+					color_reg_en   <= '0';
 					acc_enable_vec <= "000010";
 				when "0100" =>
 					dec_instr      <= DRAWTRIANGLE_F;
@@ -95,22 +106,38 @@ begin
 					y2             <= instr_i(((4*N_pixel)+N_opcode)-1 downto ((3*N_pixel)+N_opcode));
 					x3             <= instr_i(((5*N_pixel)+N_opcode)-1 downto ((4*N_pixel)+N_opcode));
 					y3             <= instr_i(((6*N_pixel)+N_opcode)-1 downto ((5*N_pixel)+N_opcode));
+					color_reg_en   <= '0';
 					acc_enable_vec <= "000100";
 				when "0101" => 
 					dec_instr      <= DRAWCIRCLE;
 					x1             <= instr_i((N_pixel+N_opcode)-1 downto N_opcode); --Center x coord (xc)
 					y1             <= instr_i(((2*N_pixel)+N_opcode)-1 downto (N_pixel+N_opcode)); --Center y coord (yc)
 					x2             <= instr_i(((3*N_pixel)+N_opcode)-1 downto ((2*N_pixel)+N_opcode)); --Radius	(r)	
+					y2             <= instr_i(((4*N_pixel)+N_opcode)-1 downto ((3*N_pixel)+N_opcode));
+					x3             <= instr_i(((5*N_pixel)+N_opcode)-1 downto ((4*N_pixel)+N_opcode));
+					y3             <= instr_i(((6*N_pixel)+N_opcode)-1 downto ((5*N_pixel)+N_opcode));
+					color_reg_en   <= '0';
 					acc_enable_vec <= "010000";
 				when "0110" => 
 					dec_instr      <= DRAWCIRCLE_F;
 					x1             <= instr_i((N_pixel+N_opcode)-1 downto N_opcode); --Center x coord (xc)
 					y1             <= instr_i(((2*N_pixel)+N_opcode)-1 downto (N_pixel+N_opcode)); --Center y coord (yc)
 					x2             <= instr_i(((3*N_pixel)+N_opcode)-1 downto ((2*N_pixel)+N_opcode)); --Radius	(r)	
+					y2             <= instr_i(((4*N_pixel)+N_opcode)-1 downto ((3*N_pixel)+N_opcode));
+					x3             <= instr_i(((5*N_pixel)+N_opcode)-1 downto ((4*N_pixel)+N_opcode));
+					y3             <= instr_i(((6*N_pixel)+N_opcode)-1 downto ((5*N_pixel)+N_opcode));
+					color_reg_en   <= '0';
 					acc_enable_vec <= "100000";
 				when "0111" => 
 					dec_instr      <= SETCOLOR;
-					color          <= instr_i((N_color+N_opcode)-1 downto N_opcode); --Color of the next figure (rgb 24bit)
+					x1             <= (others => '0');
+					y1             <= (others => '0');
+					x2             <= (others => '0');
+					y2             <= (others => '0');
+					x3             <= (others => '0');
+					y3             <= (others => '0');
+					color_reg_en   <= '1';
+					acc_enable_vec <= "000000";
 				when others => 
 					dec_instr      <= NOP;
 					x1             <= (others => '0');
@@ -119,14 +146,32 @@ begin
 					y2             <= (others => '0');
 					x3             <= (others => '0');
 					y3             <= (others => '0');
-					color          <= (others => '0');
-					acc_enable_vec <= (others => '0');
+					color_reg_en   <= '0';
+					acc_enable_vec <= "000000";
 			end case;
 		else 
-			instr_o   <= (others => '0');
-			dec_instr <= NOP;
+			instr_o        <= (others => '0');
+			dec_instr      <= NOP;
+			x1             <= (others => '0');
+			y1             <= (others => '0');
+			x2             <= (others => '0');
+			y2             <= (others => '0');
+			x3             <= (others => '0');
+			y3             <= (others => '0');
+			color_reg_en   <= '0';
+		    acc_enable_vec <= "000000";
 		end if;
-	end process;
+	end process decode_proc;
+
+	color_reg : process(clk, rst)
+	begin
+		if rst = '1' then
+			color <= (others => '0');
+		elsif rising_edge(clk) then
+			color <= instr_i((N_color+N_opcode)-1 downto N_opcode); --Color of the next figure (rgb 24bit)
+		end if;
+	end process color_reg;
+
 end RTL;
 
 
