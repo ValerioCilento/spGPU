@@ -30,7 +30,9 @@ end entity;
 architecture RTL of spEXEC is
 
 	type instr_isa is (DRAWPIXEL, DRAWLINE, DRAWTRIANGLE, DRAWTRIANGLE_F NOP, DRAWCIRCLE, DRAWCIRCLE_F, SETCOLOR);
-	signal acc_busy_vec           : std_logic_vector(N_Accelerators-1 downto 0); --1Pixel|2Line|3Triangle|4Filled Triangle|5Circle|6Filled Circle
+	signal acc_busy_vec : std_logic_vector(N_Accelerators-1 downto 0); --1Pixel|2Line|3Triangle|4Filled Triangle|5Circle|6Filled Circle
+	signal pixel_wire_x : std_logic_vector(N_Accelerators-1 downto 0); 
+	signal pixel_wire_y : std_logic_vector(N_Accelerators-1 downto 0);  
 
 	component LINE_ACC is --Line accelerator
 	port ( 
@@ -86,6 +88,27 @@ begin
 
 	busy_exec <= '1' when acc_busy_vec /= "000000" else '0';
 
+	pixel_out_proc : process(acc_busy_vec)
+	begin
+		case acc_busy_vec is
+			when "000010" => --Line
+				pixel_o_x <= pixel_wire_x(1);
+				pixel_o_y <= pixel_wire_y(1);
+			when "001000" => --Filled Triangle
+				pixel_o_x <= pixel_wire_x(3);
+				pixel_o_y <= pixel_wire_y(3);
+			when "010000" => --Circle
+				pixel_o_x <= pixel_wire_x(4);
+				pixel_o_y <= pixel_wire_y(4);
+			when "100000" => --Filled Circle
+				pixel_o_x <= pixel_wire_x(5);
+				pixel_o_y <= pixel_wire_y(5);
+			when others   => 
+				pixel_o_x <= (others => '0');
+				pixel_o_y <= (others => '0');
+		end case;
+	end process pixel_out_proc;								
+
 	LINE_ : LINE_ACC
 	port map(
 		clk   		=> clk;
@@ -96,8 +119,8 @@ begin
 		x2          => x2;
 		y2          => y2;
 		color       => color;
-		pixel_x     => pixel_o_x;
-		pixel_y     => pixel_o_y;
+		pixel_x     => pixel_wire_x(1);
+		pixel_y     => pixel_wire_y(1);
 		pixel_color => pixel_o_color;
 		finish 		=> acc_busy_vec(1);
 		pixel_valid => pixel_o_valid
@@ -115,8 +138,8 @@ begin
 		x3          => x3;
 		y3          => y3;
 		color       => color;
-		pixel_x     => pixel_o_x;
-		pixel_y     => pixel_o_y;
+		pixel_x     => pixel_wire_x(3);
+		pixel_y     => pixel_wire_y(3);
 		pixel_color => pixel_o_color;
 		finish 		=> acc_busy_vec(3)
 	);
@@ -130,8 +153,8 @@ begin
 		yc   		=> y1;
 		r           => x2;
 		color       => color;
-		pixel_x     => pixel_o_x;
-		pixel_y     => pixel_o_y;
+		pixel_x     => pixel_wire_x(4);
+		pixel_y     => pixel_wire_y(4);
 		pixel_color => pixel_o_color;
 		finish 		=> acc_busy_vec(4)
 	);
@@ -145,8 +168,8 @@ begin
 		yc   		=> y1;
 		r           => x2;
 		color       => color;
-		pixel_x     => pixel_o_x;
-		pixel_y     => pixel_o_y;
+		pixel_x     => pixel_wire_x(5);
+		pixel_y     => pixel_wire_y(5);
 		pixel_color => pixel_o_color;
 		finish 		=> acc_busy_vec(5)
 	);
