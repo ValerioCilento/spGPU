@@ -30,9 +30,10 @@ end entity;
 architecture RTL of spEXEC is
 
 	type instr_isa is (DRAWPIXEL, DRAWLINE, DRAWTRIANGLE, DRAWTRIANGLE_F NOP, DRAWCIRCLE, DRAWCIRCLE_F, SETCOLOR);
+	type pixel_array is array(0 to N_Accelerators-1) of std_logic_vector(N_Accelerators-1 downto 0);
 	signal acc_busy_vec : std_logic_vector(N_Accelerators-1 downto 0); --1Pixel|2Line|3Triangle|4Filled Triangle|5Circle|6Filled Circle
-	signal pixel_wire_x : std_logic_vector(N_Accelerators-1 downto 0); 
-	signal pixel_wire_y : std_logic_vector(N_Accelerators-1 downto 0);  
+	signal pixel_wire_x : pixel_array; 
+	signal pixel_wire_y : pixel_array;  
 
 	component LINE_ACC is --Line accelerator
 	port ( 
