@@ -168,7 +168,9 @@ begin
 		if rst = '1' then
 			color <= (others => '0');
 		elsif rising_edge(clk) then
-			color <= instr_i((N_color+N_opcode)-1 downto N_opcode); --Color of the next figure (rgb 24bit)
+			if color_reg_en = '1' then
+				color <= instr_i((N_color+N_opcode)-1 downto N_opcode); --Color of the next figure (rgb 24bit)
+			end if;
 		end if;
 	end process color_reg;
 
