@@ -8,8 +8,8 @@ Port (
     clk, rst, start : in std_logic;
     x1, x2, y1, y2 : in std_logic_vector(7 downto 0);
     color : in std_logic_vector(23 downto 0);
-    z_in : in std_logic; 
-    z_out : out std_logic;
+    --z_in : in std_logic; 
+    --z_out : out std_logic;
     pixel_x, pixel_y : out std_logic_vector(7 downto 0);
     pixel_color : out std_logic_vector(23 downto 0);
     finish, pixel_valid : out std_logic
@@ -22,7 +22,7 @@ architecture Behavioral of line_acc is
     signal x_temp, y_temp : std_logic_vector(8 downto 0) := (others => '0');
     
 begin
-    z_out <= z_in;
+    --z_out <= z_in;
     pixel_color <= color;
     
     process(clk ,rst) 

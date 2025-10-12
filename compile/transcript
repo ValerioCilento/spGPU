@@ -1,0 +1,46 @@
+# //  Questa Sim
+# //  Version 2021.2_1 linux May 15 2021
+# //
+# //  Copyright 1991-2021 Mentor Graphics Corporation
+# //  All Rights Reserved.
+# //
+# //  QuestaSim and its associated documentation contain trade
+# //  secrets and commercial or financial information that are the property of
+# //  Mentor Graphics Corporation and are privileged, confidential,
+# //  and exempt from disclosure under the Freedom of Information Act,
+# //  5 U.S.C. Section 552. Furthermore, this information
+# //  is prohibited from disclosure under the Trade Secrets Act,
+# //  18 U.S.C. Section 1905.
+# //
+# vsim work.tb_spCORE 
+# Start time: 21:46:20 on Oct 12,2025
+# ** Note: (vsim-3812) Design is being optimized...
+# ** Warning: /home/luca/gpu_prj/spGPU/compile/work/../../RTL/acc_RTL/fill_hw_accelerator/edge_fill_top_v2.vhd(59): (vopt-3473) Component instance "EDGE_AREA_MAP_1 : edge_fill" is not bound.
+#         Region: /tb_spcore/dut/EXEC/TRIANGLE
+# ** Warning: /home/luca/gpu_prj/spGPU/compile/work/../../RTL/acc_RTL/fill_hw_accelerator/edge_fill_top_v2.vhd(72): (vopt-3473) Component instance "EDGE_AREA_MAP_2 : edge_fill" is not bound.
+#         Region: /tb_spcore/dut/EXEC/TRIANGLE
+# ** Warning: /home/luca/gpu_prj/spGPU/compile/work/../../RTL/acc_RTL/fill_hw_accelerator/edge_fill_top_v2.vhd(85): (vopt-3473) Component instance "EDGE_AREA_MAP_3 : edge_fill" is not bound.
+#         Region: /tb_spcore/dut/EXEC/TRIANGLE
+# ** Warning: /home/luca/gpu_prj/spGPU/compile/work/../../RTL/acc_RTL/fill_hw_accelerator/edge_fill_top_v2.vhd(98): (vopt-3473) Component instance "EDGE_AREA_MAP_4 : edge_fill" is not bound.
+#         Region: /tb_spcore/dut/EXEC/TRIANGLE
+# ** Note: (vsim-12126) Error and warning message counts have been restored: Errors=0, Warnings=4.
+# Loading std.standard
+# Loading std.textio(body)
+# Loading ieee.std_logic_1164(body)
+# Loading ieee.numeric_std(body)
+# Loading work.sppkg
+# Loading work.tb_spcore(tb)#1
+# Loading work.spexec(rtl)#1
+# ** Warning: (vsim-3473) Component instance "EDGE_AREA_MAP_1 : edge_fill" is not bound.
+#    Time: 0 ns  Iteration: 0  Instance: /tb_spcore/dut/EXEC/TRIANGLE File: /home/luca/gpu_prj/spGPU/compile/work/../../RTL/acc_RTL/fill_hw_accelerator/edge_fill_top_v2.vhd
+# ** Warning: (vsim-3473) Component instance "EDGE_AREA_MAP_2 : edge_fill" is not bound.
+#    Time: 0 ns  Iteration: 0  Instance: /tb_spcore/dut/EXEC/TRIANGLE File: /home/luca/gpu_prj/spGPU/compile/work/../../RTL/acc_RTL/fill_hw_accelerator/edge_fill_top_v2.vhd
+# ** Warning: (vsim-3473) Component instance "EDGE_AREA_MAP_3 : edge_fill" is not bound.
+#    Time: 0 ns  Iteration: 0  Instance: /tb_spcore/dut/EXEC/TRIANGLE File: /home/luca/gpu_prj/spGPU/compile/work/../../RTL/acc_RTL/fill_hw_accelerator/edge_fill_top_v2.vhd
+# ** Warning: (vsim-3473) Component instance "EDGE_AREA_MAP_4 : edge_fill" is not bound.
+#    Time: 0 ns  Iteration: 0  Instance: /tb_spcore/dut/EXEC/TRIANGLE File: /home/luca/gpu_prj/spGPU/compile/work/../../RTL/acc_RTL/fill_hw_accelerator/edge_fill_top_v2.vhd
+# ** Warning: (vsim-7) Failed to open VHDL file "instr_input.txt" in r mode.
+# No such file or directory. (errno = ENOENT)
+#    Time: 0 ns  Iteration: 0  Instance: /tb_spcore
+# End time: 21:46:44 on Oct 12,2025, Elapsed time: 0:00:24
+# Errors: 0, Warnings: 9

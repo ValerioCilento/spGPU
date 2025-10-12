@@ -7,8 +7,8 @@ Port (
     clk, rst, start : in std_logic;
     xc, yc, r: in std_logic_vector(7 downto 0);
     color : in std_logic_vector(23 downto 0);
-    z_in : in std_logic; 
-    z_out : out std_logic;
+    --z_in : in std_logic; 
+    --z_out : out std_logic;
     pixel_x, pixel_y : out std_logic_vector(7 downto 0);
     pixel_color : out std_logic_vector(23 downto 0);
     finish : out std_logic
@@ -23,7 +23,7 @@ architecture Behavioral of f_circle_acc is
 
 begin
 
-    z_out <= z_in;
+    --z_out <= z_in;
     pixel_color <= color;
     
     f_circle_draw: process(clk, rst)
