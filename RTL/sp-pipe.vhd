@@ -49,14 +49,10 @@ begin
 			case state is 
 				when normal =>
 					instr_req <= '1';
-					state <= normal;
+
 					if core_halt = '1' then
 						state <= halt;
-					else 
-						state <= normal;
-					end if;
-
-					if instr_valid = '1' then
+					elsif instr_valid = '1' then
 						instr_o <= instr;
 						case opcode is 
 							when "0000" => 
@@ -150,6 +146,8 @@ begin
 								state 		   <= normal;	
 								acc_enable_vec <= "000000";
 						end case;
+					else 
+						state <= normal;
 					end if;
 				when drawing => 
 					instr_req <= '0';
