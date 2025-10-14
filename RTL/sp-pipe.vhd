@@ -63,6 +63,7 @@ begin
 								y2             <= (others => '0');
 								x3             <= (others => '0');
 								y3             <= (others => '0');
+								state          <= normal;
 								acc_enable_vec <= "000000";
 							when "0001" =>
 								dec_instr      <= DRAWPIXEL;
@@ -111,7 +112,8 @@ begin
 								x2             <= instr(((3*N_pixel)+N_opcode)-1 downto ((2*N_pixel)+N_opcode)); --Radius	(r)	
 								y2             <= instr(((4*N_pixel)+N_opcode)-1 downto ((3*N_pixel)+N_opcode));
 								x3             <= instr(((5*N_pixel)+N_opcode)-1 downto ((4*N_pixel)+N_opcode));
-								y3             <= instr(((6*N_pixel)+N_opcode)-1 downto ((5*N_pixel)+N_opcode));							
+								y3             <= instr(((6*N_pixel)+N_opcode)-1 downto ((5*N_pixel)+N_opcode));
+								state 		   <= drawing;							
 								acc_enable_vec <= "010000";
 							when "0110" => 
 								dec_instr      <= DRAWCIRCLE_F;
