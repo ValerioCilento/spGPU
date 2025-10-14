@@ -30,13 +30,17 @@ begin
     begin
         if rst = '1' then
             state <= IDLE;
+            finish <= '0';
+            x <= (others => '0');
+            y <= (others => '0');
+            d <= 0;
         elsif rising_edge(clk) then
             case state is
             when IDLE => 
                 d <= 3 - to_integer((2*unsigned(r)));
                 x <= (others => '0');
                 y <= r;
-                finish <= '1';
+                finish <= '0';
                 if start = '1' then
                     state <= DRAW1;
                 else 

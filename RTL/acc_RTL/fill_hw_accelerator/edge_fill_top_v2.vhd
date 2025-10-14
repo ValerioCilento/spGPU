@@ -24,7 +24,7 @@ architecture Behavioral of edge_fill_top_v2 is
     signal area, w0, w1, w2 : std_logic_vector(17 downto 0);
     signal minx, maxx, miny, maxy : std_logic_vector(7 downto 0);
 
-    component edge_fill is 
+    component edge_fill_v2 is 
     port(
         x1, y1, x2, y2, px, py : in std_logic_vector(7 downto 0); 
         clk, rst, start : in std_logic;
@@ -56,7 +56,7 @@ begin
         miny => miny,
         maxy => maxy
     );
-    EDGE_AREA_MAP_1 : edge_fill port map(
+    EDGE_AREA_MAP_1 : edge_fill_v2 port map(
         clk => clk,
         rst => rst,
         start => start_area,
@@ -69,7 +69,7 @@ begin
         py => y3,
         area => area
     );
-    EDGE_AREA_MAP_2 : edge_fill port map(
+    EDGE_AREA_MAP_2 : edge_fill_v2 port map(
         clk => clk,
         rst => rst,
         start => start_edge,
@@ -82,7 +82,7 @@ begin
         py => y,
         area => w0
     );
-    EDGE_AREA_MAP_3 : edge_fill port map(
+    EDGE_AREA_MAP_3 : edge_fill_v2 port map(
         clk => clk,
         rst => rst,
         start => start_edge,
@@ -95,7 +95,7 @@ begin
         py => y,
         area => w1
     );
-    EDGE_AREA_MAP_4 : edge_fill port map(
+    EDGE_AREA_MAP_4 : edge_fill_v2 port map(
         clk => clk,
         rst => rst,
         start => start_edge,
@@ -168,9 +168,9 @@ begin
             y <= (others => '0');
             start_edge <= '0';
             start_area <= '0'; 
-            --pixel_x <= (others => '0');
-            --pixel_y <= (others => '0');
-            --pixel_color <= (others => '0');
+            pixel_x <= (others => '0');
+            pixel_y <= (others => '0');
+            pixel_color <= (others => '0');
     elsif rising_edge(clk) then
         case state is 
             when 1 => 

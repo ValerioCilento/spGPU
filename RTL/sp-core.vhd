@@ -20,6 +20,7 @@ Port(
 	instr_req   			: out std_logic;
 	pixel_valid_o           : out std_logic;
 	pixel_x_o               : out std_logic_vector(N_pixel-1 downto 0);
+	FINISH_DEBUG            : out std_logic;
 	pixel_y_o               : out std_logic_vector(N_pixel-1 downto 0);
 	pixel_color_o           : out std_logic_vector(N_color-1 downto 0)
 );
@@ -45,6 +46,7 @@ architecture STRUCTURAL of spCORE is
 			dec_instr_o             : out instr_isa;
 			x1, y1, x2, y2, x3, y3  : out std_logic_vector(N_pixel-1 downto 0);
 			color                   : out std_logic_vector(N_color-1 downto 0);
+			acc_busy_vec            : out std_logic_vector(N_Accelerators-1 downto 0);
 			acc_enable_vec          : out std_logic_vector(N_Accelerators-1 downto 0); --1Pixel|2Line|3Triangle|4Filled Triangle|5Circle|6Filled Circle
 			instr_o                 : out std_logic_vector(INSTR_LENGTH-1 downto 0)
 		);
@@ -66,6 +68,7 @@ architecture STRUCTURAL of spCORE is
 			x1, y1, x2, y2, x3, y3  : in std_logic_vector(N_pixel-1 downto 0);
 			color                   : in std_logic_vector(N_color-1 downto 0);
 			acc_enable_vec          : in std_logic_vector(N_Accelerators-1 downto 0);
+			acc_busy_vec          : in std_logic_vector(N_Accelerators-1 downto 0);
 			finish_exec	    		: out std_logic;
 			pixel_valid_o           : out std_logic;
 			pixel_x_o               : out std_logic_vector(N_pixel-1 downto 0);
@@ -79,8 +82,10 @@ architecture STRUCTURAL of spCORE is
 	signal x1_wire, x2_wire, y1_wire, y2_wire, x3_wire, y3_wire : std_logic_vector(N_pixel-1 downto 0);
 	signal color_wire : std_logic_vector(N_color-1 downto 0);
 	signal acc_enable_wire : std_logic_vector(N_Accelerators-1 downto 0);
+	signal acc_busy_wire : std_logic_vector(N_Accelerators-1 downto 0);
 	signal instr_wire : std_logic_vector(INSTR_LENGTH-1 downto 0);
 begin
+	FINISH_DEBUG <= finish_exec_wire;
 	PIPE : spPIPE generic map(
 		INSTR_LENGTH 	=> INSTR_LENGTH,
 		N_opcode 		=> N_opcode,
@@ -105,6 +110,7 @@ begin
 		y3 				=> y3_wire,
 		color 			=> color_wire,
 		acc_enable_vec 	=> acc_enable_wire,
+		acc_busy_vec    => acc_busy_wire,
 		instr_o 		=> instr_wire
 	);
 
@@ -128,6 +134,7 @@ begin
 		y3 				=> y3_wire,
 		color 			=> color_wire,
 		acc_enable_vec 	=> acc_enable_wire,
+		acc_busy_vec    => acc_busy_wire,
 		finish_exec 	=> finish_exec_wire,
 		pixel_valid_o   => pixel_valid_o,
 		pixel_x_o		=> pixel_x_o,

@@ -31,6 +31,10 @@ begin
 
     if rst = '1' then
         state <= IDLE;
+        finish <= '0';
+        x <= (others => '0');
+        y <= (others => '0');
+        d <= 0;
     elsif rising_edge(clk) then
         case state is
             when IDLE =>

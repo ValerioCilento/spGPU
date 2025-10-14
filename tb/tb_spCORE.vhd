@@ -26,6 +26,7 @@ architecture tb of tb_spcore is
             core_halt         : in  std_logic;
             instr_req         : out std_logic;
             pixel_valid_o     : out std_logic;
+            FINISH_DEBUG            : out std_logic;
             pixel_x_o         : out std_logic_vector(N_pixel-1 downto 0);
             pixel_y_o         : out std_logic_vector(N_pixel-1 downto 0);
             pixel_color_o     : out std_logic_vector(N_color-1 downto 0)
@@ -45,7 +46,8 @@ architecture tb of tb_spcore is
     signal pixel_x_o     : std_logic_vector(7 downto 0);
     signal pixel_y_o     : std_logic_vector(7 downto 0);
     signal pixel_color_o : std_logic_vector(23 downto 0);
-
+    signal start_write : std_logic;
+    signal finish_debug : std_logic;
     constant CLK_PERIOD : time := 10 ns;
 
     --------------------------------------------------------------------
@@ -102,6 +104,7 @@ begin
             pixel_valid_o => pixel_valid_o,
             pixel_x_o     => pixel_x_o,
             pixel_y_o     => pixel_y_o,
+            FINISH_DEBUG  => finish_debug,
             pixel_color_o => pixel_color_o
         );
 
@@ -109,53 +112,75 @@ begin
     -- Stimulus (lettura file + scrittura output)
     --------------------------------------------------------------------
     stimulus : process
-        file instr_file : text open read_mode  is "instr_input.txt";
-        file out_file   : text open write_mode is "output_pixels.txt";
-        variable line_in  : line;
-        variable line_out : line;
-        variable instr_str : string(1 to 64);
-    begin
-        ----------------------------------------------------------------
-        -- Attendi fine reset
-        ----------------------------------------------------------------
-        wait until rst = '0';
+    file instr_file : text open read_mode  is "instr_input.txt";
+    file out_file   : text open write_mode is "output_pixels.txt";
+    variable line_in  : line;
+    variable line_out : line;
+    variable instr_str : string(1 to 64);
+begin
+    -- Attendi fine reset
+    wait until rst = '0';
 
-        ----------------------------------------------------------------
-        -- Leggi e invia ogni istruzione
-        ----------------------------------------------------------------
-        while not endfile(instr_file) loop
-            readline(instr_file, line_in);
-            read(line_in, instr_str);
+    instr_valid <= '0';
 
-            instr_word <= str_to_slv(instr_str);
-            wait for CLK_PERIOD;
-            instr_valid <= '1';
-            wait for CLK_PERIOD;
-            instr_valid <= '0';            
-        end loop;
-        wait for 500 ns;
-        ----------------------------------------------------------------
-        -- Segnala fine core (opzionale)
-        ----------------------------------------------------------------
-        core_halt <= '1';
+    -- Loop principale finché ci sono istruzioni nel file
+    while not endfile(instr_file) loop
+        report "instr_req = " & std_logic'image(instr_req);
 
-        ----------------------------------------------------------------
-        -- Osserva uscite per un po' e salva nel file
-        ----------------------------------------------------------------
-        for i in 1 to 50 loop
-            wait until rising_edge(clk);
-                write(line_out, to_integer(unsigned(pixel_x_o)));
-                write(line_out, ' ');
-                write(line_out, to_integer(unsigned(pixel_y_o)));
-                write(line_out, ' ');
-                write(line_out, to_hstring(pixel_color_o));
-                writeline(out_file, line_out);
-        end loop;
+        ------------------------------------------------------------
+        -- Aspetta che la GPU richieda un'istruzione
+        ------------------------------------------------------------
+        wait until rising_edge(clk) and instr_req = '1';
 
-        ----------------------------------------------------------------
-        -- Fine simulazione
-        ----------------------------------------------------------------
-        wait;
-    end process;
+        -- Legge istruzione dal file
+        readline(instr_file, line_in);
+        read(line_in, instr_str);
+
+        -- Metti l’istruzione sul bus
+        instr_word <= str_to_slv(instr_str);
+
+        ------------------------------------------------------------
+        -- Alza instr_valid per 1 solo ciclo di clock
+        ------------------------------------------------------------
+        instr_valid <= '1';
+        wait until rising_edge(clk);
+        instr_valid <= '0';
+        -- A questo punto la GPU eseguirà e poi alzerà di nuovo instr_req
+
+    end loop;
+
+    ------------------------------------------------------------
+    -- Fine delle istruzioni: segnalo eventualmente halt
+    ------------------------------------------------------------
+    core_halt <= '1';
+
+    wait;
+end process;
+
+output_process : process
+    file out_file   : text open write_mode is "output_pixels.txt";
+    variable line_out : line;
+begin
+    -- Attesa fine reset
+    wait until rst = '0';
+
+    -- Scrivi finché finish_signal = '0'
+    while finish_debug = '0' loop
+        wait until rising_edge(clk);
+
+        -- Scrivi SEMPRE il pixel ogni ciclo
+        write(line_out, to_integer(unsigned(pixel_x_o)));
+        write(line_out, ' ');
+        write(line_out, to_integer(unsigned(pixel_y_o)));
+        write(line_out, ' ');
+        write(line_out, to_integer(unsigned(pixel_color_o)));
+        writeline(out_file, line_out);
+    end loop;
+
+    -- Quando finish_signal = '1', fermati e segnala halt
+    core_halt <= '1';
+
+    wait;  -- Fine processo
+end process;
 
 end architecture;

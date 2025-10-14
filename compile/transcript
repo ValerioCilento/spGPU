@@ -13,17 +13,8 @@
 # //  18 U.S.C. Section 1905.
 # //
 # vsim work.tb_spCORE 
-# Start time: 16:53:03 on Oct 14,2025
-# ** Note: (vsim-3813) Design is being optimized due to module recompilation...
-# ** Warning: /home/luca/gpu_prj/spGPU/compile/work/../../RTL/acc_RTL/fill_hw_accelerator/edge_fill_top_v2.vhd(59): (vopt-3473) Component instance "EDGE_AREA_MAP_1 : edge_fill" is not bound.
-#         Region: /tb_spcore/dut/EXEC/TRIANGLE
-# ** Warning: /home/luca/gpu_prj/spGPU/compile/work/../../RTL/acc_RTL/fill_hw_accelerator/edge_fill_top_v2.vhd(72): (vopt-3473) Component instance "EDGE_AREA_MAP_2 : edge_fill" is not bound.
-#         Region: /tb_spcore/dut/EXEC/TRIANGLE
-# ** Warning: /home/luca/gpu_prj/spGPU/compile/work/../../RTL/acc_RTL/fill_hw_accelerator/edge_fill_top_v2.vhd(85): (vopt-3473) Component instance "EDGE_AREA_MAP_3 : edge_fill" is not bound.
-#         Region: /tb_spcore/dut/EXEC/TRIANGLE
-# ** Warning: /home/luca/gpu_prj/spGPU/compile/work/../../RTL/acc_RTL/fill_hw_accelerator/edge_fill_top_v2.vhd(98): (vopt-3473) Component instance "EDGE_AREA_MAP_4 : edge_fill" is not bound.
-#         Region: /tb_spcore/dut/EXEC/TRIANGLE
-# ** Note: (vsim-12126) Error and warning message counts have been restored: Errors=0, Warnings=4.
+# Start time: 19:26:21 on Oct 14,2025
+# ** Note: (vsim-8009) Loading existing optimized design _opt
 # Loading std.standard
 # Loading std.textio(body)
 # Loading ieee.std_logic_1164(body)
@@ -31,23 +22,28 @@
 # Loading work.sppkg
 # Loading work.tb_spcore(tb)#1
 # Loading work.spexec(rtl)#1
-# ** Warning: (vsim-3473) Component instance "EDGE_AREA_MAP_1 : edge_fill" is not bound.
-#    Time: 0 ns  Iteration: 0  Instance: /tb_spcore/dut/EXEC/TRIANGLE File: /home/luca/gpu_prj/spGPU/compile/work/../../RTL/acc_RTL/fill_hw_accelerator/edge_fill_top_v2.vhd
-# ** Warning: (vsim-3473) Component instance "EDGE_AREA_MAP_2 : edge_fill" is not bound.
-#    Time: 0 ns  Iteration: 0  Instance: /tb_spcore/dut/EXEC/TRIANGLE File: /home/luca/gpu_prj/spGPU/compile/work/../../RTL/acc_RTL/fill_hw_accelerator/edge_fill_top_v2.vhd
-# ** Warning: (vsim-3473) Component instance "EDGE_AREA_MAP_3 : edge_fill" is not bound.
-#    Time: 0 ns  Iteration: 0  Instance: /tb_spcore/dut/EXEC/TRIANGLE File: /home/luca/gpu_prj/spGPU/compile/work/../../RTL/acc_RTL/fill_hw_accelerator/edge_fill_top_v2.vhd
-# ** Warning: (vsim-3473) Component instance "EDGE_AREA_MAP_4 : edge_fill" is not bound.
-#    Time: 0 ns  Iteration: 0  Instance: /tb_spcore/dut/EXEC/TRIANGLE File: /home/luca/gpu_prj/spGPU/compile/work/../../RTL/acc_RTL/fill_hw_accelerator/edge_fill_top_v2.vhd
+# Loading work.edge_fill_top_v2(behavioral)#1
 source waves.tcl
-add wave -position insertpoint  \
-sim:/tb_spcore/instr_valid \
-sim:/tb_spcore/instr_req \
-sim:/tb_spcore/core_halt
-run 1ms
+run 10ms
+# ** Note: instr_req = '0'
+#    Time: 50 ns  Iteration: 1  Instance: /tb_spcore
 # ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
 #    Time: 55 ns  Iteration: 1  Instance: /tb_spcore/dut/EXEC/CIRCLE
 # ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
 #    Time: 65 ns  Iteration: 1  Instance: /tb_spcore/dut/EXEC/CIRCLE
-# End time: 16:55:52 on Oct 14,2025, Elapsed time: 0:02:49
-# Errors: 0, Warnings: 10
+# ** Note: instr_req = '1'
+#    Time: 75 ns  Iteration: 1  Instance: /tb_spcore
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 115 ns  Iteration: 1  Instance: /tb_spcore
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 115 ns  Iteration: 1  Instance: /tb_spcore
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 125 ns  Iteration: 1  Instance: /tb_spcore
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 125 ns  Iteration: 1  Instance: /tb_spcore
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 135 ns  Iteration: 1  Instance: /tb_spcore
+# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
+#    Time: 135 ns  Iteration: 1  Instance: /tb_spcore
+# End time: 19:28:24 on Oct 14,2025, Elapsed time: 0:02:03
+# Errors: 0, Warnings: 8

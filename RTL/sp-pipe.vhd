@@ -23,6 +23,7 @@ port(
 	x1, y1, x2, y2, x3, y3  : out std_logic_vector(N_pixel-1 downto 0);
 	color                   : out std_logic_vector(N_color-1 downto 0);
 	acc_enable_vec          : out std_logic_vector(N_Accelerators-1 downto 0); --1Pixel|2Line|3Triangle|4Filled Triangle|5Circle|6Filled Circle
+	acc_busy_vec 			: out std_logic_vector(N_Accelerators-1 downto 0);
 	instr_o                 : out std_logic_vector(INSTR_LENGTH-1 downto 0)
 );
 end entity;
@@ -33,7 +34,6 @@ architecture RTL of spPIPE is
 	signal color_reg_en : std_logic;
 	signal instr        : std_logic_vector(INSTR_LENGTH-1 downto 0);
 	signal opcode       : std_logic_vector(N_opcode-1 downto 0);
-
 begin
 
 	opcode <= instr(N_opcode-1 downto 0); 
@@ -64,6 +64,7 @@ begin
 								x3             <= (others => '0');
 								y3             <= (others => '0');
 								state          <= normal;
+								acc_busy_vec   <= "000000";
 								acc_enable_vec <= "000000";
 							when "0001" =>
 								dec_instr      <= DRAWPIXEL;
@@ -74,7 +75,8 @@ begin
 								x3             <= (others => '0');
 								y3             <= (others => '0');
 								state 		   <= drawing;	
-								instr_req 	   <= '0';						
+								instr_req 	   <= '0';		
+								acc_busy_vec   <= "000001";				
 								acc_enable_vec <= "000001";
 							when "0010" =>
 								dec_instr      <= DRAWLINE;
@@ -85,7 +87,8 @@ begin
 								x3             <= (others => '0');
 								y3             <= (others => '0');	
 								state 		   <= drawing;	
-								instr_req      <= '0';						
+								instr_req      <= '0';		
+								acc_busy_vec   <= "000010";				
 								acc_enable_vec <= "000010";
 							when "0011" => 
 								dec_instr      <= DRAWTRIANGLE;
@@ -96,8 +99,9 @@ begin
 								x3             <= instr(((5*N_pixel)+N_opcode)-1 downto ((4*N_pixel)+N_opcode));
 								y3             <= instr(((6*N_pixel)+N_opcode)-1 downto ((5*N_pixel)+N_opcode));
 								state 		   <= drawing;	
-								instr_req 	   <= '0';							
-								acc_enable_vec <= "000010";
+								instr_req 	   <= '0';		
+								acc_busy_vec   <= "000100";					
+								acc_enable_vec <= "000100";
 							when "0100" =>
 								dec_instr      <= DRAWTRIANGLE_F;
 								x1             <= instr((N_pixel+N_opcode)-1 downto N_opcode);
@@ -107,8 +111,9 @@ begin
 								x3             <= instr(((5*N_pixel)+N_opcode)-1 downto ((4*N_pixel)+N_opcode));
 								y3             <= instr(((6*N_pixel)+N_opcode)-1 downto ((5*N_pixel)+N_opcode));	
 								state 		   <= drawing;	
-								instr_req      <= '0';						
-								acc_enable_vec <= "000100";
+								instr_req      <= '0';		
+								acc_busy_vec   <= "001000";				
+								acc_enable_vec <= "001000";
 							when "0101" => 
 								dec_instr      <= DRAWCIRCLE;
 								x1             <= instr((N_pixel+N_opcode)-1 downto N_opcode); --Center x coord (xc)
@@ -118,7 +123,8 @@ begin
 								x3             <= instr(((5*N_pixel)+N_opcode)-1 downto ((4*N_pixel)+N_opcode));
 								y3             <= instr(((6*N_pixel)+N_opcode)-1 downto ((5*N_pixel)+N_opcode));
 								state 		   <= drawing;
-								instr_req      <= '0';							
+								instr_req      <= '0';	
+								acc_busy_vec   <= "010000";						
 								acc_enable_vec <= "010000";
 							when "0110" => 
 								dec_instr      <= DRAWCIRCLE_F;
@@ -129,7 +135,8 @@ begin
 								x3             <= instr(((5*N_pixel)+N_opcode)-1 downto ((4*N_pixel)+N_opcode));
 								y3             <= instr(((6*N_pixel)+N_opcode)-1 downto ((5*N_pixel)+N_opcode));
 								state 		   <= drawing;	
-								instr_req      <= '0';							
+								instr_req      <= '0';
+								acc_busy_vec   <= "100000";							
 								acc_enable_vec <= "100000";
 							when "0111" => 
 								dec_instr      <= SETCOLOR;
@@ -141,6 +148,7 @@ begin
 								y3             <= (others => '0');
 								state 		   <= normal;	
 								color          <= instr((N_color+N_opcode)-1 downto N_opcode);
+								acc_busy_vec   <= "000000";
 								acc_enable_vec <= "000000";
 							when others => 
 								dec_instr      <= NOP;
@@ -152,6 +160,7 @@ begin
 								y3             <= (others => '0');
 								color  		   <= (others => '0');
 								state 		   <= normal;	
+								acc_busy_vec   <= "000000";
 								acc_enable_vec <= "000000";
 						end case;
 					else 
@@ -160,12 +169,15 @@ begin
 					end if;
 				when drawing => 
 					instr_req <= '0';
+					acc_enable_vec <= "000000";
 					if finish_exec = '1' then
 						state <= normal;
+
 					else
 						state <= drawing;
 					end if;
 				when halt =>
+					acc_enable_vec <= "000000";
 					instr_req <= '0';
 					if core_halt = '1' then
 						state <= halt;

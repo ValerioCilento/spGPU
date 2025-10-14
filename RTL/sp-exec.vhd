@@ -20,6 +20,7 @@ port(
 	x1, y1, x2, y2, x3, y3  : in std_logic_vector(N_pixel-1 downto 0);
 	color                   : in std_logic_vector(N_color-1 downto 0);
 	acc_enable_vec          : in std_logic_vector(N_Accelerators-1 downto 0);
+	acc_busy_vec            : in std_logic_vector(N_Accelerators-1 downto 0);
 	finish_exec	    		: out std_logic;
 	pixel_valid_o           : out std_logic;
 	pixel_x_o               : out std_logic_vector(N_pixel-1 downto 0);
@@ -33,7 +34,7 @@ architecture RTL of spEXEC is
 	signal acc_finish_vec : std_logic_vector(N_Accelerators-1 downto 0); --1Pixel|2Line|3Triangle|4Filled Triangle|5Circle|6Filled Circle
 	signal pixel_wire_x : pixel_array; 
 	signal pixel_wire_y : pixel_array;  
-
+	signal pixel_color_wire : color_array;
 	component LINE_ACC is --Line accelerator
 	port ( 
 	    clk, rst, start : in std_logic;
@@ -85,26 +86,34 @@ architecture RTL of spEXEC is
 	end component;
 	
 begin
+	acc_finish_vec(2) <= '0';
+	acc_finish_vec(0) <= '0';
 
 	finish_exec <= acc_finish_vec(1) or acc_finish_vec(3) or acc_finish_vec(4) or acc_finish_vec(5);
-	pixel_out_proc : process(acc_enable_vec)
+	
+	pixel_out_proc : process(acc_busy_vec, pixel_wire_x, pixel_wire_y)
 	begin
-		case acc_enable_vec is
+		case acc_busy_vec is
 			when "000010" => --Line
-				pixel_x_o<= pixel_wire_x(1);
+				pixel_x_o <= pixel_wire_x(1);
 				pixel_y_o <= pixel_wire_y(1);
+				pixel_color_o <= pixel_color_wire(1);
 			when "001000" => --Filled Triangle
 				pixel_x_o <= pixel_wire_x(3);
 				pixel_y_o <= pixel_wire_y(3);
+				pixel_color_o <= pixel_color_wire(3);
 			when "010000" => --Circle
 				pixel_x_o <= pixel_wire_x(4);
 				pixel_y_o <= pixel_wire_y(4);
+				pixel_color_o <= pixel_color_wire(4);
 			when "100000" => --Filled Circle
 				pixel_x_o <= pixel_wire_x(5);
 				pixel_y_o <= pixel_wire_y(5);
+				pixel_color_o <= pixel_color_wire(5);
 			when others   => 
 				pixel_x_o <= (others => '0');
 				pixel_y_o <= (others => '0');
+				pixel_color_o <= (others => '0');
 		end case;
 	end process pixel_out_proc;								
 
@@ -120,7 +129,7 @@ begin
 		color       => color,
 		pixel_x     => pixel_wire_x(1),
 		pixel_y     => pixel_wire_y(1),
-		pixel_color => pixel_color_o,
+		pixel_color => pixel_color_wire(1),
 		finish 		=> acc_finish_vec(1),
 		pixel_valid => pixel_valid_o
 	);
@@ -139,7 +148,7 @@ begin
 		color       => color,
 		pixel_x     => pixel_wire_x(3),
 		pixel_y     => pixel_wire_y(3),
-		pixel_color => pixel_color_o,
+		pixel_color => pixel_color_wire(3),
 		finish 		=> acc_finish_vec(3)
 	);
 
@@ -154,7 +163,7 @@ begin
 		color       => color,
 		pixel_x     => pixel_wire_x(4),
 		pixel_y     => pixel_wire_y(4),
-		pixel_color => pixel_color_o,
+		pixel_color => pixel_color_wire(4),
 		finish 		=> acc_finish_vec(4)
 	);
 
@@ -169,7 +178,7 @@ begin
 		color       => color,
 		pixel_x     => pixel_wire_x(5),
 		pixel_y     => pixel_wire_y(5),
-		pixel_color => pixel_color_o,
+		pixel_color => pixel_color_wire(5),
 		finish 		=> acc_finish_vec(5)
 	);
 
