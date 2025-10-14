@@ -13,8 +13,8 @@
 # //  18 U.S.C. Section 1905.
 # //
 # vsim work.tb_spCORE 
-# Start time: 19:26:21 on Oct 14,2025
-# ** Note: (vsim-8009) Loading existing optimized design _opt
+# Start time: 20:52:09 on Oct 14,2025
+# ** Note: (vsim-3813) Design is being optimized due to module recompilation...
 # Loading std.standard
 # Loading std.textio(body)
 # Loading ieee.std_logic_1164(body)
@@ -33,17 +33,5 @@ run 10ms
 #    Time: 65 ns  Iteration: 1  Instance: /tb_spcore/dut/EXEC/CIRCLE
 # ** Note: instr_req = '1'
 #    Time: 75 ns  Iteration: 1  Instance: /tb_spcore
-# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
-#    Time: 115 ns  Iteration: 1  Instance: /tb_spcore
-# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
-#    Time: 115 ns  Iteration: 1  Instance: /tb_spcore
-# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
-#    Time: 125 ns  Iteration: 1  Instance: /tb_spcore
-# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
-#    Time: 125 ns  Iteration: 1  Instance: /tb_spcore
-# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
-#    Time: 135 ns  Iteration: 1  Instance: /tb_spcore
-# ** Warning: NUMERIC_STD.TO_INTEGER: metavalue detected, returning 0
-#    Time: 135 ns  Iteration: 1  Instance: /tb_spcore
-# End time: 19:28:24 on Oct 14,2025, Elapsed time: 0:02:03
-# Errors: 0, Warnings: 8
+# End time: 20:52:35 on Oct 14,2025, Elapsed time: 0:00:26
+# Errors: 0, Warnings: 2

@@ -70,7 +70,7 @@ begin
             tmp2 := (others => '0');
             tmp3 := (others => '0');
             tmp4 := (others => '0');
-            area  <= (others => '0');
+            area <= (others => '0');
         elsif rising_edge(clk) then
             case state is 
                 when IDLE =>

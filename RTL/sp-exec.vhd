@@ -35,6 +35,8 @@ architecture RTL of spEXEC is
 	signal pixel_wire_x : pixel_array; 
 	signal pixel_wire_y : pixel_array;  
 	signal pixel_color_wire : color_array;
+	signal pixel_valid_wire : valid_array;
+
 	component LINE_ACC is --Line accelerator
 	port ( 
 	    clk, rst, start : in std_logic;
@@ -55,6 +57,7 @@ architecture RTL of spEXEC is
 	    finish : out std_logic;
 	    color : in std_logic_vector(23 downto 0);
 	    pixel_color : out std_logic_vector(23 downto 0);
+	    pixel_valid : out std_logic;
 	    pixel_x, pixel_y : out std_logic_vector(7 downto 0)
 	);
 	end component;
@@ -88,8 +91,13 @@ architecture RTL of spEXEC is
 begin
 	acc_finish_vec(2) <= '0';
 	acc_finish_vec(0) <= '0';
+	pixel_valid_wire(0) <= '0';
+	pixel_valid_wire(2) <= '0';
+	pixel_valid_wire(4) <= '0';
+	pixel_valid_wire(5) <= '0';
 
 	finish_exec <= acc_finish_vec(1) or acc_finish_vec(3) or acc_finish_vec(4) or acc_finish_vec(5);
+	pixel_valid_o <= pixel_valid_wire(0) or pixel_valid_wire(1) or pixel_valid_wire(2) or pixel_valid_wire(3) or pixel_valid_wire(4) or pixel_valid_wire(5);
 	
 	pixel_out_proc : process(acc_busy_vec, pixel_wire_x, pixel_wire_y)
 	begin
@@ -131,7 +139,7 @@ begin
 		pixel_y     => pixel_wire_y(1),
 		pixel_color => pixel_color_wire(1),
 		finish 		=> acc_finish_vec(1),
-		pixel_valid => pixel_valid_o
+		pixel_valid => pixel_valid_wire(1)
 	);
 
 	TRIANGLE : EDGE_FILL_TOP_V2
@@ -149,6 +157,7 @@ begin
 		pixel_x     => pixel_wire_x(3),
 		pixel_y     => pixel_wire_y(3),
 		pixel_color => pixel_color_wire(3),
+		pixel_valid => pixel_valid_wire(3),
 		finish 		=> acc_finish_vec(3)
 	);
 

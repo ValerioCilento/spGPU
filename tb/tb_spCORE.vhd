@@ -161,26 +161,29 @@ output_process : process
     file out_file   : text open write_mode is "output_pixels.txt";
     variable line_out : line;
 begin
-    -- Attesa fine reset
+    -- Attendi fine reset
     wait until rst = '0';
 
-    -- Scrivi finché finish_signal = '0'
+    -- Finché la GPU non segnala fine...
     while finish_debug = '0' loop
         wait until rising_edge(clk);
 
-        -- Scrivi SEMPRE il pixel ogni ciclo
-        write(line_out, to_integer(unsigned(pixel_x_o)));
-        write(line_out, ' ');
-        write(line_out, to_integer(unsigned(pixel_y_o)));
-        write(line_out, ' ');
-        write(line_out, to_integer(unsigned(pixel_color_o)));
-        writeline(out_file, line_out);
+        -- Scrivi SOLO quando pixel_valid = '1'
+        if pixel_valid_o = '1' then
+            write(line_out, to_integer(unsigned(pixel_x_o)));
+            write(line_out, ' ');
+            write(line_out, to_integer(unsigned(pixel_y_o)));
+            write(line_out, ' ');
+            write(line_out, to_integer(unsigned(pixel_color_o)));
+            writeline(out_file, line_out);
+        end if;
     end loop;
 
-    -- Quando finish_signal = '1', fermati e segnala halt
+    -- La GPU ha finito: segnala halt
     core_halt <= '1';
 
-    wait;  -- Fine processo
+    wait; -- fine
 end process;
+
 
 end architecture;

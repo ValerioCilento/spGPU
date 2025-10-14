@@ -14,5 +14,6 @@ package spPKG is
 	type fsm_state is (normal, drawing, halt);
 	type pixel_array is array(0 to N_Accelerators-1) of std_logic_vector(N_pixel-1 downto 0);
 	type color_array is array(0 to N_Accelerators-1) of std_logic_vector(N_color-1 downto 0);
+	type valid_array is array(0 to N_Accelerators-1) of std_logic;
 
 end package;

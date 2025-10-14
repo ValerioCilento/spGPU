@@ -27,6 +27,13 @@ R0
 R0
 R0
 R0
+R0
+R0
+R0
+R0
+R0
+R0
+R0
 !s11e vcom 2021.2_1 2021.05, May 15 2021
 13
 !s112 1.1
@@ -36,22 +43,21 @@ R0
 cModel Technology
 Z1 d/home/luca/gpu_prj/spGPU/compile
 T_opt
-!s110 1760462546
-VSb]70H_;SMz]`U:I]:Xoh2
+!s110 1760467929
+V20j6S`OR<TlJOL`iGgiZn3
 04 9 2 work tb_spcore tb 1
-=1-000ae431a4f1-68ee86d2-a63c9-33b83
+=1-000ae431a4f1-68ee9bd9-5a60a-358ae
 !s124 OEM100
 o-quiet -auto_acc_if_foreign -work work
 tCvgOpt 0
 n@_opt
 OE;O;2021.2_1;73
-R1
 Ecircle_acc
 Z2 w1760458566
 Z3 DPx4 ieee 11 numeric_std 0 22 aU^R8eGcicLcUFIaBQSL>3
 Z4 DPx3 std 6 textio 0 22 zE1`LPoLg^DX3Oz^4Fj1K3
 Z5 DPx4 ieee 14 std_logic_1164 0 22 cVAk:aDinOX8^VGI1ekP<3
-!i122 482
+!i122 570
 R1
 Z6 8/home/luca/gpu_prj/spGPU/compile/work/../../RTL/acc_RTL/circle_hw_accelerator/empty_circle/circle_acc.vhd
 Z7 F/home/luca/gpu_prj/spGPU/compile/work/../../RTL/acc_RTL/circle_hw_accelerator/empty_circle/circle_acc.vhd
@@ -61,9 +67,9 @@ VLkAaWNGEUbmD3AZl?D9BU1
 !s100 oF?z2U=]z2<iOg_47@PQ53
 Z8 OE;C;2021.2_1;73
 33
-Z9 !s110 1760462773
+Z9 !s110 1760467921
 !i10b 1
-Z10 !s108 1760462773.000000
+Z10 !s108 1760467921.000000
 Z11 !s90 -2008|-quiet|-suppress|2583|-work|work|/home/luca/gpu_prj/spGPU/compile/work/../../RTL/acc_RTL/circle_hw_accelerator/empty_circle/circle_acc.vhd|
 Z12 !s107 /home/luca/gpu_prj/spGPU/compile/work/../../RTL/acc_RTL/circle_hw_accelerator/empty_circle/circle_acc.vhd|
 !i113 0
@@ -74,7 +80,7 @@ R3
 R4
 R5
 DEx4 work 10 circle_acc 0 22 LkAaWNGEUbmD3AZl?D9BU1
-!i122 482
+!i122 570
 l24
 L18 103
 VG;C]jkaQ?CJR6j4^bJ<QI1
@@ -90,23 +96,23 @@ R12
 R13
 R14
 Eedge_fill_top_v2
-Z15 w1760460560
+Z15 w1760467743
 R3
 R4
 R5
-!i122 486
+!i122 574
 R1
 Z16 8/home/luca/gpu_prj/spGPU/compile/work/../../RTL/acc_RTL/fill_hw_accelerator/edge_fill_top_v2.vhd
 Z17 F/home/luca/gpu_prj/spGPU/compile/work/../../RTL/acc_RTL/fill_hw_accelerator/edge_fill_top_v2.vhd
 l0
 L8 1
-V5mKie97[Z_:GB^F69a]ic1
-!s100 hT;0n_`F9LPmj;IH5iIIJ3
+V`]@7;X1]T9e1_E;oYdAIV3
+!s100 Fn5dQC;b9_AjLWfY@UEeI0
 R8
 33
-Z18 !s110 1760462774
+Z18 !s110 1760467922
 !i10b 1
-Z19 !s108 1760462774.000000
+Z19 !s108 1760467922.000000
 Z20 !s90 -2008|-quiet|-suppress|2583|-work|work|/home/luca/gpu_prj/spGPU/compile/work/../../RTL/acc_RTL/fill_hw_accelerator/edge_fill_top_v2.vhd|
 Z21 !s107 /home/luca/gpu_prj/spGPU/compile/work/../../RTL/acc_RTL/fill_hw_accelerator/edge_fill_top_v2.vhd|
 !i113 0
@@ -116,12 +122,12 @@ Abehavioral
 R3
 R4
 R5
-DEx4 work 16 edge_fill_top_v2 0 22 5mKie97[Z_:GB^F69a]ic1
-!i122 486
-l44
-L19 195
-VPOdP@gU1KEG;PHV>:mggN2
-!s100 ildaBZ7]bdO0?XKhNAHoB1
+DEx4 work 16 edge_fill_top_v2 0 22 `]@7;X1]T9e1_E;oYdAIV3
+!i122 574
+l45
+L20 202
+V3RW1AP`=YLdCQID3g:;c61
+!s100 N58AbakJ?8kT=k1LCHkI11
 R8
 33
 R18
@@ -133,11 +139,11 @@ R21
 R13
 R14
 Eedge_fill_v2
-Z22 w1760460518
+Z22 w1760465822
 R3
 R4
 R5
-!i122 484
+!i122 572
 R1
 Z23 8/home/luca/gpu_prj/spGPU/compile/work/../../RTL/acc_RTL/fill_hw_accelerator/edge_fill_v2.vhd
 Z24 F/home/luca/gpu_prj/spGPU/compile/work/../../RTL/acc_RTL/fill_hw_accelerator/edge_fill_v2.vhd
@@ -160,11 +166,11 @@ R3
 R4
 R5
 DEx4 work 12 edge_fill_v2 0 22 jL2A7B9?6ijodGbR?99R72
-!i122 484
+!i122 572
 l25
 L19 73
-V1E@g21cHVQnQ7WQ`Xm`3^2
-!s100 UXQANPSc2<0GLbdlX=9F`3
+V@K1eU5e_02NnZaL=iQ_MG3
+!s100 cRTAgEkWk5i]g?5]a4`;T0
 R8
 33
 R9
@@ -180,7 +186,7 @@ Z27 w1760458585
 R3
 R4
 R5
-!i122 483
+!i122 571
 R1
 Z28 8/home/luca/gpu_prj/spGPU/compile/work/../../RTL/acc_RTL/circle_hw_accelerator/filled_circle/filled_circle_acc.vhd
 Z29 F/home/luca/gpu_prj/spGPU/compile/work/../../RTL/acc_RTL/circle_hw_accelerator/filled_circle/filled_circle_acc.vhd
@@ -203,7 +209,7 @@ R3
 R4
 R5
 DEx4 work 12 f_circle_acc 0 22 BU_K1Hj0a_3N@czCjdN^z3
-!i122 483
+!i122 571
 l24
 L18 94
 Vd`ICa4zob3B5mzMbKhKE20
@@ -223,7 +229,7 @@ Z32 w1760298363
 R3
 R4
 R5
-!i122 487
+!i122 575
 R1
 Z33 8/home/luca/gpu_prj/spGPU/compile/work/../../RTL/acc_RTL/line_hw_accelerator/line_acc.vhd
 Z34 F/home/luca/gpu_prj/spGPU/compile/work/../../RTL/acc_RTL/line_hw_accelerator/line_acc.vhd
@@ -246,7 +252,7 @@ R3
 R4
 R5
 DEx4 work 8 line_acc 0 22 `YmO6dXE3;WnJ<Q2j7m:_2
-!i122 487
+!i122 575
 l24
 L19 80
 VLlI>hjAKSe[:[U``H<U2e2
@@ -262,10 +268,10 @@ R36
 R13
 R14
 Eminmax
-Z37 w1760101595
+Z37 w1742849451
 R4
 R5
-!i122 485
+!i122 573
 R1
 Z38 8/home/luca/gpu_prj/spGPU/compile/work/../../RTL/acc_RTL/fill_hw_accelerator/minmax.vhd
 Z39 F/home/luca/gpu_prj/spGPU/compile/work/../../RTL/acc_RTL/fill_hw_accelerator/minmax.vhd
@@ -287,7 +293,7 @@ Abehavioral
 R4
 R5
 DEx4 work 6 minmax 0 22 e?:eG0XKjKin]l51S8:kU1
-!i122 485
+!i122 573
 l44
 L42 84
 VH81NFaF6ekFG?jRB8I?Y?3
@@ -304,11 +310,11 @@ R13
 R14
 Espcore
 Z42 w1760462340
-Z43 DPx4 work 5 sppkg 0 22 k?LSl2j>1b>G1YlWb=jUz2
+Z43 DPx4 work 5 sppkg 0 22 Pc]EPK2@dbFIn>NSzhZ]81
 R3
 R4
 R5
-!i122 491
+!i122 579
 R1
 Z44 8/home/luca/gpu_prj/spGPU/compile/work/../../RTL/sp-core.vhd
 Z45 F/home/luca/gpu_prj/spGPU/compile/work/../../RTL/sp-core.vhd
@@ -318,11 +324,11 @@ Va3bSkX29ZzYGDVa^<X>HZ1
 !s100 0h]cF_<m31dQ8PKdOhj<80
 R8
 33
-Z46 !s110 1760462775
+R18
 !i10b 1
 R19
-Z47 !s90 -2008|-quiet|-suppress|2583|-work|work|/home/luca/gpu_prj/spGPU/compile/work/../../RTL/sp-core.vhd|
-Z48 !s107 /home/luca/gpu_prj/spGPU/compile/work/../../RTL/sp-core.vhd|
+Z46 !s90 -2008|-quiet|-suppress|2583|-work|work|/home/luca/gpu_prj/spGPU/compile/work/../../RTL/sp-core.vhd|
+Z47 !s107 /home/luca/gpu_prj/spGPU/compile/work/../../RTL/sp-core.vhd|
 !i113 0
 R13
 R14
@@ -332,31 +338,31 @@ R3
 R4
 R5
 DEx4 work 6 spcore 0 22 a3bSkX29ZzYGDVa^<X>HZ1
-!i122 491
+!i122 579
 l87
 L29 117
 VPJZUZ_jIn2m<:>Nk1JMGZ3
 !s100 SDE91HYeTFHP=E[Y@Y6dD0
 R8
 33
-R46
+R18
 !i10b 1
 R19
+R46
 R47
-R48
 !i113 0
 R13
 R14
 Espexec
-Z49 w1760459697
+Z48 w1760467597
 R43
 R3
 R4
 R5
-!i122 490
+!i122 578
 R1
-Z50 8/home/luca/gpu_prj/spGPU/compile/work/../../RTL/sp-exec.vhd
-Z51 F/home/luca/gpu_prj/spGPU/compile/work/../../RTL/sp-exec.vhd
+Z49 8/home/luca/gpu_prj/spGPU/compile/work/../../RTL/sp-exec.vhd
+Z50 F/home/luca/gpu_prj/spGPU/compile/work/../../RTL/sp-exec.vhd
 l0
 L7 1
 Vg44TFzlT:V?hEXI]0CI8g3
@@ -366,8 +372,8 @@ R8
 R18
 !i10b 1
 R19
-Z52 !s90 -2008|-quiet|-suppress|2583|-work|work|/home/luca/gpu_prj/spGPU/compile/work/../../RTL/sp-exec.vhd|
-Z53 !s107 /home/luca/gpu_prj/spGPU/compile/work/../../RTL/sp-exec.vhd|
+Z51 !s90 -2008|-quiet|-suppress|2583|-work|work|/home/luca/gpu_prj/spGPU/compile/work/../../RTL/sp-exec.vhd|
+Z52 !s107 /home/luca/gpu_prj/spGPU/compile/work/../../RTL/sp-exec.vhd|
 !i113 0
 R13
 R14
@@ -377,31 +383,31 @@ R3
 R4
 R5
 DEx4 work 6 spexec 0 22 g44TFzlT:V?hEXI]0CI8g3
-!i122 490
-l88
-L32 154
-V1fegC0WQ^zJe>oHFY0C2R3
-!s100 :Ho@Ozg?DeH1e[k^LNF6b0
+!i122 578
+l91
+L32 163
+VDi4Dj3?F^=@JV=0`gV0VJ0
+!s100 C7jSLoG4Q=c]b<z^C=0K`1
 R8
 33
 R18
 !i10b 1
 R19
+R51
 R52
-R53
 !i113 0
 R13
 R14
 Esppipe
-Z54 w1760459667
+Z53 w1760459667
 R43
 R3
 R4
 R5
-!i122 489
+!i122 577
 R1
-Z55 8/home/luca/gpu_prj/spGPU/compile/work/../../RTL/sp-pipe.vhd
-Z56 F/home/luca/gpu_prj/spGPU/compile/work/../../RTL/sp-pipe.vhd
+Z54 8/home/luca/gpu_prj/spGPU/compile/work/../../RTL/sp-pipe.vhd
+Z55 F/home/luca/gpu_prj/spGPU/compile/work/../../RTL/sp-pipe.vhd
 l0
 L7 1
 VYHc`VBUfMG1^m[37jc]I62
@@ -411,8 +417,8 @@ R8
 R18
 !i10b 1
 R19
-Z57 !s90 -2008|-quiet|-suppress|2583|-work|work|/home/luca/gpu_prj/spGPU/compile/work/../../RTL/sp-pipe.vhd|
-Z58 !s107 /home/luca/gpu_prj/spGPU/compile/work/../../RTL/sp-pipe.vhd|
+Z56 !s90 -2008|-quiet|-suppress|2583|-work|work|/home/luca/gpu_prj/spGPU/compile/work/../../RTL/sp-pipe.vhd|
+Z57 !s107 /home/luca/gpu_prj/spGPU/compile/work/../../RTL/sp-pipe.vhd|
 !i113 0
 R13
 R14
@@ -422,7 +428,7 @@ R3
 R4
 R5
 DEx4 work 6 sppipe 0 22 YHc`VBUfMG1^m[37jc]I62
-!i122 489
+!i122 577
 l37
 L31 164
 VdQZdgEM5UCM^3oeBKz39L2
@@ -432,8 +438,8 @@ R8
 R18
 !i10b 1
 R19
+R56
 R57
-R58
 !i113 0
 R13
 R14
@@ -441,15 +447,15 @@ Psppkg
 R3
 R4
 R5
-!i122 488
-w1760455129
+!i122 576
+w1760467435
 R1
 8/home/luca/gpu_prj/spGPU/compile/work/../../RTL/sp-pkg.vhd
 F/home/luca/gpu_prj/spGPU/compile/work/../../RTL/sp-pkg.vhd
 l0
 L5 1
-Vk?LSl2j>1b>G1YlWb=jUz2
-!s100 m[R_CliUYN^XBlHzZQ;MF3
+VPc]EPK2@dbFIn>NSzhZ]81
+!s100 Oj@QO9_ko?^AM>F7?NG9H1
 R8
 33
 R18
@@ -461,23 +467,23 @@ R19
 R13
 R14
 Etb_spcore
-Z59 w1760462532
+Z58 w1760467915
 R3
 R4
 R5
-!i122 492
+!i122 580
 R1
-Z60 8/home/luca/gpu_prj/spGPU/compile/work/../../tb/tb_spCORE.vhd
-Z61 F/home/luca/gpu_prj/spGPU/compile/work/../../tb/tb_spCORE.vhd
+Z59 8/home/luca/gpu_prj/spGPU/compile/work/../../tb/tb_spCORE.vhd
+Z60 F/home/luca/gpu_prj/spGPU/compile/work/../../tb/tb_spCORE.vhd
 l0
 L6 1
 VWXjBSKj6iOM]O7g`IJkQ63
 !s100 Xo8L59z5Mc3Ka>MhNEUKb1
 R8
 33
-R46
+Z61 !s110 1760467923
 !i10b 1
-Z62 !s108 1760462775.000000
+Z62 !s108 1760467923.000000
 Z63 !s90 -2008|-quiet|-suppress|2583|-work|work|/home/luca/gpu_prj/spGPU/compile/work/../../tb/tb_spCORE.vhd|
 Z64 !s107 /home/luca/gpu_prj/spGPU/compile/work/../../tb/tb_spCORE.vhd|
 !i113 0
@@ -487,15 +493,15 @@ Atb
 R3
 R4
 R5
-Z65 DEx4 work 9 tb_spcore 0 22 WXjBSKj6iOM]O7g`IJkQ63
-!i122 492
+DEx4 work 9 tb_spcore 0 22 WXjBSKj6iOM]O7g`IJkQ63
+!i122 580
 l69
-Z66 L9 178
-Z67 VWEofLa3[PThS]9ZidDcJG0
-Z68 !s100 Bj7@NoYjaTV6V[^8WjVW90
+L9 181
+Vh`RhKh5XcbX[k;j7dT>Gz1
+!s100 V@Bd0gE<QiiG:Pb5fD2a?2
 R8
 33
-R46
+R61
 !i10b 1
 R62
 R63

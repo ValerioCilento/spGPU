@@ -12,6 +12,7 @@ Port (
     finish : out std_logic;
     color : in std_logic_vector(23 downto 0);
     pixel_color : out std_logic_vector(23 downto 0);
+    pixel_valid : out std_logic;
     pixel_x, pixel_y : out std_logic_vector(7 downto 0)
 );
 end edge_fill_top_v2;
@@ -171,40 +172,47 @@ begin
             pixel_x <= (others => '0');
             pixel_y <= (others => '0');
             pixel_color <= (others => '0');
+            pixel_valid <= '0';
     elsif rising_edge(clk) then
         case state is 
             when 1 => 
+                pixel_valid <= '0';
                 enb_comp <= '0';
                 start_area <= '0';
                 x <= (others => '0');
                 y <= (others => '0');
                 start_edge <= '0';
             when 2 =>
+                pixel_valid <= '0';
                 start_area <= '1';
                 enb_comp <= '1';
                 y <= miny;
                 x <= minx;
             when 3 =>
+                pixel_valid <= '0';
                 start_area <= '0';
                 start_edge <= '1';
             when 4 =>
                 start_edge <= '0';
+                pixel_valid <= '1';
                 if signed(area) < 0 and signed(w0) <= 0 and signed( w1) <= 0 and signed(w2) <= 0 then
-                        pixel_x <= x;
-                        pixel_y <= y;
-                        pixel_color <= color;
+                    pixel_x <= x;
+                    pixel_y <= y;
+                    pixel_color <= color;
                 elsif signed(area) >= 0 and signed(w0) >= 0 and signed( w1) >= 0 and signed(w2) >= 0 then
-                        pixel_x <= x;
-                        pixel_y <= y;
-                        pixel_color <= color; 
+                    pixel_x <= x;
+                    pixel_y <= y;
+                    pixel_color <= color; 
                 end if;
             when 5 =>
-                     x <= std_logic_vector(unsigned(x) + 1);
+                pixel_valid <= '0';
+                x <= std_logic_vector(unsigned(x) + 1);
             when 6 =>
-                   y <= std_logic_vector(unsigned(y) + 1);
-                   if unsigned(y) < unsigned(maxy) then
-                        x <= minx;
-                   end if;
+                pixel_valid <= '0';
+                y <= std_logic_vector(unsigned(y) + 1);
+                if unsigned(y) < unsigned(maxy) then
+                    x <= minx;
+                end if;
             when others =>
                 null;
             end case;
