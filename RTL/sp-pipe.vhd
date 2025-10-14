@@ -36,24 +36,24 @@ architecture RTL of spPIPE is
 
 begin
 
-	instr  <= instr_word when instr_req = '1' else (others => '0');
 	opcode <= instr(N_opcode-1 downto 0); 
-
+	instr_o <= instr;
+	dec_instr_o <= dec_instr;
+	instr  <= instr_word when instr_req = '1' and instr_valid = '1' else (others => '0');
 	fetch_proc : process(clk, rst)
 	begin 
 		if rst = '1' then
-			instr     <= (others => '0');
+
 			instr_req <= '0';
 			state <= normal;
 		elsif rising_edge(clk) then
 			case state is 
 				when normal =>
-					instr_req <= '1';
-
 					if core_halt = '1' then
 						state <= halt;
+						instr_req <= '0';
 					elsif instr_valid = '1' then
-						instr_o <= instr;
+						instr_req <= '0';
 						case opcode is 
 							when "0000" => 
 								dec_instr      <= NOP;
@@ -73,7 +73,8 @@ begin
 								y2             <= (others => '0');
 								x3             <= (others => '0');
 								y3             <= (others => '0');
-								state 		   <= drawing;							
+								state 		   <= drawing;	
+								instr_req 	   <= '0';						
 								acc_enable_vec <= "000001";
 							when "0010" =>
 								dec_instr      <= DRAWLINE;
@@ -83,7 +84,8 @@ begin
 								y2             <= instr(((4*N_pixel)+N_opcode)-1 downto ((3*N_pixel)+N_opcode));
 								x3             <= (others => '0');
 								y3             <= (others => '0');	
-								state 		   <= drawing;							
+								state 		   <= drawing;	
+								instr_req      <= '0';						
 								acc_enable_vec <= "000010";
 							when "0011" => 
 								dec_instr      <= DRAWTRIANGLE;
@@ -93,7 +95,8 @@ begin
 								y2             <= instr(((4*N_pixel)+N_opcode)-1 downto ((3*N_pixel)+N_opcode));
 								x3             <= instr(((5*N_pixel)+N_opcode)-1 downto ((4*N_pixel)+N_opcode));
 								y3             <= instr(((6*N_pixel)+N_opcode)-1 downto ((5*N_pixel)+N_opcode));
-								state 		   <= drawing;								
+								state 		   <= drawing;	
+								instr_req 	   <= '0';							
 								acc_enable_vec <= "000010";
 							when "0100" =>
 								dec_instr      <= DRAWTRIANGLE_F;
@@ -103,7 +106,8 @@ begin
 								y2             <= instr(((4*N_pixel)+N_opcode)-1 downto ((3*N_pixel)+N_opcode));
 								x3             <= instr(((5*N_pixel)+N_opcode)-1 downto ((4*N_pixel)+N_opcode));
 								y3             <= instr(((6*N_pixel)+N_opcode)-1 downto ((5*N_pixel)+N_opcode));	
-								state 		   <= drawing;							
+								state 		   <= drawing;	
+								instr_req      <= '0';						
 								acc_enable_vec <= "000100";
 							when "0101" => 
 								dec_instr      <= DRAWCIRCLE;
@@ -113,7 +117,8 @@ begin
 								y2             <= instr(((4*N_pixel)+N_opcode)-1 downto ((3*N_pixel)+N_opcode));
 								x3             <= instr(((5*N_pixel)+N_opcode)-1 downto ((4*N_pixel)+N_opcode));
 								y3             <= instr(((6*N_pixel)+N_opcode)-1 downto ((5*N_pixel)+N_opcode));
-								state 		   <= drawing;							
+								state 		   <= drawing;
+								instr_req      <= '0';							
 								acc_enable_vec <= "010000";
 							when "0110" => 
 								dec_instr      <= DRAWCIRCLE_F;
@@ -123,7 +128,8 @@ begin
 								y2             <= instr(((4*N_pixel)+N_opcode)-1 downto ((3*N_pixel)+N_opcode));
 								x3             <= instr(((5*N_pixel)+N_opcode)-1 downto ((4*N_pixel)+N_opcode));
 								y3             <= instr(((6*N_pixel)+N_opcode)-1 downto ((5*N_pixel)+N_opcode));
-								state 		   <= drawing;								
+								state 		   <= drawing;	
+								instr_req      <= '0';							
 								acc_enable_vec <= "100000";
 							when "0111" => 
 								dec_instr      <= SETCOLOR;
@@ -150,6 +156,7 @@ begin
 						end case;
 					else 
 						state <= normal;
+						instr_req <= '1';
 					end if;
 				when drawing => 
 					instr_req <= '0';
@@ -167,6 +174,7 @@ begin
 					end if;
 				when others =>
 					state <= normal;
+
 				end case;
 			end if;
 	end process;

@@ -128,13 +128,12 @@ begin
             read(line_in, instr_str);
 
             instr_word <= str_to_slv(instr_str);
+            wait for CLK_PERIOD;
             instr_valid <= '1';
             wait for CLK_PERIOD;
-            instr_valid <= '0';
-
-            wait for (5 * CLK_PERIOD);
+            instr_valid <= '0';            
         end loop;
-
+        wait for 500 ns;
         ----------------------------------------------------------------
         -- Segnala fine core (opzionale)
         ----------------------------------------------------------------
