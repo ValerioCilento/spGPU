@@ -1,0 +1,509 @@
+#-----------------------------------------------------------
+# Vivado v2024.2 (64-bit)
+# SW Build 5239630 on Fri Nov 08 22:35:27 MST 2024
+# IP Build 5239520 on Sun Nov 10 16:12:51 MST 2024
+# SharedData Build 5239561 on Fri Nov 08 14:39:27 MST 2024
+# Start of session at: Thu Oct 16 17:05:05 2025
+# Process ID         : 21428
+# Current directory  : C:/Users/lucaf/Desktop/spGPU/spGPU.runs/design_1_spCORE_0_0_synth_1
+# Command line       : vivado.exe -log design_1_spCORE_0_0.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source design_1_spCORE_0_0.tcl
+# Log file           : C:/Users/lucaf/Desktop/spGPU/spGPU.runs/design_1_spCORE_0_0_synth_1/design_1_spCORE_0_0.vds
+# Journal file       : C:/Users/lucaf/Desktop/spGPU/spGPU.runs/design_1_spCORE_0_0_synth_1\vivado.jou
+# Running On         : Luca
+# Platform           : Windows Server 2016 or Windows 10
+# Operating System   : 26100
+# Processor Detail   : AMD Ryzen 9 7900 12-Core Processor             
+# CPU Frequency      : 3693 MHz
+# CPU Physical cores : 12
+# CPU Logical cores  : 24
+# Host memory        : 33408 MB
+# Swap memory        : 2147 MB
+# Total Virtual      : 35556 MB
+# Available Virtual  : 16870 MB
+#-----------------------------------------------------------
+source design_1_spCORE_0_0.tcl -notrace
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1700] Loaded user IP repository 'c:/Users/lucaf/Downloads/spGPU-main/spGPU-main/myaxistream_1_0'.
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'C:/Xilinx/Vivado/2024.2/data/ip'.
+Command: synth_design -top design_1_spCORE_0_0 -part xc7z020clg400-1 -incremental_mode off -mode out_of_context
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xc7z020'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7z020'
+INFO: [Device 21-403] Loading part xc7z020clg400-1
+INFO: [Synth 8-7079] Multithreading enabled for synth_design using a maximum of 2 processes.
+INFO: [Synth 8-7078] Launching helper process for spawning children vivado processes
+INFO: [Synth 8-7075] Helper process launched with PID 22964
+---------------------------------------------------------------------------------
+Starting RTL Elaboration : Time (s): cpu = 00:00:03 ; elapsed = 00:00:03 . Memory (MB): peak = 1059.996 ; gain = 466.965
+---------------------------------------------------------------------------------
+INFO: [Synth 8-638] synthesizing module 'design_1_spCORE_0_0' [c:/Users/lucaf/Desktop/spGPU/spGPU.gen/sources_1/bd/design_1/ip/design_1_spCORE_0_0/synth/design_1_spCORE_0_0.vhd:72]
+	Parameter INSTR_LENGTH bound to: 64 - type: integer 
+	Parameter N_opcode bound to: 4 - type: integer 
+	Parameter N_color bound to: 24 - type: integer 
+	Parameter N_pixel bound to: 8 - type: integer 
+	Parameter N_Accelerators bound to: 6 - type: integer 
+INFO: [Synth 8-3491] module 'spCORE' declared at 'C:/Users/lucaf/Desktop/spGPU/spGPU.srcs/sources_1/imports/RTL/sp-core.vhd:7' bound to instance 'U0' of component 'spCORE' [c:/Users/lucaf/Desktop/spGPU/spGPU.gen/sources_1/bd/design_1/ip/design_1_spCORE_0_0/synth/design_1_spCORE_0_0.vhd:115]
+INFO: [Synth 8-638] synthesizing module 'spCORE' [C:/Users/lucaf/Desktop/spGPU/spGPU.srcs/sources_1/imports/RTL/sp-core.vhd:29]
+	Parameter INSTR_LENGTH bound to: 64 - type: integer 
+	Parameter N_opcode bound to: 4 - type: integer 
+	Parameter N_color bound to: 24 - type: integer 
+	Parameter N_pixel bound to: 8 - type: integer 
+	Parameter N_Accelerators bound to: 6 - type: integer 
+INFO: [Synth 8-3491] module 'spPIPE' declared at 'C:/Users/lucaf/Desktop/spGPU/spGPU.srcs/sources_1/imports/RTL/sp-pipe.vhd:7' bound to instance 'PIPE' of component 'spPIPE' [C:/Users/lucaf/Desktop/spGPU/spGPU.srcs/sources_1/imports/RTL/sp-core.vhd:90]
+INFO: [Synth 8-638] synthesizing module 'spPIPE' [C:/Users/lucaf/Desktop/spGPU/spGPU.srcs/sources_1/imports/RTL/sp-pipe.vhd:31]
+INFO: [Synth 8-256] done synthesizing module 'spPIPE' (0#1) [C:/Users/lucaf/Desktop/spGPU/spGPU.srcs/sources_1/imports/RTL/sp-pipe.vhd:31]
+	Parameter INSTR_LENGTH bound to: 64 - type: integer 
+	Parameter N_opcode bound to: 4 - type: integer 
+	Parameter N_color bound to: 24 - type: integer 
+	Parameter N_pixel bound to: 8 - type: integer 
+	Parameter N_Accelerators bound to: 6 - type: integer 
+INFO: [Synth 8-3491] module 'spEXEC' declared at 'C:/Users/lucaf/Desktop/spGPU/spGPU.srcs/sources_1/imports/RTL/sp-exec.vhd:7' bound to instance 'EXEC' of component 'spEXEC' [C:/Users/lucaf/Desktop/spGPU/spGPU.srcs/sources_1/imports/RTL/sp-core.vhd:118]
+INFO: [Synth 8-638] synthesizing module 'spEXEC' [C:/Users/lucaf/Desktop/spGPU/spGPU.srcs/sources_1/imports/RTL/sp-exec.vhd:32]
+WARNING: [Synth 8-614] signal 'pixel_color_wire' is read in the process but is not in the sensitivity list [C:/Users/lucaf/Desktop/spGPU/spGPU.srcs/sources_1/imports/RTL/sp-exec.vhd:102]
+INFO: [Synth 8-3491] module 'line_acc' declared at 'C:/Users/lucaf/Desktop/spGPU/spGPU.srcs/sources_1/imports/RTL/acc_RTL/line_hw_accelerator/line_acc.vhd:6' bound to instance 'LINE' of component 'LINE_ACC' [C:/Users/lucaf/Desktop/spGPU/spGPU.srcs/sources_1/imports/RTL/sp-exec.vhd:128]
+INFO: [Synth 8-638] synthesizing module 'line_acc' [C:/Users/lucaf/Desktop/spGPU/spGPU.srcs/sources_1/imports/RTL/acc_RTL/line_hw_accelerator/line_acc.vhd:19]
+INFO: [Synth 8-256] done synthesizing module 'line_acc' (0#1) [C:/Users/lucaf/Desktop/spGPU/spGPU.srcs/sources_1/imports/RTL/acc_RTL/line_hw_accelerator/line_acc.vhd:19]
+INFO: [Synth 8-3491] module 'edge_fill_top_v2' declared at 'C:/Users/lucaf/Desktop/spGPU/spGPU.srcs/sources_1/imports/RTL/acc_RTL/fill_hw_accelerator/edge_fill_top_v2.vhd:8' bound to instance 'TRIANGLE' of component 'EDGE_FILL_TOP_V2' [C:/Users/lucaf/Desktop/spGPU/spGPU.srcs/sources_1/imports/RTL/sp-exec.vhd:145]
+INFO: [Synth 8-638] synthesizing module 'edge_fill_top_v2' [C:/Users/lucaf/Desktop/spGPU/spGPU.srcs/sources_1/imports/RTL/acc_RTL/fill_hw_accelerator/edge_fill_top_v2.vhd:20]
+INFO: [Synth 8-3491] module 'minmax' declared at 'C:/Users/lucaf/Desktop/spGPU/spGPU.srcs/sources_1/imports/RTL/acc_RTL/fill_hw_accelerator/minmax.vhd:34' bound to instance 'MINMAX_MAP' of component 'minmax' [C:/Users/lucaf/Desktop/spGPU/spGPU.srcs/sources_1/imports/RTL/acc_RTL/fill_hw_accelerator/edge_fill_top_v2.vhd:47]
+INFO: [Synth 8-638] synthesizing module 'minmax' [C:/Users/lucaf/Desktop/spGPU/spGPU.srcs/sources_1/imports/RTL/acc_RTL/fill_hw_accelerator/minmax.vhd:42]
+WARNING: [Synth 8-614] signal 'x1' is read in the process but is not in the sensitivity list [C:/Users/lucaf/Desktop/spGPU/spGPU.srcs/sources_1/imports/RTL/acc_RTL/fill_hw_accelerator/minmax.vhd:45]
+WARNING: [Synth 8-614] signal 'x2' is read in the process but is not in the sensitivity list [C:/Users/lucaf/Desktop/spGPU/spGPU.srcs/sources_1/imports/RTL/acc_RTL/fill_hw_accelerator/minmax.vhd:45]
+WARNING: [Synth 8-614] signal 'x3' is read in the process but is not in the sensitivity list [C:/Users/lucaf/Desktop/spGPU/spGPU.srcs/sources_1/imports/RTL/acc_RTL/fill_hw_accelerator/minmax.vhd:45]
+WARNING: [Synth 8-614] signal 'y1' is read in the process but is not in the sensitivity list [C:/Users/lucaf/Desktop/spGPU/spGPU.srcs/sources_1/imports/RTL/acc_RTL/fill_hw_accelerator/minmax.vhd:65]
+WARNING: [Synth 8-614] signal 'y2' is read in the process but is not in the sensitivity list [C:/Users/lucaf/Desktop/spGPU/spGPU.srcs/sources_1/imports/RTL/acc_RTL/fill_hw_accelerator/minmax.vhd:65]
+WARNING: [Synth 8-614] signal 'y3' is read in the process but is not in the sensitivity list [C:/Users/lucaf/Desktop/spGPU/spGPU.srcs/sources_1/imports/RTL/acc_RTL/fill_hw_accelerator/minmax.vhd:65]
+WARNING: [Synth 8-614] signal 'x1' is read in the process but is not in the sensitivity list [C:/Users/lucaf/Desktop/spGPU/spGPU.srcs/sources_1/imports/RTL/acc_RTL/fill_hw_accelerator/minmax.vhd:85]
+WARNING: [Synth 8-614] signal 'x2' is read in the process but is not in the sensitivity list [C:/Users/lucaf/Desktop/spGPU/spGPU.srcs/sources_1/imports/RTL/acc_RTL/fill_hw_accelerator/minmax.vhd:85]
+WARNING: [Synth 8-614] signal 'x3' is read in the process but is not in the sensitivity list [C:/Users/lucaf/Desktop/spGPU/spGPU.srcs/sources_1/imports/RTL/acc_RTL/fill_hw_accelerator/minmax.vhd:85]
+WARNING: [Synth 8-614] signal 'y1' is read in the process but is not in the sensitivity list [C:/Users/lucaf/Desktop/spGPU/spGPU.srcs/sources_1/imports/RTL/acc_RTL/fill_hw_accelerator/minmax.vhd:106]
+WARNING: [Synth 8-614] signal 'y2' is read in the process but is not in the sensitivity list [C:/Users/lucaf/Desktop/spGPU/spGPU.srcs/sources_1/imports/RTL/acc_RTL/fill_hw_accelerator/minmax.vhd:106]
+WARNING: [Synth 8-614] signal 'y3' is read in the process but is not in the sensitivity list [C:/Users/lucaf/Desktop/spGPU/spGPU.srcs/sources_1/imports/RTL/acc_RTL/fill_hw_accelerator/minmax.vhd:106]
+INFO: [Synth 8-256] done synthesizing module 'minmax' (0#1) [C:/Users/lucaf/Desktop/spGPU/spGPU.srcs/sources_1/imports/RTL/acc_RTL/fill_hw_accelerator/minmax.vhd:42]
+INFO: [Synth 8-3491] module 'edge_fill_v2' declared at 'C:/Users/lucaf/Desktop/spGPU/spGPU.srcs/sources_1/imports/RTL/acc_RTL/fill_hw_accelerator/edge_fill_v2.vhd:10' bound to instance 'EDGE_AREA_MAP_1' of component 'edge_fill_v2' [C:/Users/lucaf/Desktop/spGPU/spGPU.srcs/sources_1/imports/RTL/acc_RTL/fill_hw_accelerator/edge_fill_top_v2.vhd:60]
+INFO: [Synth 8-638] synthesizing module 'edge_fill_v2' [C:/Users/lucaf/Desktop/spGPU/spGPU.srcs/sources_1/imports/RTL/acc_RTL/fill_hw_accelerator/edge_fill_v2.vhd:19]
+INFO: [Synth 8-256] done synthesizing module 'edge_fill_v2' (0#1) [C:/Users/lucaf/Desktop/spGPU/spGPU.srcs/sources_1/imports/RTL/acc_RTL/fill_hw_accelerator/edge_fill_v2.vhd:19]
+INFO: [Synth 8-3491] module 'edge_fill_v2' declared at 'C:/Users/lucaf/Desktop/spGPU/spGPU.srcs/sources_1/imports/RTL/acc_RTL/fill_hw_accelerator/edge_fill_v2.vhd:10' bound to instance 'EDGE_AREA_MAP_2' of component 'edge_fill_v2' [C:/Users/lucaf/Desktop/spGPU/spGPU.srcs/sources_1/imports/RTL/acc_RTL/fill_hw_accelerator/edge_fill_top_v2.vhd:73]
+INFO: [Synth 8-3491] module 'edge_fill_v2' declared at 'C:/Users/lucaf/Desktop/spGPU/spGPU.srcs/sources_1/imports/RTL/acc_RTL/fill_hw_accelerator/edge_fill_v2.vhd:10' bound to instance 'EDGE_AREA_MAP_3' of component 'edge_fill_v2' [C:/Users/lucaf/Desktop/spGPU/spGPU.srcs/sources_1/imports/RTL/acc_RTL/fill_hw_accelerator/edge_fill_top_v2.vhd:86]
+INFO: [Synth 8-3491] module 'edge_fill_v2' declared at 'C:/Users/lucaf/Desktop/spGPU/spGPU.srcs/sources_1/imports/RTL/acc_RTL/fill_hw_accelerator/edge_fill_v2.vhd:10' bound to instance 'EDGE_AREA_MAP_4' of component 'edge_fill_v2' [C:/Users/lucaf/Desktop/spGPU/spGPU.srcs/sources_1/imports/RTL/acc_RTL/fill_hw_accelerator/edge_fill_top_v2.vhd:99]
+WARNING: [Synth 8-614] signal 'done_area' is read in the process but is not in the sensitivity list [C:/Users/lucaf/Desktop/spGPU/spGPU.srcs/sources_1/imports/RTL/acc_RTL/fill_hw_accelerator/edge_fill_top_v2.vhd:113]
+WARNING: [Synth 8-614] signal 'x' is read in the process but is not in the sensitivity list [C:/Users/lucaf/Desktop/spGPU/spGPU.srcs/sources_1/imports/RTL/acc_RTL/fill_hw_accelerator/edge_fill_top_v2.vhd:113]
+WARNING: [Synth 8-614] signal 'maxx' is read in the process but is not in the sensitivity list [C:/Users/lucaf/Desktop/spGPU/spGPU.srcs/sources_1/imports/RTL/acc_RTL/fill_hw_accelerator/edge_fill_top_v2.vhd:113]
+WARNING: [Synth 8-614] signal 'y' is read in the process but is not in the sensitivity list [C:/Users/lucaf/Desktop/spGPU/spGPU.srcs/sources_1/imports/RTL/acc_RTL/fill_hw_accelerator/edge_fill_top_v2.vhd:113]
+WARNING: [Synth 8-614] signal 'maxy' is read in the process but is not in the sensitivity list [C:/Users/lucaf/Desktop/spGPU/spGPU.srcs/sources_1/imports/RTL/acc_RTL/fill_hw_accelerator/edge_fill_top_v2.vhd:113]
+INFO: [Synth 8-256] done synthesizing module 'edge_fill_top_v2' (0#1) [C:/Users/lucaf/Desktop/spGPU/spGPU.srcs/sources_1/imports/RTL/acc_RTL/fill_hw_accelerator/edge_fill_top_v2.vhd:20]
+INFO: [Synth 8-3491] module 'circle_acc' declared at 'C:/Users/lucaf/Desktop/spGPU/spGPU.srcs/sources_1/imports/RTL/acc_RTL/circle_hw_accelerator/empty_circle/circle_acc.vhd:5' bound to instance 'CIRCLE' of component 'CIRCLE_ACC' [C:/Users/lucaf/Desktop/spGPU/spGPU.srcs/sources_1/imports/RTL/sp-exec.vhd:164]
+INFO: [Synth 8-638] synthesizing module 'circle_acc' [C:/Users/lucaf/Desktop/spGPU/spGPU.srcs/sources_1/imports/RTL/acc_RTL/circle_hw_accelerator/empty_circle/circle_acc.vhd:18]
+INFO: [Synth 8-256] done synthesizing module 'circle_acc' (0#1) [C:/Users/lucaf/Desktop/spGPU/spGPU.srcs/sources_1/imports/RTL/acc_RTL/circle_hw_accelerator/empty_circle/circle_acc.vhd:18]
+INFO: [Synth 8-3491] module 'f_circle_acc' declared at 'C:/Users/lucaf/Desktop/spGPU/spGPU.srcs/sources_1/imports/RTL/acc_RTL/circle_hw_accelerator/filled_circle/filled_circle_acc.vhd:5' bound to instance 'FCIRCLE' of component 'F_CIRCLE_ACC' [C:/Users/lucaf/Desktop/spGPU/spGPU.srcs/sources_1/imports/RTL/sp-exec.vhd:179]
+INFO: [Synth 8-638] synthesizing module 'f_circle_acc' [C:/Users/lucaf/Desktop/spGPU/spGPU.srcs/sources_1/imports/RTL/acc_RTL/circle_hw_accelerator/filled_circle/filled_circle_acc.vhd:18]
+INFO: [Synth 8-256] done synthesizing module 'f_circle_acc' (0#1) [C:/Users/lucaf/Desktop/spGPU/spGPU.srcs/sources_1/imports/RTL/acc_RTL/circle_hw_accelerator/filled_circle/filled_circle_acc.vhd:18]
+INFO: [Synth 8-256] done synthesizing module 'spEXEC' (0#1) [C:/Users/lucaf/Desktop/spGPU/spGPU.srcs/sources_1/imports/RTL/sp-exec.vhd:32]
+INFO: [Synth 8-256] done synthesizing module 'spCORE' (0#1) [C:/Users/lucaf/Desktop/spGPU/spGPU.srcs/sources_1/imports/RTL/sp-core.vhd:29]
+INFO: [Synth 8-256] done synthesizing module 'design_1_spCORE_0_0' (0#1) [c:/Users/lucaf/Desktop/spGPU/spGPU.gen/sources_1/bd/design_1/ip/design_1_spCORE_0_0/synth/design_1_spCORE_0_0.vhd:72]
+WARNING: [Synth 8-6014] Unused sequential element reg_reg was removed.  [C:/Users/lucaf/Desktop/spGPU/spGPU.srcs/sources_1/imports/RTL/acc_RTL/fill_hw_accelerator/edge_fill_v2.vhd:68]
+WARNING: [Synth 8-7129] Port dec_inst_i[2] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port dec_inst_i[1] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port dec_inst_i[0] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[63] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[62] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[61] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[60] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[59] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[58] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[57] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[56] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[55] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[54] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[53] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[52] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[51] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[50] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[49] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[48] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[47] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[46] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[45] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[44] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[43] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[42] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[41] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[40] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[39] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[38] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[37] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[36] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[35] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[34] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[33] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[32] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[31] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[30] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[29] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[28] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[27] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[26] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[25] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[24] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[23] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[22] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[21] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[20] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[19] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[18] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[17] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[16] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[15] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[14] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[13] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[12] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[11] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[10] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[9] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[8] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[7] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[6] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[5] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[4] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[3] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[2] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[1] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[0] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port acc_enable_vec[2] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port acc_enable_vec[0] in module spEXEC is either unconnected or has no load
+---------------------------------------------------------------------------------
+Finished RTL Elaboration : Time (s): cpu = 00:00:04 ; elapsed = 00:00:04 . Memory (MB): peak = 1184.867 ; gain = 591.836
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:04 ; elapsed = 00:00:04 . Memory (MB): peak = 1184.867 ; gain = 591.836
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:04 ; elapsed = 00:00:04 . Memory (MB): peak = 1184.867 ; gain = 591.836
+---------------------------------------------------------------------------------
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.012 . Memory (MB): peak = 1184.867 ; gain = 0.000
+INFO: [Project 1-570] Preparing netlist for logic optimization
+
+Processing XDC Constraints
+Initializing timing engine
+Completed Processing XDC Constraints
+
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 1271.211 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+Constraint Validation Runtime : Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.024 . Memory (MB): peak = 1271.699 ; gain = 0.488
+INFO: [Designutils 20-5008] Incremental synthesis strategy off
+---------------------------------------------------------------------------------
+Finished Constraint Validation : Time (s): cpu = 00:00:08 ; elapsed = 00:00:09 . Memory (MB): peak = 1271.699 ; gain = 678.668
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Loading Part and Timing Information
+---------------------------------------------------------------------------------
+Loading part: xc7z020clg400-1
+---------------------------------------------------------------------------------
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:08 ; elapsed = 00:00:09 . Memory (MB): peak = 1271.699 ; gain = 678.668
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying 'set_property' XDC Constraints
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:08 ; elapsed = 00:00:09 . Memory (MB): peak = 1271.699 ; gain = 678.668
+---------------------------------------------------------------------------------
+INFO: [Synth 8-802] inferred FSM for state register 'state_reg' in module 'spPIPE'
+INFO: [Synth 8-802] inferred FSM for state register 'state_reg' in module 'line_acc'
+INFO: [Synth 8-802] inferred FSM for state register 'state_reg' in module 'edge_fill_v2'
+INFO: [Synth 8-802] inferred FSM for state register 'state_reg' in module 'edge_fill_top_v2'
+INFO: [Synth 8-802] inferred FSM for state register 'state_reg' in module 'circle_acc'
+INFO: [Synth 8-802] inferred FSM for state register 'state_reg' in module 'f_circle_acc'
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+                  normal |                               00 |                               00
+                    halt |                               01 |                               10
+                 drawing |                               10 |                               01
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'state_reg' using encoding 'sequential' in module 'spPIPE'
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+                    idle |                              001 |                               00
+                    draw |                              010 |                               01
+                    done |                              100 |                               10
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'state_reg' using encoding 'one-hot' in module 'line_acc'
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+                    idle |                              001 |                               00
+                   calc1 |                              010 |                               01
+                  finish |                              100 |                               11
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'state_reg' using encoding 'one-hot' in module 'edge_fill_v2'
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+                 iSTATE3 |                              000 | 00000000000000000000000000000001
+                 iSTATE0 |                              001 | 00000000000000000000000000000010
+                 iSTATE4 |                              010 | 00000000000000000000000000000011
+                 iSTATE1 |                              011 | 00000000000000000000000000000100
+                  iSTATE |                              100 | 00000000000000000000000000000101
+                 iSTATE2 |                              101 | 00000000000000000000000000000110
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'state_reg' using encoding 'sequential' in module 'edge_fill_top_v2'
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+                    idle |                             0000 |                             0000
+                   draw1 |                             0001 |                             0001
+                   draw2 |                             0010 |                             0010
+                   draw3 |                             0011 |                             0011
+                   draw4 |                             0100 |                             0100
+                   draw5 |                             0101 |                             0101
+                   draw6 |                             0110 |                             0110
+                   draw7 |                             0111 |                             0111
+                   draw8 |                             1000 |                             1000
+                compute1 |                             1001 |                             1001
+                compute2 |                             1010 |                             1010
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'state_reg' using encoding 'sequential' in module 'circle_acc'
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+                    idle |                              000 |                              000
+                setcheck |                              001 |                              101
+                   draw1 |                              010 |                              001
+                   draw2 |                              011 |                              010
+                   draw3 |                              100 |                              011
+                   draw4 |                              101 |                              100
+                 compute |                              110 |                              110
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'state_reg' using encoding 'sequential' in module 'f_circle_acc'
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:09 ; elapsed = 00:00:09 . Memory (MB): peak = 1271.699 ; gain = 678.668
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start RTL Component Statistics 
+---------------------------------------------------------------------------------
+Detailed RTL Component Info : 
++---Adders : 
+	   4 Input   32 Bit       Adders := 1     
+	   3 Input   32 Bit       Adders := 1     
+	   2 Input   10 Bit       Adders := 2     
+	   2 Input    9 Bit       Adders := 2     
+	   3 Input    9 Bit       Adders := 21    
+	   2 Input    8 Bit       Adders := 10    
+	   3 Input    8 Bit       Adders := 7     
++---Registers : 
+	               32 Bit    Registers := 7     
+	               24 Bit    Registers := 2     
+	               18 Bit    Registers := 4     
+	                9 Bit    Registers := 2     
+	                8 Bit    Registers := 22    
+	                6 Bit    Registers := 2     
+	                3 Bit    Registers := 1     
+	                1 Bit    Registers := 9     
++---Muxes : 
+	   2 Input   32 Bit        Muxes := 2     
+	   3 Input   32 Bit        Muxes := 1     
+	  11 Input   32 Bit        Muxes := 1     
+	   7 Input   32 Bit        Muxes := 1     
+	   2 Input   24 Bit        Muxes := 1     
+	   8 Input   24 Bit        Muxes := 1     
+	   2 Input   13 Bit        Muxes := 1     
+	   2 Input    9 Bit        Muxes := 4     
+	   3 Input    9 Bit        Muxes := 4     
+	   2 Input    8 Bit        Muxes := 24    
+	   8 Input    8 Bit        Muxes := 6     
+	   6 Input    8 Bit        Muxes := 2     
+	  11 Input    8 Bit        Muxes := 4     
+	   7 Input    8 Bit        Muxes := 8     
+	   2 Input    6 Bit        Muxes := 1     
+	   8 Input    6 Bit        Muxes := 1     
+	   3 Input    6 Bit        Muxes := 1     
+	  11 Input    4 Bit        Muxes := 1     
+	   2 Input    4 Bit        Muxes := 4     
+	   2 Input    3 Bit        Muxes := 11    
+	   8 Input    3 Bit        Muxes := 1     
+	   3 Input    3 Bit        Muxes := 1     
+	   6 Input    3 Bit        Muxes := 5     
+	   7 Input    3 Bit        Muxes := 1     
+	   3 Input    2 Bit        Muxes := 1     
+	   2 Input    2 Bit        Muxes := 6     
+	   7 Input    2 Bit        Muxes := 1     
+	   2 Input    1 Bit        Muxes := 3     
+	   8 Input    1 Bit        Muxes := 2     
+	   3 Input    1 Bit        Muxes := 9     
+	   6 Input    1 Bit        Muxes := 12    
+	  11 Input    1 Bit        Muxes := 8     
+	   7 Input    1 Bit        Muxes := 9     
+---------------------------------------------------------------------------------
+Finished RTL Component Statistics 
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Part Resource Summary
+---------------------------------------------------------------------------------
+Part Resources:
+DSPs: 220 (col length:60)
+BRAMs: 280 (col length: RAMB18 60 RAMB36 30)
+---------------------------------------------------------------------------------
+Finished Part Resource Summary
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Cross Boundary and Area Optimization
+---------------------------------------------------------------------------------
+WARNING: [Synth 8-7080] Parallel synthesis criteria is not met
+WARNING: [Synth 8-7129] Port dec_inst_i[2] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port dec_inst_i[1] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port dec_inst_i[0] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[63] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[62] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[61] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[60] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[59] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[58] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[57] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[56] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[55] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[54] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[53] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[52] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[51] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[50] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[49] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[48] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[47] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[46] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[45] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[44] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[43] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[42] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[41] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[40] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[39] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[38] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[37] in module spEXEC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port instr_i[36] in module spEXEC is either unconnected or has no load
+INFO: [Common 17-14] Message 'Synth 8-7129' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
+---------------------------------------------------------------------------------
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:00:13 ; elapsed = 00:00:14 . Memory (MB): peak = 1271.699 ; gain = 678.668
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying XDC Timing Constraints
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Applying XDC Timing Constraints : Time (s): cpu = 00:00:17 ; elapsed = 00:00:18 . Memory (MB): peak = 1379.023 ; gain = 785.992
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Timing Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Timing Optimization : Time (s): cpu = 00:00:17 ; elapsed = 00:00:18 . Memory (MB): peak = 1381.605 ; gain = 788.574
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Technology Mapping
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Technology Mapping : Time (s): cpu = 00:00:17 ; elapsed = 00:00:18 . Memory (MB): peak = 1410.805 ; gain = 817.773
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished IO Insertion : Time (s): cpu = 00:00:19 ; elapsed = 00:00:20 . Memory (MB): peak = 1603.434 ; gain = 1010.402
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Instances
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Instances : Time (s): cpu = 00:00:19 ; elapsed = 00:00:20 . Memory (MB): peak = 1603.434 ; gain = 1010.402
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Rebuilding User Hierarchy
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:00:20 ; elapsed = 00:00:20 . Memory (MB): peak = 1603.434 ; gain = 1010.402
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Ports
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Ports : Time (s): cpu = 00:00:20 ; elapsed = 00:00:20 . Memory (MB): peak = 1603.434 ; gain = 1010.402
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:20 ; elapsed = 00:00:20 . Memory (MB): peak = 1603.434 ; gain = 1010.402
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Nets
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Nets : Time (s): cpu = 00:00:20 ; elapsed = 00:00:20 . Memory (MB): peak = 1603.434 ; gain = 1010.402
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Writing Synthesis Report
+---------------------------------------------------------------------------------
+
+Report BlackBoxes: 
++-+--------------+----------+
+| |BlackBox name |Instances |
++-+--------------+----------+
++-+--------------+----------+
+
+Report Cell Usage: 
++------+-------+------+
+|      |Cell   |Count |
++------+-------+------+
+|1     |CARRY4 |   305|
+|2     |LUT1   |    86|
+|3     |LUT2   |   690|
+|4     |LUT3   |   130|
+|5     |LUT4   |   465|
+|6     |LUT5   |   191|
+|7     |LUT6   |   584|
+|8     |FDCE   |   303|
+|9     |FDPE   |     4|
+|10    |FDRE   |   151|
++------+-------+------+
+---------------------------------------------------------------------------------
+Finished Writing Synthesis Report : Time (s): cpu = 00:00:20 ; elapsed = 00:00:20 . Memory (MB): peak = 1603.434 ; gain = 1010.402
+---------------------------------------------------------------------------------
+Synthesis finished with 0 errors, 0 critical warnings and 70 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:00:15 ; elapsed = 00:00:19 . Memory (MB): peak = 1603.434 ; gain = 923.570
+Synthesis Optimization Complete : Time (s): cpu = 00:00:20 ; elapsed = 00:00:21 . Memory (MB): peak = 1603.434 ; gain = 1010.402
+INFO: [Project 1-571] Translating synthesized netlist
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.023 . Memory (MB): peak = 1603.434 ; gain = 0.000
+INFO: [Netlist 29-17] Analyzing 305 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Project 1-570] Preparing netlist for logic optimization
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.001 . Memory (MB): peak = 1603.434 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+Synth Design complete | Checksum: 139180bd
+INFO: [Common 17-83] Releasing license: Synthesis
+63 Infos, 120 Warnings, 0 Critical Warnings and 0 Errors encountered.
+synth_design completed successfully
+synth_design: Time (s): cpu = 00:00:22 ; elapsed = 00:00:26 . Memory (MB): peak = 1603.434 ; gain = 1240.328
+INFO: [Coretcl 2-1174] Renamed 12 cell refs.
+Write ShapeDB Complete: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.004 . Memory (MB): peak = 1603.434 ; gain = 0.000
+INFO: [Common 17-1381] The checkpoint 'C:/Users/lucaf/Desktop/spGPU/spGPU.runs/design_1_spCORE_0_0_synth_1/design_1_spCORE_0_0.dcp' has been generated.
+INFO: [Vivado 12-24828] Executing command : report_utilization -file design_1_spCORE_0_0_utilization_synth.rpt -pb design_1_spCORE_0_0_utilization_synth.pb
+INFO: [Common 17-206] Exiting Vivado at Thu Oct 16 17:05:34 2025...
