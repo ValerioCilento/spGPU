@@ -11,6 +11,7 @@ Port (
     --z_out : out std_logic;
     pixel_x, pixel_y : out std_logic_vector(7 downto 0);
     pixel_color : out std_logic_vector(23 downto 0);
+    pixel_valid : out std_logic;
     finish : out std_logic
 );
 end entity circle_acc;
@@ -34,6 +35,7 @@ begin
             x <= (others => '0');
             y <= (others => '0');
             d <= 0;
+            pixel_valid <= '0';
         elsif rising_edge(clk) then
             case state is
             when IDLE => 
@@ -41,6 +43,7 @@ begin
                 x <= (others => '0');
                 y <= r;
                 finish <= '0';
+                pixel_valid <= '0';
                 if start = '1' then
                     state <= DRAW1;
                 else 
@@ -54,6 +57,7 @@ begin
                 else 
                     pixel_x <= std_logic_vector((unsigned(xc)) + unsigned(x));
                     pixel_y <= std_logic_vector((unsigned(yc)) + unsigned(y));
+                    pixel_valid <= '1';
                     finish <= '0';
                     state <= DRAW2;
                 end if;
@@ -61,36 +65,43 @@ begin
             when DRAW2 =>
                 pixel_x <= std_logic_vector((unsigned(xc)) - unsigned(x));
                 pixel_y <= std_logic_vector((unsigned(yc)) + unsigned(y));
+                pixel_valid <= '1';
                 state <= DRAW3;
             
             when DRAW3 =>
                 pixel_x <= std_logic_vector((unsigned(xc)) + unsigned(x));
                 pixel_y <= std_logic_vector((unsigned(yc)) - unsigned(y));
+                pixel_valid <= '1';
                 state <= DRAW4;
                 
             when DRAW4 =>
                 pixel_x <= std_logic_vector((unsigned(xc)) - unsigned(x));
                 pixel_y <= std_logic_vector((unsigned(yc)) - unsigned(y));
+                pixel_valid <= '1';
                 state <= DRAW5;
              
             when DRAW5 =>
                 pixel_x <= std_logic_vector((unsigned(xc)) + unsigned(y));
                 pixel_y <= std_logic_vector((unsigned(yc)) + unsigned(x));
+                pixel_valid <= '1';
                 state <= DRAW6;
             
             when DRAW6 =>
                 pixel_x <= std_logic_vector((unsigned(xc)) - unsigned(y));
                 pixel_y <= std_logic_vector((unsigned(yc)) + unsigned(x));
+                pixel_valid <= '1';
                 state <= DRAW7;
                 
             when DRAW7 =>
                 pixel_x <= std_logic_vector((unsigned(xc)) + unsigned(y));
                 pixel_y <= std_logic_vector((unsigned(yc)) - unsigned(x));
+                pixel_valid <= '1';
                 state <= DRAW8;
                 
             when DRAW8 =>
                 pixel_x <= std_logic_vector((unsigned(xc)) - unsigned(y));
                 pixel_y <= std_logic_vector((unsigned(yc)) - unsigned(x));
+                pixel_valid <= '1';
                 
                 if d > 0 then
                     y <= std_logic_vector(unsigned(y) - 1);
@@ -102,14 +113,17 @@ begin
             when COMPUTE1 => 
                 d <= d + (4 * to_integer(signed(x) - signed(y))) + 10;
                 x <= std_logic_vector(unsigned(x) + 1);
+                pixel_valid <= '0';
                 state <= DRAW1;
             
             when COMPUTE2 => 
                 d <= d + (4*to_integer(unsigned(x))) + 6;
                 x <= std_logic_vector(unsigned(x) + 1);
+                pixel_valid <= '0';
                 state <= DRAW1;
             
             when others => 
+                pixel_valid <= '0';
                 state <= IDLE;
             
             end case;

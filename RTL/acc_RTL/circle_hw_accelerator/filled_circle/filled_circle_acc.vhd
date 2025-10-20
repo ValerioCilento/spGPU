@@ -11,6 +11,7 @@ Port (
     --z_out : out std_logic;
     pixel_x, pixel_y : out std_logic_vector(7 downto 0);
     pixel_color : out std_logic_vector(23 downto 0);
+    pixel_valid : out std_logic;
     finish : out std_logic
 );
 end entity f_circle_acc;
@@ -35,9 +36,11 @@ begin
         x <= (others => '0');
         y <= (others => '0');
         d <= 0;
+        pixel_valid <= '0';
     elsif rising_edge(clk) then
         case state is
             when IDLE =>
+                pixel_valid <= '0';
                 if start = '1' then
                     x <= (others => '0');
                     y <= r;
@@ -51,6 +54,7 @@ begin
             when SETCHECK => 
                 i <= std_logic_vector(unsigned(xc) - unsigned(x));
                 j <= std_logic_vector(unsigned(xc) - unsigned(y));
+                pixel_valid <= '0';
                 if unsigned(y) < unsigned(x) then
                     finish <= '1';
                     state <= IDLE;
@@ -61,11 +65,13 @@ begin
             when DRAW1 =>
                 pixel_x <= i;
                 pixel_y <= std_logic_vector(unsigned(yc) + unsigned(y));
+                pixel_valid <= '1';
                 state <= DRAW2;
 
             when DRAW2 =>
                 pixel_x <= i;
                 pixel_y <= std_logic_vector(unsigned(yc) - unsigned(y));
+                pixel_valid <= '1';
                 if unsigned(i) > (unsigned(xc) + unsigned(x)) then
                     state <= DRAW3;
                 else
@@ -76,11 +82,13 @@ begin
             when DRAW3 => 
                 pixel_x <= j;
                 pixel_y <= std_logic_vector(unsigned(yc) + unsigned(x));
+                pixel_valid <= '1';
                 state <= DRAW4;
 
             when DRAW4 =>
                 pixel_x <= j;
                 pixel_y <= std_logic_vector(unsigned(yc) - unsigned(x));
+                pixel_valid <= '1';
                 if unsigned(j) > (unsigned(xc) + unsigned(y)) then
                     y <= std_logic_vector(unsigned(y) - 1);
                     state <= COMPUTE;
@@ -99,8 +107,10 @@ begin
                     y <= std_logic_vector(unsigned(y) + 1);
                 end if;
                 state <= SETCHECK;
+                pixel_valid <= '0';
 
             when others =>
+                pixel_valid <= '0';
                 state <= IDLE;
             
             end case;
