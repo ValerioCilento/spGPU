@@ -24,6 +24,7 @@ port(
 	color                   : out std_logic_vector(N_color-1 downto 0);
 	acc_enable_vec          : out std_logic_vector(N_Accelerators-1 downto 0); --1Pixel|2Line|3Triangle|4Filled Triangle|5Circle|6Filled Circle
 	acc_busy_vec 			: out std_logic_vector(N_Accelerators-1 downto 0);
+	swap 					: out std_logic;
 	instr_o                 : out std_logic_vector(INSTR_LENGTH-1 downto 0)
 );
 end entity;
@@ -34,29 +35,33 @@ architecture RTL of spPIPE is
 	signal color_reg_en : std_logic;
 	signal instr        : std_logic_vector(INSTR_LENGTH-1 downto 0);
 	signal opcode       : std_logic_vector(N_opcode-1 downto 0);
+	signal instr_req_int : std_logic;
+	signal color_int : std_logic_vector(N_color-1 downto 0);
 begin
-
+   
+    color <= color_int;
 	opcode <= instr(N_opcode-1 downto 0); 
 	instr_o <= instr;
 	dec_instr_o <= dec_instr;
-	instr  <= instr_word when instr_req = '1' and instr_valid = '1' else (others => '0');
+	instr_req <= instr_req_int;
+	instr  <= instr_word when instr_req_int = '1' else (others => '0');
 	fetch_proc : process(clk, rst)
 	begin 
-		if rst = '1' then
-
-			instr_req <= '0';
+		if rst = '0' then
+			instr_req_int <= '0';
 			state <= normal;
 		elsif rising_edge(clk) then
 			case state is 
 				when normal =>
 					if core_halt = '1' then
 						state <= halt;
-						instr_req <= '0';
+						instr_req_int <= '0';
 					elsif instr_valid = '1' then
-						instr_req <= '0';
+						instr_req_int <= '0';
 						case opcode is 
 							when "0000" => 
 								dec_instr      <= NOP;
+								swap           <= '0';
 								x1             <= (others => '0');
 								y1             <= (others => '0');
 								x2             <= (others => '0');
@@ -68,6 +73,7 @@ begin
 								acc_enable_vec <= "000000";
 							when "0001" =>
 								dec_instr      <= DRAWPIXEL;
+								swap           <= '0';
 								x1             <= instr((N_pixel+N_opcode)-1 downto N_opcode);
 								y1             <= instr(((2*N_pixel)+N_opcode)-1 downto (N_pixel+N_opcode));
 							    x2             <= (others => '0');
@@ -75,11 +81,12 @@ begin
 								x3             <= (others => '0');
 								y3             <= (others => '0');
 								state 		   <= drawing;	
-								instr_req 	   <= '0';		
+								instr_req_int 	   <= '0';		
 								acc_busy_vec   <= "000001";				
 								acc_enable_vec <= "000001";
 							when "0010" =>
 								dec_instr      <= DRAWLINE;
+								swap           <= '0';
 								x1             <= instr((N_pixel+N_opcode)-1 downto N_opcode);
 								y1             <= instr(((2*N_pixel)+N_opcode)-1 downto (N_pixel+N_opcode));
 								x2             <= instr(((3*N_pixel)+N_opcode)-1 downto ((2*N_pixel)+N_opcode));
@@ -87,11 +94,12 @@ begin
 								x3             <= (others => '0');
 								y3             <= (others => '0');	
 								state 		   <= drawing;	
-								instr_req      <= '0';		
+								instr_req_int      <= '0';	
 								acc_busy_vec   <= "000010";				
 								acc_enable_vec <= "000010";
 							when "0011" => 
 								dec_instr      <= DRAWTRIANGLE;
+								swap           <= '0';
 								x1             <= instr((N_pixel+N_opcode)-1 downto N_opcode);
 								y1             <= instr(((2*N_pixel)+N_opcode)-1 downto (N_pixel+N_opcode));
 								x2             <= instr(((3*N_pixel)+N_opcode)-1 downto ((2*N_pixel)+N_opcode));
@@ -99,11 +107,12 @@ begin
 								x3             <= instr(((5*N_pixel)+N_opcode)-1 downto ((4*N_pixel)+N_opcode));
 								y3             <= instr(((6*N_pixel)+N_opcode)-1 downto ((5*N_pixel)+N_opcode));
 								state 		   <= drawing;	
-								instr_req 	   <= '0';		
-								acc_busy_vec   <= "000100";					
+								instr_req_int 	   <= '0';		
+								acc_busy_vec   <= "000100";	
 								acc_enable_vec <= "000100";
 							when "0100" =>
 								dec_instr      <= DRAWTRIANGLE_F;
+								swap           <= '0';
 								x1             <= instr((N_pixel+N_opcode)-1 downto N_opcode);
 								y1             <= instr(((2*N_pixel)+N_opcode)-1 downto (N_pixel+N_opcode));
 								x2             <= instr(((3*N_pixel)+N_opcode)-1 downto ((2*N_pixel)+N_opcode));
@@ -111,11 +120,12 @@ begin
 								x3             <= instr(((5*N_pixel)+N_opcode)-1 downto ((4*N_pixel)+N_opcode));
 								y3             <= instr(((6*N_pixel)+N_opcode)-1 downto ((5*N_pixel)+N_opcode));	
 								state 		   <= drawing;	
-								instr_req      <= '0';		
-								acc_busy_vec   <= "001000";				
+								instr_req_int      <= '0';		
+								acc_busy_vec   <= "001000";	
 								acc_enable_vec <= "001000";
 							when "0101" => 
 								dec_instr      <= DRAWCIRCLE;
+								swap           <= '0';
 								x1             <= instr((N_pixel+N_opcode)-1 downto N_opcode); --Center x coord (xc)
 								y1             <= instr(((2*N_pixel)+N_opcode)-1 downto (N_pixel+N_opcode)); --Center y coord (yc)
 								x2             <= instr(((3*N_pixel)+N_opcode)-1 downto ((2*N_pixel)+N_opcode)); --Radius	(r)	
@@ -123,11 +133,12 @@ begin
 								x3             <= instr(((5*N_pixel)+N_opcode)-1 downto ((4*N_pixel)+N_opcode));
 								y3             <= instr(((6*N_pixel)+N_opcode)-1 downto ((5*N_pixel)+N_opcode));
 								state 		   <= drawing;
-								instr_req      <= '0';	
-								acc_busy_vec   <= "010000";						
+								instr_req_int      <= '0';	
+								acc_busy_vec   <= "010000";	
 								acc_enable_vec <= "010000";
 							when "0110" => 
 								dec_instr      <= DRAWCIRCLE_F;
+								swap           <= '0';
 								x1             <= instr((N_pixel+N_opcode)-1 downto N_opcode); --Center x coord (xc)
 								y1             <= instr(((2*N_pixel)+N_opcode)-1 downto (N_pixel+N_opcode)); --Center y coord (yc)
 								x2             <= instr(((3*N_pixel)+N_opcode)-1 downto ((2*N_pixel)+N_opcode)); --Radius	(r)	
@@ -135,10 +146,11 @@ begin
 								x3             <= instr(((5*N_pixel)+N_opcode)-1 downto ((4*N_pixel)+N_opcode));
 								y3             <= instr(((6*N_pixel)+N_opcode)-1 downto ((5*N_pixel)+N_opcode));
 								state 		   <= drawing;	
-								instr_req      <= '0';
-								acc_busy_vec   <= "100000";							
+								instr_req_int      <= '0';
+								acc_busy_vec   <= "100000";
 								acc_enable_vec <= "100000";
 							when "0111" => 
+							    swap           <= '0';
 								dec_instr      <= SETCOLOR;
 								x1             <= (others => '0');
 								y1             <= (others => '0');
@@ -147,38 +159,52 @@ begin
 								x3             <= (others => '0');
 								y3             <= (others => '0');
 								state 		   <= normal;	
-								color          <= instr((N_color+N_opcode)-1 downto N_opcode);
+								color_int      <= instr((N_color+N_opcode)-1 downto N_opcode);
 								acc_busy_vec   <= "000000";
 								acc_enable_vec <= "000000";
-							when others => 
-								dec_instr      <= NOP;
+							when "1000" => 
+								dec_instr      <= SWAP_BUFFERS;
+								swap           <= '1';
 								x1             <= (others => '0');
 								y1             <= (others => '0');
 								x2             <= (others => '0');
 								y2             <= (others => '0');
 								x3             <= (others => '0');
 								y3             <= (others => '0');
-								color  		   <= (others => '0');
+								state 		   <= drawing;	
+								color_int      <= instr((N_color+N_opcode)-1 downto N_opcode);
+								acc_busy_vec   <= "000000";
+								acc_enable_vec <= "000000";
+							when others => 
+								dec_instr      <= NOP;
+								swap           <= '0';
+								x1             <= (others => '0');
+								y1             <= (others => '0');
+								x2             <= (others => '0');
+								y2             <= (others => '0');
+								x3             <= (others => '0');
+								y3             <= (others => '0');
+								color_int  	   <= (others => '0');
 								state 		   <= normal;	
 								acc_busy_vec   <= "000000";
 								acc_enable_vec <= "000000";
 						end case;
 					else 
 						state <= normal;
-						instr_req <= '1';
+						instr_req_int <= '1';
 					end if;
 				when drawing => 
-					instr_req <= '0';
+					swap <= '0';
+					instr_req_int <= '0';
 					acc_enable_vec <= "000000";
 					if finish_exec = '1' then
 						state <= normal;
-
 					else
 						state <= drawing;
 					end if;
 				when halt =>
 					acc_enable_vec <= "000000";
-					instr_req <= '0';
+					instr_req_int <= '0';
 					if core_halt = '1' then
 						state <= halt;
 					else 

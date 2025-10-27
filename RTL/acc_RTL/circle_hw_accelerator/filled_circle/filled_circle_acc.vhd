@@ -3,13 +3,16 @@ use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 
 entity f_circle_acc is
+generic(
+    N_pixel : integer
+);
 Port ( 
     clk, rst, start : in std_logic;
-    xc, yc, r: in std_logic_vector(7 downto 0);
+    xc, yc, r: in std_logic_vector(N_pixel-1 downto 0);
     color : in std_logic_vector(23 downto 0);
     --z_in : in std_logic; 
     --z_out : out std_logic;
-    pixel_x, pixel_y : out std_logic_vector(7 downto 0);
+    pixel_x, pixel_y : out std_logic_vector(N_pixel-1 downto 0);
     pixel_color : out std_logic_vector(23 downto 0);
     pixel_valid : out std_logic;
     finish : out std_logic
@@ -20,7 +23,7 @@ architecture Behavioral of f_circle_acc is
     type state_type is (IDLE, DRAW1, DRAW2, DRAW3, DRAW4, SETCHECK, COMPUTE);
     signal state : state_type := IDLE;
     signal d: integer := 0;
-    signal x, y, i, j : std_logic_vector(7 downto 0);
+    signal x, y, i, j : std_logic_vector(N_pixel-1 downto 0);
 
 begin
 

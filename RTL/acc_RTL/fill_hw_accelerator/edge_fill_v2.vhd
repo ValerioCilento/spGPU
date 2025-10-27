@@ -8,19 +8,22 @@ use IEEE.NUMERIC_STD.ALL;
 
 
 entity edge_fill_v2 is
+    generic(
+        N_pixel : integer
+    );
 Port ( 
-    x1, y1, x2, y2, px, py : in std_logic_vector(7 downto 0); 
+    x1, y1, x2, y2, px, py : in std_logic_vector(N_pixel-1 downto 0); 
     clk, rst, start : in std_logic;
     done : out std_logic;
-    area : out std_logic_vector(17 downto 0)
+    area : out std_logic_vector((N_pixel+N_pixel+1) downto 0)
 );
 end edge_fill_v2;
 
 architecture Behavioral of edge_fill_v2 is
     type state_t is (IDLE, CALC1, CALC2, FINISH);
     signal state, next_state : state_t;
-    signal x1_s, y1_s, x2_s, y2_s, px_s, py_s : std_logic_vector(8 downto 0);
-    signal reg : signed(17 downto 0);
+    signal x1_s, y1_s, x2_s, y2_s, px_s, py_s : std_logic_vector(N_pixel downto 0);
+    signal reg : signed((N_pixel+N_pixel+1) downto 0);
  
 begin
     x1_s <= "0"&x1;
@@ -30,7 +33,7 @@ begin
     px_s <= "0"&px;
     py_s <= "0"&py;
     
-    process(all) begin 
+    process(rst, state, start) begin 
         done <= '0';
         if rst = '1' then
             next_state <= IDLE;
@@ -62,7 +65,7 @@ begin
     end process;
     
     data_path : process(clk, rst) 
-    variable tmp1, tmp2,tmp3, tmp4 : signed(8 downto 0);
+    variable tmp1, tmp2,tmp3, tmp4 : signed(N_pixel downto 0);
     begin
         if rst = '1' then
             reg <= (others => '0');

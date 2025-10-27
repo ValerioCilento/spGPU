@@ -6,14 +6,17 @@ use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 
 entity edge_fill_top_v2 is
+    generic(
+        N_pixel : integer
+    );
 Port ( 
-    x1, y1, x2, y2, x3, y3 : in std_logic_vector(7 downto 0);
+    x1, y1, x2, y2, x3, y3 : in std_logic_vector(N_pixel-1 downto 0);
     clk, rst, start : in std_logic;
     finish : out std_logic;
     color : in std_logic_vector(23 downto 0);
     pixel_color : out std_logic_vector(23 downto 0);
     pixel_valid : out std_logic;
-    pixel_x, pixel_y : out std_logic_vector(7 downto 0)
+    pixel_x, pixel_y : out std_logic_vector(N_pixel-1 downto 0)
 );
 end edge_fill_top_v2;
 
@@ -21,30 +24,40 @@ architecture Behavioral of edge_fill_top_v2 is
     signal state, next_state : integer := 1;
     signal enb_comp, start_area, start_edge : std_logic;
     signal done_area, done_w0, done_w1, done_w2 : std_logic;
-    signal x, y : std_logic_vector(7 downto 0);
-    signal area, w0, w1, w2 : std_logic_vector(17 downto 0);
-    signal minx, maxx, miny, maxy : std_logic_vector(7 downto 0);
+    signal x, y : std_logic_vector(N_pixel-1 downto 0);
+    signal area, w0, w1, w2 : std_logic_vector((N_pixel+N_pixel+1) downto 0);
+    signal minx, maxx, miny, maxy : std_logic_vector(N_pixel-1 downto 0);
 
     component edge_fill_v2 is 
+    generic(
+        N_pixel : integer
+    );
     port(
-        x1, y1, x2, y2, px, py : in std_logic_vector(7 downto 0); 
+        x1, y1, x2, y2, px, py : in std_logic_vector(N_pixel-1 downto 0); 
         clk, rst, start : in std_logic;
         done : out std_logic;
-        area : out std_logic_vector(17 downto 0)
+        area : out std_logic_vector((N_pixel+N_pixel+1) downto 0)
     );
     end component;
     
     component minmax is
+    generic(
+        N_pixel : integer
+    );
     Port (
         enable : in std_logic; 
-        x1, x2, x3, y1, y2, y3 : in std_logic_vector(7 downto 0);
-        minx, miny, maxx, maxy : out std_logic_vector(7 downto 0)
+        x1, x2, x3, y1, y2, y3 : in std_logic_vector(N_pixel-1 downto 0);
+        minx, miny, maxx, maxy : out std_logic_vector(N_pixel-1 downto 0)
     );
     end component;
 
 begin
     
-    MINMAX_MAP : minmax port map(
+    MINMAX_MAP : minmax 
+    generic map(
+        N_pixel => N_pixel
+    )
+    port map(
         enable => enb_comp,
         x1 => x1,
         x2 => x2,
@@ -57,7 +70,11 @@ begin
         miny => miny,
         maxy => maxy
     );
-    EDGE_AREA_MAP_1 : edge_fill_v2 port map(
+    EDGE_AREA_MAP_1 : edge_fill_v2 
+    generic map(
+        N_pixel => N_pixel
+    )
+    port map(
         clk => clk,
         rst => rst,
         start => start_area,
@@ -70,7 +87,11 @@ begin
         py => y3,
         area => area
     );
-    EDGE_AREA_MAP_2 : edge_fill_v2 port map(
+    EDGE_AREA_MAP_2 : edge_fill_v2 
+    generic map(
+        N_pixel => N_pixel
+    )
+    port map(
         clk => clk,
         rst => rst,
         start => start_edge,
@@ -83,7 +104,11 @@ begin
         py => y,
         area => w0
     );
-    EDGE_AREA_MAP_3 : edge_fill_v2 port map(
+    EDGE_AREA_MAP_3 : edge_fill_v2 
+    generic map(
+        N_pixel => N_pixel
+    )
+    port map(
         clk => clk,
         rst => rst,
         start => start_edge,
@@ -96,7 +121,11 @@ begin
         py => y,
         area => w1
     );
-    EDGE_AREA_MAP_4 : edge_fill_v2 port map(
+    EDGE_AREA_MAP_4 : edge_fill_v2 
+    generic map(
+        N_pixel => N_pixel
+    )
+    port map(
         clk => clk,
         rst => rst,
         start => start_edge,
@@ -110,7 +139,7 @@ begin
         area => w2
     );
 
-process(all) begin
+process(state, start, done_w0, done_w1, done_w2) begin
     finish <= '0';
         case state is 
             when 1 =>

@@ -1,48 +1,22 @@
-----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
--- 
--- Create Date: 03/23/2025 11:54:07 AM
--- Design Name: 
--- Module Name: minmax - Behavioral
--- Project Name: 
--- Target Devices: 
--- Tool Versions: 
--- Description: 
--- 
--- Dependencies: 
--- 
--- Revision:
--- Revision 0.01 - File Created
--- Additional Comments:
--- 
-----------------------------------------------------------------------------------
-
-
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
--- Uncomment the following library declaration if using
--- arithmetic functions with Signed or Unsigned values
---use IEEE.NUMERIC_STD.ALL;
-
--- Uncomment the following library declaration if instantiating
--- any Xilinx leaf cells in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
 
 entity minmax is
-Port (
+    generic (
+            N_pixel : integer
+    );
+    Port (
     enable : in std_logic; 
-    x1, x2, x3, y1, y2, y3 : in std_logic_vector(7 downto 0);
-    minx, miny, maxx, maxy : out std_logic_vector(7 downto 0)
-);
+    x1, x2, x3, y1, y2, y3 : in std_logic_vector(N_pixel-1 downto 0);
+    minx, miny, maxx, maxy : out std_logic_vector(N_pixel-1 downto 0)
+    );
 end minmax;
 
 architecture Behavioral of minmax is
 
 begin
-    minx_process : process(all) begin
+    minx_process : process(enable) begin
         if enable = '1' then
             if x1 <= x2 then
                 if x1 <= x3 then
@@ -62,7 +36,7 @@ begin
        end if;
     end process;
     
-     miny_process : process(all) begin
+     miny_process : process(enable) begin
         if enable = '1' then
             if y1 <= y2 then
                 if y1 <= y3 then
@@ -82,7 +56,7 @@ begin
        end if;
     end process;
     
-     maxx_process : process(all) begin
+     maxx_process : process(enable) begin
         if enable = '1' then
             if x1 >= x2 then
                 if x1 >= x3 then
@@ -103,7 +77,7 @@ begin
     end process;
     
     
-    maxy_process : process(all) begin
+    maxy_process : process(enable) begin
         if enable = '1' then
             if y1 >= y2 then
                 if y1 >= y3 then

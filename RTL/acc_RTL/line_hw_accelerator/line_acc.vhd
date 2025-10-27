@@ -4,13 +4,16 @@ use IEEE.NUMERIC_STD.ALL;
 
 
 entity line_acc is
+generic(
+    N_pixel : integer
+    );
 Port ( 
     clk, rst, start : in std_logic;
-    x1, x2, y1, y2 : in std_logic_vector(7 downto 0);
+    x1, x2, y1, y2 : in std_logic_vector(N_pixel-1 downto 0);
     color : in std_logic_vector(23 downto 0);
     --z_in : in std_logic; 
     --z_out : out std_logic;
-    pixel_x, pixel_y : out std_logic_vector(7 downto 0);
+    pixel_x, pixel_y : out std_logic_vector(N_pixel-1 downto 0);
     pixel_color : out std_logic_vector(23 downto 0);
     finish, pixel_valid : out std_logic
 );
@@ -19,7 +22,7 @@ end line_acc;
 architecture Behavioral of line_acc is
     type state_type is (IDLE, DRAW, DONE);
     signal state : state_type := IDLE;
-    signal x_temp, y_temp : std_logic_vector(8 downto 0) := (others => '0');
+    signal x_temp, y_temp : std_logic_vector(N_pixel downto 0) := (others => '0');
     
 begin
     --z_out <= z_in;
@@ -46,8 +49,8 @@ begin
                 when IDLE => 
                     finish <= '0';
                     pixel_valid <= '0';
-                    x_temp(7 downto 0) <= x1;
-                    y_temp(7 downto 0) <= y1;
+                    x_temp(N_pixel-1 downto 0) <= x1;
+                    y_temp(N_pixel-1 downto 0) <= y1;
                     if start = '1' then
                         dx := abs(to_integer(unsigned(x2)) - to_integer(unsigned(x1)));
                         dy := abs(to_integer(unsigned(y2)) - to_integer(unsigned(y1)));
@@ -66,8 +69,8 @@ begin
                     finish <= '0';
                     pixel_valid <= '1';
                     if unsigned(x_temp) /= unsigned(x2) or unsigned(y_temp) /= unsigned(y2) then
-                        pixel_x <= x_temp(7 downto 0);
-                        pixel_y <= y_temp(7 downto 0);
+                        pixel_x <= x_temp(N_pixel-1 downto 0);
+                        pixel_y <= y_temp(N_pixel-1 downto 0);
                         e2 := 2*err;
                         if(e2 > (-dy)) then
                             err := err - dy;
