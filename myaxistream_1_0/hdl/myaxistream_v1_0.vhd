@@ -9,8 +9,7 @@ entity myaxistream_v1_0 is
 	port (
         ready_enb : in std_logic;
         instr_valid : out std_logic;
-	    data_1_o : out std_logic_vector(31 downto 0);
-	    data_2_o : out std_logic_vector(31 downto 0);
+	    instr_word : out std_logic_vector(C_S_AXIS_TDATA_WIDTH-1 downto 0);
 		s_axis_aclk	: in std_logic;
 		s_axis_aresetn	: in std_logic;
 		s_axis_tready	: out std_logic;
@@ -29,8 +28,7 @@ architecture arch_imp of myaxistream_v1_0 is
 		port (
 		ready_enb : in std_logic;
 		instr_valid : out std_logic;
-	    data_1_o : out std_logic_vector(31 downto 0);
-	    data_2_o : out std_logic_vector(31 downto 0);
+		instr_word : out std_logic_vector(C_S_AXIS_TDATA_WIDTH-1 downto 0);
 		S_AXIS_ACLK	: in std_logic;
 		S_AXIS_ARESETN	: in std_logic;
 		S_AXIS_TREADY	: out std_logic;
@@ -47,8 +45,7 @@ myaxistream_v1_0_S_AXIS_inst : myaxistream_v1_0_S_AXIS
 		C_S_AXIS_TDATA_WIDTH	=> C_S_AXIS_TDATA_WIDTH
 	)
 	port map (
-        data_1_o => data_1_o,
-        data_2_o => data_2_o,
+		instr_word  => instr_word,
 		S_AXIS_ACLK	=> s_axis_aclk,
 		S_AXIS_ARESETN	=> s_axis_aresetn,
 		S_AXIS_TREADY	=> s_axis_tready,

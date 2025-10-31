@@ -9,8 +9,7 @@ entity myaxistream_v1_0_S_AXIS is
     port (
         ready_enb : in std_logic;
         instr_valid : out std_logic;
-        data_1_o : out std_logic_vector(31 downto 0);
-        data_2_o : out std_logic_vector(31 downto 0);
+        instr_word : out std_logic_vector(C_S_AXIS_TDATA_WIDTH-1 downto 0);
         S_AXIS_ACLK : in std_logic;
         S_AXIS_ARESETN  : in std_logic;
         S_AXIS_TREADY   : out std_logic;
@@ -83,8 +82,7 @@ begin
                if S_AXIS_ARESETN = '0' then
                     tready <= '0';
                     instr_valid <= '0';
-                    data_1_o <= (others => '0');
-                    data_2_o <= (others => '0');
+                    instr_word <= (others => '0');
                 else 
                     case state_t is
                         when WAIT_S =>
@@ -94,8 +92,7 @@ begin
                             tready <= '1';
                             instr_valid <= '1';
                         when TX2_S => 
-                            data_1_o <= S_AXIS_TDATA(31 downto 0);
-                            data_2_o <= S_AXIS_TDATA(63 downto 32);
+                            instr_word <= S_AXIS_TDATA;
                             instr_valid <= '0';
                             tready <= '0';
                         when others => 

@@ -123,12 +123,14 @@ begin
 					finish_swap <= '0';
 					if swap = '1' then
 						swap_state <= 1;
+						fb_swap <= '1';
 					else 
 						swap_state <= 0;
+						fb_swap <= '0';
 					end if;
 				when 1 => --Swap until it's finished
 					finish_swap <= '0';
-					fb_swap <= '1';
+					fb_swap <= '0';
 					if swapped = '1' then
 						swap_state <= 2;
 					else 
