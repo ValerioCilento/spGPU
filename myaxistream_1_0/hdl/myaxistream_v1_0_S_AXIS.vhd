@@ -90,10 +90,10 @@ begin
                             instr_valid <= '0';
                         when TX1_S =>
                             tready <= '1';
-                            instr_valid <= '1';
+                            instr_valid <= '0';
                         when TX2_S => 
                             instr_word <= S_AXIS_TDATA;
-                            instr_valid <= '0';
+                            instr_valid <= '1';
                             tready <= '0';
                         when others => 
                             tready <= '0';
