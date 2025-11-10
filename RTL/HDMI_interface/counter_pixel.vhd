@@ -24,6 +24,7 @@ entity counter_pixel is
         video_active : out std_logic; 
         image_enable : out std_logic;
         h_coord, v_coord : out std_logic_vector(N_pixel-1 downto 0);
+        image_vsync_n : out std_logic;
         h_sync,v_sync : out std_logic
     );
 end counter_pixel;
@@ -42,25 +43,27 @@ begin
         elsif rising_edge(clk) then
                 if acc_h = std_logic_vector(to_unsigned(H_COORDINATE+HF_PORCH+HB_PORCH+HSYNC, N_pixel )) then --800
                     acc_h <= (others => '0');
-                else acc_h <= std_logic_vector(unsigned(acc_h) + 1);
+                else 
+                    acc_h <= std_logic_vector(unsigned(acc_h) + 1);
                 end if;
             end if;
     end process;
+    
     horizontal_timings_proc : process(acc_h) begin
 
-        if (acc_h >= std_logic_vector(to_unsigned(H_COORDINATE+HF_PORCH, N_pixel)) and acc_h <= std_logic_vector(to_unsigned(H_COORDINATE+HF_PORCH+HSYNC, N_pixel ))) then
+        if (acc_h > std_logic_vector(to_unsigned(H_COORDINATE+HF_PORCH, N_pixel)) and acc_h < std_logic_vector(to_unsigned(H_COORDINATE+HF_PORCH+HSYNC, N_pixel ))) then
             h_sync <= '0';
         else 
             h_sync <= '1';
         end if;
         
-        if(acc_h = std_logic_vector(to_unsigned(H_COORDINATE+HF_PORCH+HB_PORCH+HSYNC, N_pixel ))) then
+        if(acc_h = std_logic_vector(to_unsigned(H_COORDINATE+HF_PORCH+HB_PORCH+HSYNC-1, N_pixel ))) then
             en_v <= '1';
         else 
             en_v<= '0';
         end if;
         
-        if(acc_h <= std_logic_vector(to_unsigned(H_COORDINATE, N_pixel) )) then
+        if(acc_h < std_logic_vector(to_unsigned(H_COORDINATE, N_pixel))) then
             dve_h<= '1';         
         else 
             dve_h<= '0';
@@ -97,13 +100,13 @@ begin
     
     vertical_timings_proc : process(acc_v) begin
 
-        if (acc_v >= std_logic_vector(to_unsigned(V_COORDINATE+VF_PORCH, N_pixel) ) and acc_v<= std_logic_vector(to_unsigned(V_COORDINATE+VF_PORCH+VSYNC, N_pixel ))) then
+        if (acc_v > std_logic_vector(to_unsigned(V_COORDINATE+VF_PORCH, N_pixel) ) and acc_v< std_logic_vector(to_unsigned(V_COORDINATE+VF_PORCH+VSYNC, N_pixel ))) then
             v_sync <= '0';
         else 
             v_sync <= '1';
         end if;
         
-        if(acc_v <= std_logic_vector(to_unsigned(V_COORDINATE, N_pixel ))) then
+        if(acc_v < std_logic_vector(to_unsigned(V_COORDINATE, N_pixel ))) then
             dve_v<= '1'; 
         else 
             dve_v<= '0';
@@ -124,6 +127,14 @@ begin
         end if;
     end process;
 
+    image_vsync_proc : process(acc_h, acc_v) 
+    begin
+        if (acc_h > std_logic_vector(to_unsigned(VIDEO_X, N_pixel)) and acc_v > std_logic_vector(to_unsigned(VIDEO_Y, N_pixel))) then
+            image_vsync_n <= '1';
+        else 
+            image_vsync_n <= '0';
+        end if;
+    end process;
     image_enable <= v_en and h_en;
     video_active <= dve_h and dve_v;
 end RTL;

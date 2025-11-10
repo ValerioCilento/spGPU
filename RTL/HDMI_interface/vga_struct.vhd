@@ -22,7 +22,7 @@ Port (
     video_data : in std_logic_vector(23 downto 0);
     image_enable : out std_logic;
     h_coord, v_coord : out std_logic_vector(N_pixel-1 downto 0);
-    v_sync : out std_logic;
+    image_vsync_n : out std_logic;
     clk_n,clk_p : out std_logic;
     data_n,data_p : out std_logic_vector(2 downto 0)
 );
@@ -71,6 +71,7 @@ architecture structural of vga_struct is
         clk,rst : in std_logic;
         video_active : out std_logic;
         image_enable : out std_logic;
+        image_vsync_n : out std_logic;
         h_coord, v_coord : out std_logic_vector(9 downto 0);
         h_sync,v_sync : out std_logic
     );
@@ -99,6 +100,7 @@ begin
         image_enable => image_enable,
         h_sync => h_sync, 
         v_sync => v_sync_s, 
+        image_vsync_n => image_vsync_n,
         h_coord => h_coord, 
         v_coord => v_coord
     );
@@ -120,5 +122,4 @@ begin
         data_n => data_n, 
         data_p => data_p
     );
-    v_sync <= v_sync_s;
 end structural;
