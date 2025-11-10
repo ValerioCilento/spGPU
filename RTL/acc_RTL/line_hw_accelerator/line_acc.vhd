@@ -8,11 +8,11 @@ generic(
     N_pixel : integer
     );
 Port ( 
-    clk, rst, start, full_flag : in std_logic;
+    clk, rst, start : in std_logic;
     x1, x2, y1, y2 : in std_logic_vector(N_pixel-1 downto 0);
     color : in std_logic_vector(23 downto 0);
-    z_in : in std_logic; 
-    z_out : out std_logic;
+    --z_in : in std_logic; 
+    --z_out : out std_logic;
     pixel_x, pixel_y : out std_logic_vector(N_pixel-1 downto 0);
     pixel_color : out std_logic_vector(23 downto 0);
     finish, pixel_valid : out std_logic
@@ -20,12 +20,12 @@ Port (
 end line_acc;
 
 architecture Behavioral of line_acc is
-    type state_type is (IDLE, DRAW, DONE, HALT);
+    type state_type is (IDLE, DRAW, DONE);
     signal state : state_type := IDLE;
     signal x_temp, y_temp : std_logic_vector(N_pixel downto 0) := (others => '0');
     
 begin
-    z_out <= z_in;
+    --z_out <= z_in;
     pixel_color <= color;
     
     process(clk ,rst) 
@@ -83,8 +83,6 @@ begin
                         end if;
                         
                         state <= DRAW;
-                    elsif full_flag = '1' then 
-                        state <= HALT;
                     else 
                         state <= DONE;
                     end if;
@@ -92,12 +90,6 @@ begin
                    finish <= '1';
                    pixel_valid <= '0';
                    state <= IDLE;
-             when HALT => 
-                    if full_flag = '0' then
-                        state <= DRAW;
-                    else 
-                        state <= HALT;
-                    end if;
              when others =>
                     finish <= '0';
                     pixel_valid <= '0'; 

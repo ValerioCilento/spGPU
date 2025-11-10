@@ -7,7 +7,7 @@ use work.spPKG.all;
 entity spPIPE is 
 generic(
 	INSTR_LENGTH : integer   := 64; --#Istruction bits
-	N_opcode : integer       := 8; --#Opcode bits
+	N_opcode : integer       := 4; --#Opcode bits
 	N_color : integer        := 24; --#RGB bits
 	N_pixel : integer        := 8; --#Pixel coordinates bits
 	N_Accelerators : integer := 6 --#Accelerators
@@ -47,7 +47,7 @@ begin
 	instr  <= instr_word when instr_req_int = '1' else (others => '0');
 	fetch_proc : process(clk, rst)
 	begin 
-		if rst = '1' then
+		if rst = '0' then
 			instr_req_int <= '0';
 			state <= normal;
 		elsif rising_edge(clk) then
@@ -172,6 +172,7 @@ begin
 								x3             <= (others => '0');
 								y3             <= (others => '0');
 								state 		   <= drawing;	
+								color_int      <= instr((N_color+N_opcode)-1 downto N_opcode);
 								acc_busy_vec   <= "000000";
 								acc_enable_vec <= "000000";
 							when others => 

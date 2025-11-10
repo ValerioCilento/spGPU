@@ -7,19 +7,17 @@ use work.spPKG.all;
 entity spCORE is 
 generic (
 	INSTR_LENGTH : integer   := 64; --#Istruction bits
-	N_opcode : integer       := 8; --#Opcode bits
+	N_opcode : integer       := 4; --#Opcode bits
 	N_color : integer        := 24; --#RGB bits
-	N_pixel : integer        := 8; --#Pixel coordinates bits
+	N_pixel : integer        := 10; --#Pixel coordinates bits
 	N_Accelerators : integer := 6 --#Accelerators
 );
 Port(
 	clk, rst : in std_logic;
-	full_flag 				: in std_logic; -- From Memory
 	instr_valid 			: in std_logic;
 	instr_word      		: in std_logic_vector(INSTR_LENGTH-1 downto 0);
 	core_halt               : in std_logic;
 	swapped					: in std_logic;
-	empty_flag				: in std_logic;
 	instr_req   			: out std_logic;
 	fb_swap 				: out std_logic;
 	pixel_valid_o           : out std_logic;
@@ -66,7 +64,6 @@ architecture STRUCTURAL of spCORE is
 		);
 		port(
 			clk, rst 				: in std_logic;
-			full_flag 				: in std_logic; -- From Memory
 			--core_halt               : in std_logic;
 			dec_inst_i              : in instr_isa;
 			instr_i                 : in std_logic_vector(INSTR_LENGTH-1 downto 0);
@@ -76,7 +73,6 @@ architecture STRUCTURAL of spCORE is
 			acc_busy_vec            : in std_logic_vector(N_Accelerators-1 downto 0);
 			swap 					: in std_logic;
 			swapped                 : in std_logic;
-			empty_flag				: in std_logic;
 			finish_exec	    		: out std_logic;
 			pixel_valid_o           : out std_logic;
 			fb_swap 				: out std_logic;
@@ -134,7 +130,6 @@ begin
 	port map(
 		clk 			=> clk,
 		rst 			=> rst,
-		full_flag       => full_flag,
 		dec_inst_i      => dec_instr_wire,
 		instr_i			=> instr_wire,
 		swap 			=> swap_wire,
@@ -146,7 +141,6 @@ begin
 		y3 				=> y3_wire,
 		color 			=> color_wire,
 		swapped 		=> swapped,
-		empty_flag      => empty_flag,
 		acc_enable_vec 	=> acc_enable_wire,
 		acc_busy_vec    => acc_busy_wire,
 		finish_exec 	=> finish_exec_wire,

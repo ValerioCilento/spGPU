@@ -14,7 +14,6 @@ generic(
 );
 port(
 	clk, rst 				: in std_logic;
-	full_flag 				: in std_logic;
 	--core_halt               : in std_logic;
 	dec_inst_i              : in instr_isa;
 	instr_i                 : in std_logic_vector(INSTR_LENGTH-1 downto 0);
@@ -24,7 +23,6 @@ port(
 	acc_busy_vec            : in std_logic_vector(N_Accelerators-1 downto 0);
 	swap 					: in std_logic;
 	swapped                 : in std_logic;
-	empty_flag				: in std_logic;
 	finish_exec	    		: out std_logic;
 	pixel_valid_o           : out std_logic;
 	fb_swap 				: out std_logic;
@@ -42,17 +40,16 @@ architecture RTL of spEXEC is
 	signal pixel_color_wire : color_array;
 	signal pixel_valid_wire : valid_array;
 	signal finish_swap : std_logic;
-	signal z : std_logic;
 	component LINE_ACC is --Line accelerator
 		generic(
 		    N_pixel : integer
 		);
 		Port ( 
-		    clk, rst, start, full_flag : in std_logic;
+		    clk, rst, start : in std_logic;
 		    x1, x2, y1, y2 : in std_logic_vector(N_pixel-1 downto 0);
 		    color : in std_logic_vector(23 downto 0);
-		    z_in : in std_logic; 
-		    z_out : out std_logic;
+		    --z_in : in std_logic; 
+		    --z_out : out std_logic;
 		    pixel_x, pixel_y : out std_logic_vector(N_pixel-1 downto 0);
 		    pixel_color : out std_logic_vector(23 downto 0);
 		    finish, pixel_valid : out std_logic
@@ -107,6 +104,7 @@ architecture RTL of spEXEC is
 	    finish : out std_logic
 	);
 	end component;
+	signal resetn : std_logic;
 begin
 	acc_finish_vec(2) <= '0';
 	acc_finish_vec(0) <= '0';
@@ -115,15 +113,11 @@ begin
 
 	finish_exec <= acc_finish_vec(1) or acc_finish_vec(3) or acc_finish_vec(4) or acc_finish_vec(5) or finish_swap;
 	pixel_valid_o <= pixel_valid_wire(0) or pixel_valid_wire(1) or pixel_valid_wire(2) or pixel_valid_wire(3) or pixel_valid_wire(4) or pixel_valid_wire(5);
+	resetn <= not rst;
 
-
-	swap_instr : process(clk, rst) 
+	swap_instr : process(clk) 
 	begin
-		if rst = '1' then
-			finish_swap <= '0';
-			swap_state <= 0;
-			fb_swap <= '0';
-		elsif rising_edge(clk) then
+		if rising_edge(clk) then
 			case swap_state is 
 				when 0 =>  --Waiting SWAP Instrunction
 					finish_swap <= '0';
@@ -147,14 +141,14 @@ begin
 					fb_swap <= '0';
 					swap_state <= 0;
 				when others => 
-					finish_swap <= '0';
+					finish_swap <= '1';
 					fb_swap <= '0';
 					swap_state <= 0;
 			end case;
 		end if;
 	end process;
 	
-	pixel_out_proc : process(acc_busy_vec, pixel_wire_x, pixel_wire_y, pixel_color_wire)
+	pixel_out_proc : process(acc_busy_vec, pixel_wire_x, pixel_wire_y)
 	begin
 		case acc_busy_vec is
 			when "000010" => --Line
@@ -186,15 +180,12 @@ begin
 	)
 	port map(
 		clk   		=> clk,
-		rst   		=> rst,
-		full_flag   => full_flag,
+		rst   		=> resetn,
 		start 		=> acc_enable_vec(1),
 		x1    		=> x1,
 		y1   		=> y1,
 		x2          => x2,
 		y2          => y2,
-		z_in        => '0',
-		z_out       => z,
 		color       => color,
 		pixel_x     => pixel_wire_x(1),
 		pixel_y     => pixel_wire_y(1),
@@ -209,7 +200,7 @@ begin
 	)
 	port map(
 		clk   		=> clk,
-		rst   		=> rst,
+		rst   		=> resetn,
 		start 		=> acc_enable_vec(3),
 		x1    		=> x1,
 		y1   		=> y1,
@@ -231,7 +222,7 @@ begin
 	)
 	port map(
 		clk   		=> clk,
-		rst   		=> rst,
+		rst   		=> resetn,
 		start 		=> acc_enable_vec(4),
 		xc    		=> x1,
 		yc   		=> y1,
@@ -250,7 +241,7 @@ begin
 	)
 	port map(
 		clk   		=> clk,
-		rst   		=> rst,
+		rst   		=> resetn,
 		start 		=> acc_enable_vec(5),
 		xc    		=> x1,
 		yc   		=> y1,
