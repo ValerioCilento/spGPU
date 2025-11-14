@@ -125,7 +125,7 @@ begin
 				when 2 => --Reset the buffer
 					write_enb <= '1';	
 					normal <= '0';
-					if unsigned(clear_cnt) = to_unsigned(FB_SIZE-1,17) then
+					if unsigned(clear_cnt) = to_unsigned(FB_SIZE,17) then
 						state <= 0;
 						swapped <= '1';
 						swap_req <= '0';

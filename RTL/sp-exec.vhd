@@ -109,11 +109,9 @@ architecture RTL of spEXEC is
 	end component;
 begin
 	acc_finish_vec(2) <= '0';
-	acc_finish_vec(0) <= '0';
-	pixel_valid_wire(0) <= '0';
 	pixel_valid_wire(2) <= '0';
 
-	finish_exec <= acc_finish_vec(1) or acc_finish_vec(3) or acc_finish_vec(4) or acc_finish_vec(5) or finish_swap;
+	finish_exec <= acc_finish_vec(0) or acc_finish_vec(1) or acc_finish_vec(2) or  acc_finish_vec(3) or acc_finish_vec(4) or acc_finish_vec(5) or finish_swap;
 	pixel_valid_o <= pixel_valid_wire(0) or pixel_valid_wire(1) or pixel_valid_wire(2) or pixel_valid_wire(3) or pixel_valid_wire(4) or pixel_valid_wire(5);
 
 
@@ -157,6 +155,10 @@ begin
 	pixel_out_proc : process(acc_busy_vec, pixel_wire_x, pixel_wire_y, pixel_color_wire)
 	begin
 		case acc_busy_vec is
+			when "000001" => --Pixel
+				pixel_x_o <= pixel_wire_x(0);
+				pixel_y_o <= pixel_wire_y(0);
+				pixel_color_o <= pixel_color_wire(0);
 			when "000010" => --Line
 				pixel_x_o <= pixel_wire_x(1);
 				pixel_y_o <= pixel_wire_y(1);
@@ -262,6 +264,29 @@ begin
 		pixel_color => pixel_color_wire(5),
 		finish 		=> acc_finish_vec(5)
 	);
-
+	DrawPixel_proc : process(rst, clk)
+	begin 
+		if rst = '1' then
+			pixel_valid_wire(0) <= '0';
+			acc_finish_vec(0) <= '0';
+			pixel_wire_x(0) <= (others => '0');
+			pixel_wire_y(0) <= (others => '0');;
+			pixel_color_wire(0) <= (others => '0');
+		elsif rising_edge(clk) then
+			if acc_enable_vec(0) = '1' then
+				pixel_wire_x(0) <= x1;
+				pixel_wire_y(0) <= y1;
+				pixel_color_wire(0) <= color;
+				pixel_valid_wire(0) <= '1';
+				acc_finish_vec(0) <= '1';
+			else 
+				pixel_valid_wire(0) <= '0';
+				acc_finish_vec(0) <= '0';
+				pixel_wire_x(0) <= (others => '0');
+				pixel_wire_y(0) <= (others => '0');;
+				pixel_color_wire(0) <= (others => '0');
+			end if;
+		end if;
+	end process;
 end RTL;
 
