@@ -37,7 +37,7 @@ begin
 
 	full_int  <= '1' when fifo_cnt = FIFO_DEPTH else '0';
 	empty_int <= '1' when fifo_cnt = 0 else '0';
-	valid_int <= '1' when fifo_rd_en = '1' and empty_int = '0' else '0';
+	valid_int <= '1' when fifo_rd_en = '1' else '0';
 
 	fifo_full  <= full_int;
 	fifo_empty <= empty_int;
@@ -45,7 +45,7 @@ begin
 
 	fifo_rd_data <= fifo(rd_index);
 
-	process(clk, rst) is
+	process(clk, rst)
 	begin
 		if rst = '0' then
 			fifo     <= (others => (others => '0'));
@@ -60,7 +60,9 @@ begin
 					wr_index <= wr_index + 1;
 				end if;
 				fifo(wr_index) <= fifo_wr_data;
-				fifo_cnt <= fifo_cnt + 1;
+				if fifo_wr_en = '1' and fifo_rd_en = '0' then
+					fifo_cnt <= fifo_cnt + 1;
+				end if;
 			end if;
 
 			if fifo_rd_en = '1' and empty_int = '0' then
@@ -69,7 +71,9 @@ begin
 				else
 					rd_index <= rd_index + 1;
 				end if;
-				fifo_cnt <= fifo_cnt - 1;
+				if fifo_wr_en = '0' and fifo_rd_en = '1' then
+					fifo_cnt <= fifo_cnt - 1;
+				end if;
 			end if;
 		end if;
 	end process;

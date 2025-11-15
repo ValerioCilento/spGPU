@@ -7,7 +7,7 @@ package spPKG is
 	constant INSTR_LENGTH : integer   := 64; --#Istruction bits
 	constant N_opcode : integer       := 8; --#Opcode bits
 	constant N_color : integer        := 24; --#RGB bits
-	constant N_pixel : integer        := 10; --#Pixel coordinates bits
+	constant N_pixel : integer        := 8; --#Pixel coordinates bits
 	constant N_Accelerators : integer := 8; --#Accelerators
 	constant FIFO_DEPTH : integer := 12; --#Fifo available instruction locations
 
