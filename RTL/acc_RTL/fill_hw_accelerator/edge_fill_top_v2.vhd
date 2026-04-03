@@ -13,8 +13,8 @@ Port (
     x1, y1, x2, y2, x3, y3 : in std_logic_vector(N_pixel-1 downto 0);
     clk, rst, start : in std_logic;
     finish : out std_logic;
-    color : in std_logic_vector(23 downto 0);
-    pixel_color : out std_logic_vector(23 downto 0);
+    color : in std_logic_vector(14 downto 0);
+    pixel_color : out std_logic_vector(14 downto 0);
     pixel_valid : out std_logic;
     pixel_x, pixel_y : out std_logic_vector(N_pixel-1 downto 0)
 );

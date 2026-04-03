@@ -3,26 +3,28 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity vga_struct is
 generic(
-        VIDEO_X : integer := 256;
-        VIDEO_Y : integer := 192;
-        H_COORDINATE : integer := 640;
-        V_COORDINATE : integer := 480;
-        N_pixel      : integer := 10;
-        HF_PORCH      : integer := 16;
-        HB_PORCH      : integer := 48;
-        VF_PORCH      : integer := 11;
-        VB_PORCH      : integer := 31;
-        HSYNC         : integer := 96;
-        VSYNC         : integer := 2
+        VIDEO_X : integer := 320;--256;
+        VIDEO_Y : integer := 240;--192;
+        H_COORDINATE : integer := 640; --640;
+        V_COORDINATE : integer := 480;--480;
+        N_pixel      : integer := 10;--10;
+        VIDEO_pixel  : integer := 9;--8;
+        HF_PORCH      : integer := 16;--16;
+        HB_PORCH      : integer := 48;--48;
+        VF_PORCH      : integer := 10;--11;
+        VB_PORCH      : integer := 33;--31;
+        HSYNC         : integer := 96;--96;
+        VSYNC         : integer := 2--2
     );
 Port ( 
     rst : in std_logic;
     pixelclock : in std_logic;  -- slow pixel clock 1x
     serialclock : in std_logic; -- fast serial clock 5x
-    video_data : in std_logic_vector(23 downto 0);
+    video_data : in std_logic_vector(14 downto 0);
     image_enable : out std_logic;
-    h_coord, v_coord : out std_logic_vector(N_pixel-1 downto 0);
-    image_vsync_n : out std_logic;
+    h_coord, v_coord : out std_logic_vector(VIDEO_pixel-1 downto 0);
+    v_sync : out std_logic;
+    image_vsync : out std_logic;
     clk_n,clk_p : out std_logic;
     data_n,data_p : out std_logic_vector(2 downto 0)
 );
@@ -60,6 +62,7 @@ architecture structural of vga_struct is
         H_COORDINATE : integer;
         V_COORDINATE : integer;
         N_pixel      : integer;
+        VIDEO_pixel  : integer;
         HF_PORCH      : integer;
         HB_PORCH      : integer;
         VF_PORCH      : integer;
@@ -69,16 +72,22 @@ architecture structural of vga_struct is
     );
     port(
         clk,rst : in std_logic;
-        video_active : out std_logic;
+        video_active : out std_logic; 
         image_enable : out std_logic;
+        h_coord, v_coord : out std_logic_vector(VIDEO_pixel-1 downto 0);
         image_vsync_n : out std_logic;
-        h_coord, v_coord : out std_logic_vector(9 downto 0);
         h_sync,v_sync : out std_logic
     );
     end component;
     
     signal video_active,h_sync,v_sync_s : std_logic;
+    signal video_data_int : std_logic_vector(23 downto 0);
+    signal rst_sync : std_logic;
 begin
+
+   video_data_int <= video_data(14 downto 10) & video_data(14 downto 12) & -- Rosso
+                  video_data(9 downto 5)   & video_data(9 downto 7)   & -- Verde
+                  video_data(4 downto 0)   & video_data(4 downto 2);    -- Blu
     vga : counter_pixel 
     generic map(
         VIDEO_X     => VIDEO_X,
@@ -86,6 +95,7 @@ begin
         H_COORDINATE => H_COORDINATE,
         V_COORDINATE => V_COORDINATE,
         N_pixel      => N_pixel,
+        VIDEO_pixel => VIDEO_pixel,
         HF_PORCH     => HF_PORCH,
         HB_PORCH     => HB_PORCH,
         VF_PORCH     => VF_PORCH,
@@ -95,12 +105,12 @@ begin
     )
     port map(
         clk => pixelclock, 
-        rst => rst, 
+        rst => rst_sync, 
         video_active => video_active,
         image_enable => image_enable,
         h_sync => h_sync, 
+        image_vsync_n => image_vsync,
         v_sync => v_sync_s, 
-        image_vsync_n => image_vsync_n,
         h_coord => h_coord, 
         v_coord => v_coord
     );
@@ -110,10 +120,10 @@ begin
         SERIES6 => false
     ) 
     port map(
-        rst => rst, 
+        rst => rst_sync, 
         pixelclock => pixelclock, 
         serialclock => serialclock, 
-        video_data => video_data, 
+        video_data => video_data_int, 
         video_active => video_active, 
         hsync => h_sync, 
         vsync => v_sync_s, 
@@ -122,4 +132,5 @@ begin
         data_n => data_n, 
         data_p => data_p
     );
+    v_sync <= v_sync_s;
 end structural;

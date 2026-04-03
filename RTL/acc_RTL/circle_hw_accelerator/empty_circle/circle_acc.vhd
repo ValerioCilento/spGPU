@@ -9,12 +9,12 @@ generic(
 Port ( 
     clk, rst, start : in std_logic;
     xc, yc, r: in std_logic_vector(N_pixel-1 downto 0);
-    color : in std_logic_vector(23 downto 0);
+    color : in std_logic_vector(14 downto 0);
     --z_in : in std_logic; 
     --z_out : out std_logic;
     pixel_x, pixel_y : out std_logic_vector(N_pixel-1 downto 0);
     pixel_valid : out std_logic;
-    pixel_color : out std_logic_vector(23 downto 0);
+    pixel_color : out std_logic_vector(14 downto 0);
     finish : out std_logic
 );
 end entity circle_acc;

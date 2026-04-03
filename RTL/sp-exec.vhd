@@ -7,14 +7,13 @@ use work.spPKG.all;
 entity spEXEC is
 generic(
 	INSTR_LENGTH : integer   := 64; --#Istruction bits
-	N_opcode : integer       := 4; --#Opcode bits
-	N_color : integer        := 24; --#RGB bits
+	N_opcode : integer       := 8; --#Opcode bits
+	N_color : integer        := 15; --#RGB bits
 	N_pixel : integer        := 8; --#Pixel coordinates bits
 	N_Accelerators : integer := 6 --#Accelerators
 );
 port(
 	clk, rst 				: in std_logic;
-	full_flag 				: in std_logic;
 	--core_halt               : in std_logic;
 	dec_inst_i              : in instr_isa;
 	instr_i                 : in std_logic_vector(INSTR_LENGTH-1 downto 0);
@@ -24,7 +23,6 @@ port(
 	acc_busy_vec            : in std_logic_vector(N_Accelerators-1 downto 0);
 	swap 					: in std_logic;
 	swapped                 : in std_logic;
-	empty_flag				: in std_logic;
 	finish_exec	    		: out std_logic;
 	pixel_valid_o           : out std_logic;
 	fb_swap 				: out std_logic;
@@ -48,13 +46,13 @@ architecture RTL of spEXEC is
 		    N_pixel : integer
 		);
 		Port ( 
-		    clk, rst, start, full_flag : in std_logic;
+		    clk, rst, start : in std_logic;
 		    x1, x2, y1, y2 : in std_logic_vector(N_pixel-1 downto 0);
-		    color : in std_logic_vector(23 downto 0);
+		    color : in std_logic_vector(14 downto 0);
 		    z_in : in std_logic; 
 		    z_out : out std_logic;
 		    pixel_x, pixel_y : out std_logic_vector(N_pixel-1 downto 0);
-		    pixel_color : out std_logic_vector(23 downto 0);
+		    pixel_color : out std_logic_vector(14 downto 0);
 		    finish, pixel_valid : out std_logic
 		);
 	end component;
@@ -67,8 +65,8 @@ architecture RTL of spEXEC is
 	    x1, y1, x2, y2, x3, y3 : in std_logic_vector(N_pixel-1 downto 0);
 	    clk, rst, start : in std_logic;
 	    finish : out std_logic;
-	    color : in std_logic_vector(23 downto 0);
-	    pixel_color : out std_logic_vector(23 downto 0);
+	    color : in std_logic_vector(14 downto 0);
+	    pixel_color : out std_logic_vector(14 downto 0);
 	    pixel_valid : out std_logic;
 	    pixel_x, pixel_y : out std_logic_vector(N_pixel-1 downto 0)
 	);
@@ -81,12 +79,12 @@ architecture RTL of spEXEC is
 	Port ( 
 	    clk, rst, start : in std_logic;
 	    xc, yc, r: in std_logic_vector(N_pixel-1 downto 0);
-	    color : in std_logic_vector(23 downto 0);
+	    color : in std_logic_vector(14 downto 0);
 	    --z_in : in std_logic; 
 	    --z_out : out std_logic;
 	    pixel_valid : out std_logic;
 	    pixel_x, pixel_y : out std_logic_vector(N_pixel-1 downto 0);
-	    pixel_color : out std_logic_vector(23 downto 0);
+	    pixel_color : out std_logic_vector(14 downto 0);
 	    finish : out std_logic
 	);
 	end component;
@@ -98,11 +96,11 @@ architecture RTL of spEXEC is
 	Port ( 
 	    clk, rst, start : in std_logic;
 	    xc, yc, r: in std_logic_vector(N_pixel-1 downto 0);
-	    color : in std_logic_vector(23 downto 0);
+	    color : in std_logic_vector(14 downto 0);
 	    --z_in : in std_logic; 
 	    --z_out : out std_logic;
 	    pixel_x, pixel_y : out std_logic_vector(N_pixel-1 downto 0);
-	    pixel_color : out std_logic_vector(23 downto 0);
+	    pixel_color : out std_logic_vector(14 downto 0);
 	    pixel_valid : out std_logic;
 	    finish : out std_logic
 	);
@@ -125,22 +123,24 @@ begin
 			case swap_state is 
 				when 0 =>  --Waiting SWAP Instrunction
 					finish_swap <= '0';
+					fb_swap <= '0';
 					if swap = '1' then
 						swap_state <= 1;
-						fb_swap <= '1';
 					else 
 						swap_state <= 0;
-						fb_swap <= '0';
 					end if;
-				when 1 => --Swap until it's finished
+				when 1 => 
+					fb_swap <= '1';
+					swap_state <= 2;
+				when 2 => --Swap until it's finished
 					finish_swap <= '0';
 					fb_swap <= '0';
 					if swapped = '1' then
-						swap_state <= 2;
+						swap_state <= 3;
 					else 
-						swap_state <= 1;
+						swap_state <= 2;
 					end if;
-				when 2 => --Swap finished
+				when 3 => --Swap finished
 					finish_swap <= '1';
 					fb_swap <= '0';
 					swap_state <= 0;
@@ -189,7 +189,6 @@ begin
 	port map(
 		clk   		=> clk,
 		rst   		=> rst,
-		full_flag   => full_flag,
 		start 		=> acc_enable_vec(1),
 		x1    		=> x1,
 		y1   		=> y1,
@@ -270,7 +269,7 @@ begin
 			pixel_valid_wire(0) <= '0';
 			acc_finish_vec(0) <= '0';
 			pixel_wire_x(0) <= (others => '0');
-			pixel_wire_y(0) <= (others => '0');;
+			pixel_wire_y(0) <= (others => '0');
 			pixel_color_wire(0) <= (others => '0');
 		elsif rising_edge(clk) then
 			if acc_enable_vec(0) = '1' then
@@ -283,7 +282,7 @@ begin
 				pixel_valid_wire(0) <= '0';
 				acc_finish_vec(0) <= '0';
 				pixel_wire_x(0) <= (others => '0');
-				pixel_wire_y(0) <= (others => '0');;
+				pixel_wire_y(0) <= (others => '0');
 				pixel_color_wire(0) <= (others => '0');
 			end if;
 		end if;

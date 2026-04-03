@@ -12,6 +12,7 @@ entity counter_pixel is
         H_COORDINATE : integer;
         V_COORDINATE : integer;
         N_pixel      : integer;
+        VIDEO_pixel  : integer;
         HF_PORCH      : integer;
         HB_PORCH      : integer;
         VF_PORCH      : integer;
@@ -23,7 +24,7 @@ entity counter_pixel is
         clk,rst : in std_logic;
         video_active : out std_logic; 
         image_enable : out std_logic;
-        h_coord, v_coord : out std_logic_vector(N_pixel-1 downto 0);
+        h_coord, v_coord : out std_logic_vector(VIDEO_pixel-1 downto 0);
         image_vsync_n : out std_logic;
         h_sync,v_sync : out std_logic
     );
@@ -41,7 +42,7 @@ begin
         if rst = '1' then
             acc_h <= (others => '0');
         elsif rising_edge(clk) then
-                if acc_h = std_logic_vector(to_unsigned(H_COORDINATE+HF_PORCH+HB_PORCH+HSYNC, N_pixel )) then --800
+                if acc_h = std_logic_vector(to_unsigned(H_COORDINATE+HF_PORCH+HB_PORCH+HSYNC-1, N_pixel )) then --800
                     acc_h <= (others => '0');
                 else 
                     acc_h <= std_logic_vector(unsigned(acc_h) + 1);
@@ -51,7 +52,7 @@ begin
     
     horizontal_timings_proc : process(acc_h) begin
 
-        if (acc_h > std_logic_vector(to_unsigned(H_COORDINATE+HF_PORCH, N_pixel)) and acc_h < std_logic_vector(to_unsigned(H_COORDINATE+HF_PORCH+HSYNC, N_pixel ))) then
+        if (acc_h >= std_logic_vector(to_unsigned(H_COORDINATE+HF_PORCH, N_pixel)) and acc_h < std_logic_vector(to_unsigned(H_COORDINATE+HF_PORCH+HSYNC, N_pixel ))) then
             h_sync <= '0';
         else 
             h_sync <= '1';
@@ -69,15 +70,9 @@ begin
             dve_h<= '0';
         end if;
 
-        if acc_h < std_logic_vector(to_unsigned(VIDEO_X, N_pixel)) then --H_CORD = 256 
+        if acc_h < std_logic_vector(to_unsigned(320, N_pixel)) then --H_CORD = 256 
             h_en <= '1';   
-            h_coord <= std_logic_vector(unsigned(acc_h) + 1);     
-        elsif acc_h = std_logic_vector(to_unsigned(VIDEO_X, N_pixel)) then  --Bordo schermo max
-            h_en <= '1';   
-            h_coord <= (others => '0');
-        elsif acc_h = std_logic_vector(to_unsigned(H_COORDINATE+HF_PORCH+HB_PORCH+HSYNC, N_pixel)) then
-            h_en <= '1';   
-            h_coord <= (others => '0');
+            h_coord <= std_logic_vector(resize((unsigned(acc_h)), VIDEO_pixel));     
         else 
             h_coord <= (others => '0');
             h_en <= '0';
@@ -89,7 +84,7 @@ begin
             acc_v <= (others => '0');
         elsif rising_edge(clk) then
             if en_v = '1' then
-                if acc_v = std_logic_vector(to_unsigned(V_COORDINATE+VF_PORCH+VB_PORCH+VSYNC, N_pixel)) then
+                if acc_v = std_logic_vector(to_unsigned(V_COORDINATE+VF_PORCH+VB_PORCH+VSYNC-1, N_pixel)) then
                     acc_v <= (others => '0');
                 else 
                     acc_v <= std_logic_vector(unsigned(acc_v) + 1);
@@ -100,7 +95,7 @@ begin
     
     vertical_timings_proc : process(acc_v) begin
 
-        if (acc_v > std_logic_vector(to_unsigned(V_COORDINATE+VF_PORCH, N_pixel) ) and acc_v< std_logic_vector(to_unsigned(V_COORDINATE+VF_PORCH+VSYNC, N_pixel ))) then
+        if (acc_v >= std_logic_vector(to_unsigned(V_COORDINATE+VF_PORCH, N_pixel) ) and acc_v < std_logic_vector(to_unsigned(V_COORDINATE+VF_PORCH+VSYNC, N_pixel ))) then
             v_sync <= '0';
         else 
             v_sync <= '1';
@@ -112,15 +107,9 @@ begin
             dve_v<= '0';
         end if;
         
-        if acc_v < std_logic_vector(to_unsigned(VIDEO_Y, N_pixel)) then --H_CORD = 256 
+        if acc_v < std_logic_vector(to_unsigned(240, N_pixel)) then --H_CORD = 256 
             v_en <= '1';   
-            v_coord <= std_logic_vector(unsigned(acc_v) + 1);     
-        elsif acc_v = std_logic_vector(to_unsigned(VIDEO_Y, N_pixel)) then  --Bordo schermo max
-            v_en <= '1';   
-            v_coord <= (others => '0');
-        elsif acc_v = std_logic_vector(to_unsigned(V_COORDINATE+VF_PORCH+VB_PORCH+VSYNC, N_pixel)) then
-            v_en <= '1';   
-            v_coord <= (others => '0');
+            v_coord <= std_logic_vector(resize((unsigned(acc_v)), VIDEO_pixel));     
         else 
             v_coord <= (others => '0');
             v_en <= '0';
@@ -129,10 +118,10 @@ begin
 
     image_vsync_proc : process(acc_h, acc_v) 
     begin
-        if (acc_h > std_logic_vector(to_unsigned(VIDEO_X, N_pixel)) and acc_v > std_logic_vector(to_unsigned(VIDEO_Y, N_pixel))) then
-            image_vsync_n <= '1';
-        else 
+        if (acc_h >= std_logic_vector(to_unsigned(320, N_pixel)) or acc_v >= std_logic_vector(to_unsigned(240, N_pixel))) then
             image_vsync_n <= '0';
+        else 
+            image_vsync_n <= '1';
         end if;
     end process;
     image_enable <= v_en and h_en;
