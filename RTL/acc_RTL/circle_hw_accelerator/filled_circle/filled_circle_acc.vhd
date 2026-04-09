@@ -46,11 +46,11 @@ begin
             case state is
                 when IDLE =>
                     pixel_valid <= '0';
+                    finish <= '0';
                     if start = '1' then
                         x <= (others => '0');
                         y <= r;
                         d <= 3 - (2 * to_integer(unsigned(r)));
-                        finish <= '0';
                         state <= SETCHECK;
                     else
                         state <= IDLE;
