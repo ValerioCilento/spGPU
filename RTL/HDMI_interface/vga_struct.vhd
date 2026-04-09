@@ -3,8 +3,8 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity vga_struct is
 generic(
-        VIDEO_X : integer := 320;--256;
-        VIDEO_Y : integer := 240;--192;
+        VIDEO_X : integer := 640;--256;
+        VIDEO_Y : integer := 480;--192;
         H_COORDINATE : integer := 640; --640;
         V_COORDINATE : integer := 480;--480;
         N_pixel      : integer := 10;--10;
@@ -21,10 +21,10 @@ Port (
     pixelclock : in std_logic;  -- slow pixel clock 1x
     serialclock : in std_logic; -- fast serial clock 5x
     video_data : in std_logic_vector(14 downto 0);
-    image_enable : out std_logic;
+    --image_enable : out std_logic;
     h_coord, v_coord : out std_logic_vector(VIDEO_pixel-1 downto 0);
     v_sync : out std_logic;
-    image_vsync : out std_logic;
+    --image_vsync : out std_logic;
     clk_n,clk_p : out std_logic;
     data_n,data_p : out std_logic_vector(2 downto 0)
 );
@@ -73,21 +73,24 @@ architecture structural of vga_struct is
     port(
         clk,rst : in std_logic;
         video_active : out std_logic; 
-        image_enable : out std_logic;
-        h_coord, v_coord : out std_logic_vector(VIDEO_pixel-1 downto 0);
-        image_vsync_n : out std_logic;
+        --image_enable : out std_logic;
+        h_coord, v_coord : out std_logic_vector(9 downto 0);
+        --image_vsync_n : out std_logic;
         h_sync,v_sync : out std_logic
     );
     end component;
-    
+
+
     signal video_active,h_sync,v_sync_s : std_logic;
     signal video_data_int : std_logic_vector(23 downto 0);
-    signal rst_sync : std_logic;
+    signal h_coord_int, v_coord_int : std_logic_vector(9 downto 0);
 begin
 
    video_data_int <= video_data(14 downto 10) & video_data(14 downto 12) & -- Rosso
                   video_data(9 downto 5)   & video_data(9 downto 7)   & -- Verde
                   video_data(4 downto 0)   & video_data(4 downto 2);    -- Blu
+  h_coord <= h_coord_int(9 downto 1);
+  v_coord <= v_coord_int(9 downto 1);
     vga : counter_pixel 
     generic map(
         VIDEO_X     => VIDEO_X,
@@ -105,22 +108,21 @@ begin
     )
     port map(
         clk => pixelclock, 
-        rst => rst_sync, 
+        rst => rst, 
         video_active => video_active,
-        image_enable => image_enable,
+        --image_enable => image_enable,
         h_sync => h_sync, 
-        image_vsync_n => image_vsync,
         v_sync => v_sync_s, 
-        h_coord => h_coord, 
-        v_coord => v_coord
+        h_coord => h_coord_int, 
+        v_coord => v_coord_int
     );
-
+    
     hdmi : rgb2tmds 
     generic map(
         SERIES6 => false
     ) 
     port map(
-        rst => rst_sync, 
+        rst => rst, 
         pixelclock => pixelclock, 
         serialclock => serialclock, 
         video_data => video_data_int, 

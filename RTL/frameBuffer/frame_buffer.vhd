@@ -11,13 +11,11 @@ entity frame_buffer is
     Port (
         clock_w, clock_r, rst : in std_logic;
         fb_swap      : in std_logic;
-        image_enable : in std_logic;
         enb          : in std_logic;
         v_sync       : in std_logic;
         swapped      : out std_logic;
         x_w, y_w     : in std_logic_vector(N_PIXEL-1 downto 0);
         x_r, y_r     : in std_logic_vector(N_PIXEL-1 downto 0);
-        --addr_R : in std_logic_vector(17 downto 0);
         data_w       : in std_logic_vector(14 downto 0);
         data_r       : out std_logic_vector(14 downto 0)
      );
@@ -32,7 +30,6 @@ architecture Behavioral of frame_buffer is
     signal current_fb : std_logic := '0';
     signal normal : std_logic;
     
-    -- MODIFICATO: Tutti i bus degli indirizzi portati a 18 bit (17 downto 0)
     signal clear_cnt : std_logic_vector(17 downto 0);
     signal addr_clear : std_logic_vector(17 downto 0);
     signal offset_w, offset_r : std_logic_vector(17 downto 0);
@@ -41,39 +38,13 @@ architecture Behavioral of frame_buffer is
     signal write_addr : std_logic_vector(17 downto 0);
     signal write_data : std_logic_vector(14 downto 0);
     signal write_enb : std_logic;
-    
-    -- Registri di Pipeline
-    signal write_addr_reg : std_logic_vector(17 downto 0);
-    signal write_data_reg : std_logic_vector(14 downto 0);
-    signal write_enb_reg  : std_logic := '0';
+
     
     signal ram_data_out : std_logic_vector(14 downto 0);
 
-    -- ==========================================
-    -- SEGNALI PER I SINCRONIZZATORI CDC
-    -- ==========================================
-    signal v_sync_meta, v_sync_sync : std_logic := '0';
-    signal current_fb_meta, current_fb_sync : std_logic := '0';
 
 begin
-    -- ==========================================
-    -- PROCESSI DI SINCRONIZZAZIONE (CDC)
-    -- ==========================================
-    sync_vsync_proc: process(clock_w)
-    begin
-        if rising_edge(clock_w) then
-            v_sync_meta <= v_sync;
-            v_sync_sync <= v_sync_meta;
-        end if;
-    end process;
 
-    sync_current_fb_proc: process(clock_r)
-    begin
-        if rising_edge(clock_r) then
-            current_fb_meta <= current_fb;
-            current_fb_sync <= current_fb_meta;
-        end if;
-    end process;
 
     -- ==========================================
     -- MODIFICATO: MATEMATICA DEGLI INDIRIZZI
@@ -92,7 +63,7 @@ begin
     );
     
     offset_w <= std_logic_vector(to_unsigned(FB_SIZE,18)) when current_fb = '0' else (others => '0');
-    offset_r <= std_logic_vector(to_unsigned(FB_SIZE,18)) when current_fb_sync = '1' else (others => '0');
+    offset_r <= std_logic_vector(to_unsigned(FB_SIZE,18)) when current_fb = '1' else (others => '0');
     
     address_w_final <= std_logic_vector(unsigned(address_w) + unsigned(offset_w));
     address_r_final <= std_logic_vector(unsigned(address_r) + unsigned(offset_r));
@@ -123,7 +94,7 @@ begin
                     end if;
                 when 1 => --Ready to swap but waiting for v_sync
                     swapped <= '0';
-                    if v_sync_sync = '0' then
+                    if v_sync = '0' then
                         state <= 2;
                         clear_cnt <= (others => '0');
                         normal <= '0';
@@ -150,11 +121,9 @@ begin
         end if;
     end process;
 
-    -- MODIFICATO: Reintegrata la pipeline per salvare i timing della BRAM
     write_proc: process(clock_w)
     begin
         if rising_edge(clock_w) then     
-            -- Scrittura effettiva al clock successivo
             if write_enb = '1' then
                 VRAM(to_integer(unsigned(write_addr))) <= write_data;
             end if;
@@ -164,9 +133,7 @@ begin
     read_proc: process(clock_r)
     begin
         if rising_edge(clock_r) then 
-                ram_data_out <= VRAM(to_integer(unsigned(address_r_final)));
-        end if;
+                data_r <= VRAM(to_integer(unsigned(address_r_final)));
+            end if;
     end process;
-
-    data_r <= "000001111100000";--ram_data_out when image_enable = '1' else "000001111100000";
 end Behavioral;

@@ -24,6 +24,7 @@ architecture rtl of serializer is
     signal sdata : std_logic;
     signal cascade1, cascade2 : std_logic;
 begin
+
     -- create differential pair
     obuf : OBUFDS
     generic map (IOSTANDARD =>"TMDS_33")

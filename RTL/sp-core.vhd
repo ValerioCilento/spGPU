@@ -15,7 +15,7 @@ generic (
 Port(
 	clk, rst : in std_logic;
 	instr_valid 			: in std_logic;
-	instr_word      		: in std_logic_vector(INSTR_LENGTH-1 downto 0);
+	instr_word_low, instr_word_upper      		: in std_logic_vector(INSTR_LENGTH/2-1 downto 0);
 	core_halt               : in std_logic;
 	swapped					: in std_logic;
 	instr_req   			: out std_logic;
@@ -81,7 +81,7 @@ architecture STRUCTURAL of spCORE is
 			pixel_color_o           : out std_logic_vector(N_color-1 downto 0)
 		);
 	end component;
-
+    signal instr_word : std_logic_vector(INSTR_LENGTH-1 downto 0);
 	signal finish_exec_wire : std_logic;
 	signal dec_instr_wire : instr_isa;
 	signal x1_wire, x2_wire, y1_wire, y2_wire, x3_wire, y3_wire : std_logic_vector(N_pixel-1 downto 0);
@@ -91,6 +91,7 @@ architecture STRUCTURAL of spCORE is
 	signal instr_wire : std_logic_vector(INSTR_LENGTH-1 downto 0);
 	signal swap_wire : std_logic;
 begin
+    instr_word <= instr_word_upper & instr_word_low;
 	PIPE : spPIPE generic map(
 		INSTR_LENGTH 	=> INSTR_LENGTH,
 		N_opcode 		=> N_opcode,
