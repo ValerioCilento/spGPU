@@ -18,7 +18,7 @@ void StartDMATransfer( unsigned int *src, unsigned int len_bytes )
 	//xil_printf("Sent: %p\n", src);
 	Xil_Out32( XPAR_AXIDMA_0_BASEADDR + 0x28, len_bytes );
 	while (!(Xil_In32( XPAR_AXIDMA_0_BASEADDR + 0x04 ) & 0x1000)) {}
-	//xil_printf("Transfer completed\n");
+	xil_printf("Transfer completed\n");
 }
 
 
@@ -31,13 +31,13 @@ int SetColor(unsigned int color)
 	}
 	instr.opcode = 7;
 	instr.color = color;
-	printf("SETCOLOR: %llu\n", instr.instr);
+	//printf("SETCOLOR: %llu\n", instr.instr);
 	StartDMATransfer(&instr, sizeof(SetColor_t));
 	return 0;
 }
 // The function takes the coordinates of 2 Points and a color and send to the GPU two different instrunctions: 
 // SetColor and DrawLine
-int DrawLine(unsigned char x1, unsigned char y1, unsigned char x2, unsigned char y2, unsigned int color, unsigned char z)
+int DrawLine(uint64_t x1, uint64_t y1, uint64_t x2, uint64_t y2, unsigned int color, unsigned char z)
 {
 	DrawLine_t instr = {0};
 	if(x1 >= VIDEO_X || x2 >= VIDEO_X){
@@ -63,7 +63,7 @@ int DrawLine(unsigned char x1, unsigned char y1, unsigned char x2, unsigned char
 	return 0;
 
 }
-int DrawCircle(unsigned char xc, unsigned char yc, unsigned char r, unsigned int color, unsigned char z)
+int DrawCircle(uint64_t xc, uint64_t yc, uint64_t r, unsigned int color, unsigned char z)
 {
 	DrawCircle_t instr = {0};
 
@@ -89,7 +89,7 @@ int DrawCircle(unsigned char xc, unsigned char yc, unsigned char r, unsigned int
 	return 0;
 }
 
-int DrawCircleF(unsigned char xc, unsigned char yc, unsigned char r, unsigned int color, unsigned char z)
+int DrawCircleF(uint64_t xc, uint64_t yc, uint64_t r, unsigned int color, unsigned char z)
 {
 	DrawCircle_t instr = {0};
 
@@ -144,7 +144,7 @@ int DrawTriangle(unsigned char x1, unsigned char y1, unsigned char x2, unsigned 
 	return 0;
 }
 
-int DrawTriangleF(unsigned char x1, unsigned char y1, unsigned char x2, unsigned char y2, unsigned char x3, unsigned char y3, unsigned int color, unsigned char z)
+int DrawTriangleF(uint64_t x1, uint64_t y1, uint64_t x2, uint64_t y2, uint64_t x3, uint64_t y3, unsigned int color, unsigned char z)
 {
 
 	DrawTriangle_t instr = {0};
@@ -178,4 +178,27 @@ void SwapBuffers(void)
 	unsigned long long int instr;
 	instr = 8; //1000
 	StartDMATransfer(&instr, sizeof(unsigned long long));
+}
+
+int DrawPixel(uint64_t x1, uint64_t y1, unsigned int color)
+{
+	DrawPixel_t instr = {0};
+	if(x1 >= VIDEO_X){
+		printf("X coordinates exceed screen dimension\n");
+		return 1; 
+	}
+	if(y1 >= VIDEO_Y){
+		printf("Y coordinates exceed screen dimension\n");
+		return 1; 
+	}
+	instr.opcode = 1; // 0b0001
+	instr.x1 = x1;
+	instr.y1 = y1;
+	if (SetColor(color)){
+		printf("Error in SetColor Instrunction\n");
+		return 1;
+	}
+	StartDMATransfer(&instr, sizeof(DrawPixel_t));
+	return 0;
+
 }
