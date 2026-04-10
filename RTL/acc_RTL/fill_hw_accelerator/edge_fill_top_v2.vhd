@@ -139,7 +139,7 @@ begin
         area => w2
     );
 
-process(state, start, done_w0, done_w1, done_w2) begin
+process(state, start, done_w0, done_w1, done_w2, x, maxx,y, maxy, done_area) begin
     finish <= '0';
         case state is 
             when 1 =>
