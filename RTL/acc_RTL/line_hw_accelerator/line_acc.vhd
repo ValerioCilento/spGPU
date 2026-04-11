@@ -84,6 +84,8 @@ begin
                         
                         state <= DRAW;
                     else 
+                        pixel_x <= x2;
+                        pixel_y <= y2;
                         state <= DONE;
                     end if;
               when DONE =>
