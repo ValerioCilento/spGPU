@@ -156,7 +156,7 @@ int DrawTriangleF(uint64_t x1, uint64_t y1, uint64_t x2, uint64_t y2, uint64_t x
 		printf("Y coordinates exceed screen dimension\n");
 		return 1; 
 	}
-	instr.opcode = 3; // 0b0011
+	instr.opcode = 4; // 0b0011
 	instr.x1 = x1;
 	instr.y1 = y1;
 	instr.x2 = x2;
