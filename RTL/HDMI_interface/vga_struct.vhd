@@ -3,18 +3,16 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity vga_struct is
 generic(
-        VIDEO_X : integer := 640;--256;
-        VIDEO_Y : integer := 480;--192;
-        H_COORDINATE : integer := 640; --640;
-        V_COORDINATE : integer := 480;--480;
-        N_pixel      : integer := 10;--10;
-        VIDEO_pixel  : integer := 9;--8;
-        HF_PORCH      : integer := 16;--16;
-        HB_PORCH      : integer := 48;--48;
-        VF_PORCH      : integer := 10;--11;
-        VB_PORCH      : integer := 33;--31;
-        HSYNC         : integer := 96;--96;
-        VSYNC         : integer := 2--2
+        H_COORDINATE : integer; 
+        V_COORDINATE : integer;
+        N_coordinates      : integer ;
+        VIDEO_pixel  : integer ;
+        HF_PORCH      : integer ;
+        HB_PORCH      : integer;
+        VF_PORCH      : integer ;
+        VB_PORCH      : integer ;
+        HSYNC         : integer;
+        VSYNC         : integer
     );
 Port ( 
     rst : in std_logic;
@@ -57,11 +55,9 @@ architecture structural of vga_struct is
     
     component counter_pixel is 
     generic(
-        VIDEO_X : integer;
-        VIDEO_Y : integer;
         H_COORDINATE : integer;
         V_COORDINATE : integer;
-        N_pixel      : integer;
+        N_coordinates      : integer;
         VIDEO_pixel  : integer;
         HF_PORCH      : integer;
         HB_PORCH      : integer;
@@ -93,11 +89,9 @@ begin
   v_coord <= v_coord_int(9 downto 1);
     vga : counter_pixel 
     generic map(
-        VIDEO_X     => VIDEO_X,
-        VIDEO_Y     => VIDEO_Y,
         H_COORDINATE => H_COORDINATE,
         V_COORDINATE => V_COORDINATE,
-        N_pixel      => N_pixel,
+        N_coordinates      => N_coordinates,
         VIDEO_pixel => VIDEO_pixel,
         HF_PORCH     => HF_PORCH,
         HB_PORCH     => HB_PORCH,

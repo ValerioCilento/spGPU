@@ -4,11 +4,9 @@ use ieee.numeric_std.all;
 
 entity counter_pixel is 
     generic(
-        VIDEO_X      : integer;
-        VIDEO_Y      : integer;
         H_COORDINATE : integer;
         V_COORDINATE : integer;
-        N_pixel      : integer;
+        N_coordinates      : integer;
         VIDEO_pixel  : integer;
         HF_PORCH     : integer;
         HB_PORCH     : integer;

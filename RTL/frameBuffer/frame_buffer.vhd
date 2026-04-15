@@ -1,12 +1,13 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
+use work.spPKG.all;
 
 entity frame_buffer is
     generic(
-        VIDEO_X     : integer := 320;
-        VIDEO_Y     : integer := 240;
-        N_PIXEL     : integer := 9  -- MODIFICATO: 9 bit necessari per arrivare a 320
+        VIDEO_X     : integer;
+        VIDEO_Y     : integer;
+        VIDEO_PIXEL     : integer  -- MODIFICATO: 9 bit necessari per arrivare a 320
     );
     Port (
         clock_w, clock_r, rst : in std_logic;
@@ -14,8 +15,8 @@ entity frame_buffer is
         enb          : in std_logic;
         v_sync       : in std_logic;
         swapped      : out std_logic;
-        x_w, y_w     : in std_logic_vector(N_PIXEL-1 downto 0);
-        x_r, y_r     : in std_logic_vector(N_PIXEL-1 downto 0);
+        x_w, y_w     : in std_logic_vector(VIDEO_PIXEL-1 downto 0);
+        x_r, y_r     : in std_logic_vector(VIDEO_PIXEL-1 downto 0);
         data_w       : in std_logic_vector(14 downto 0);
         data_r       : out std_logic_vector(14 downto 0)
      );
