@@ -12,7 +12,7 @@ architecture bench of tb_spANALYZER is
     -- PARAMETRI CONFIGURABILI
     constant CLK_FREQ_HZ : integer := 100_000_000; -- 100 MHz
     constant CLK_PERIOD  : time    := 1 sec / CLK_FREQ_HZ;
-    constant N_SWAP      : integer := 1000; -- Uno swap ogni 1000 colpi di clock
+    constant N_SWAP      : integer := 1666667; -- Uno swap ogni N_SWAP colpi di clock, FPS = F_CLK/N_SWAP
     
     -- Segnali interni
     signal clk     : std_logic := '0';

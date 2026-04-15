@@ -10,20 +10,24 @@ generic (
 	N_opcode : integer       := 8; --#Opcode bits
 	N_color : integer        := 15; --#RGB bits
 	N_pixel : integer        := 9; --#Pixel coordinates bits
-	N_Accelerators : integer := 6 --#Accelerators
+	N_Accelerators : integer := 6; --#Accelerators
+	SWAP_CNT : integer       := 10; --#bit used to count #swaps per second (#FPS) max 1024 fps
+	CLK_CNT : integer        := 27; --#bit used to represent #clock cycles per second log2(10^8)
+	TC_VALUE : std_logic_vector := "101111101011110000011111111" --terminal count value for a 100MHz clk (10^8 - 1)
 );
 Port(
-	clk, rst : in std_logic;
-	instr_valid 			: in std_logic;
-	instr_word_low, instr_word_upper      		: in std_logic_vector(INSTR_LENGTH/2-1 downto 0);
-	core_halt               : in std_logic;
-	swapped					: in std_logic;
-	instr_req   			: out std_logic;
-	fb_swap 				: out std_logic;
-	pixel_valid_o           : out std_logic;
-	pixel_x_o               : out std_logic_vector(N_pixel-1 downto 0);
-	pixel_y_o               : out std_logic_vector(N_pixel-1 downto 0);
-	pixel_color_o           : out std_logic_vector(N_color-1 downto 0)
+	clk, rst                         : in std_logic;
+	instr_valid 			         : in std_logic;
+	instr_word_low, instr_word_upper : in std_logic_vector(INSTR_LENGTH/2-1 downto 0);
+	core_halt                        : in std_logic;
+	swapped					         : in std_logic;
+	instr_req   			         : out std_logic;
+	fb_swap 				         : out std_logic;
+	pixel_valid_o                    : out std_logic;
+	pixel_x_o                        : out std_logic_vector(N_pixel-1 downto 0);
+	pixel_y_o                        : out std_logic_vector(N_pixel-1 downto 0);
+	pixel_color_o                    : out std_logic_vector(N_color-1 downto 0);
+	fps                              : out std_logic_vector(SWAP_CNT-1 downto 0)
 );
 end entity;
 
@@ -60,7 +64,7 @@ architecture STRUCTURAL of spCORE is
 			N_opcode : integer; --#Opcode bits
 			N_color : integer; --#RGB bits
 			N_pixel : integer; --#Pixel coordinates bits
-			N_Accelerators : integer  --#Accelerators
+			N_Accelerators : integer --#Accelerators
 		);
 		port(
 			clk, rst 				: in std_logic;
@@ -81,6 +85,20 @@ architecture STRUCTURAL of spCORE is
 			pixel_color_o           : out std_logic_vector(N_color-1 downto 0)
 		);
 	end component;
+
+	component spANALYZER is
+		generic(
+			CLK_CNT : integer; --#bit used to represent #clock cycles per second log2(10^8)
+			SWAP_CNT : integer; --#bit used to count #swaps per second (#FPS) max 1024 fps
+			TC_VALUE : std_logic_vector --terminal count value for a 100MHz clk (10^8 - 1)
+		);
+		port (
+			clk, rst : in std_logic;
+			swapped  : in std_logic;
+			fps      : out std_logic_vector(SWAP_CNT-1 downto 0)
+		);
+	end component;
+
     signal instr_word : std_logic_vector(INSTR_LENGTH-1 downto 0);
 	signal finish_exec_wire : std_logic;
 	signal dec_instr_wire : instr_isa;
@@ -90,8 +108,11 @@ architecture STRUCTURAL of spCORE is
 	signal acc_busy_wire : std_logic_vector(N_Accelerators-1 downto 0);
 	signal instr_wire : std_logic_vector(INSTR_LENGTH-1 downto 0);
 	signal swap_wire : std_logic;
+
 begin
+
     instr_word <= instr_word_upper & instr_word_low;
+
 	PIPE : spPIPE generic map(
 		INSTR_LENGTH 	=> INSTR_LENGTH,
 		N_opcode 		=> N_opcode,
@@ -150,6 +171,18 @@ begin
 		pixel_x_o		=> pixel_x_o,
 		pixel_y_o		=> pixel_y_o,
 		pixel_color_o	=> pixel_color_o
+	);
+
+	ANALYZER : spANALYZER generic map (
+		CLK_CNT  => CLK_CNT,
+		SWAP_CNT => SWAP_CNT,
+		TC_VALUE => TC_VALUE
+	)
+	port map (
+		clk     => clk,
+		rst     => rst,
+		swapped => swapped,  
+		fps     => fps		
 	);
 
 end STRUCTURAL;
