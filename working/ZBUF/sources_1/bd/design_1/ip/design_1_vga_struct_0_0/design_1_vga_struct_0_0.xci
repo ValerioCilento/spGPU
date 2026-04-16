@@ -1,0 +1,129 @@
+{
+  "schema": "xilinx.com:schema:json_instance:1.0",
+  "ip_inst": {
+    "xci_name": "design_1_vga_struct_0_0",
+    "cell_name": "vga_struct_0",
+    "component_reference": "xilinx.com:module_ref:vga_struct:1.0",
+    "ip_revision": "1",
+    "gen_directory": "../../../../../../singlecoreGPU.gen/sources_1/bd/design_1/ip/design_1_vga_struct_0_0",
+    "parameters": {
+      "component_parameters": {
+        "VIDEO_X": [ { "value": "640", "resolve_type": "user", "format": "long", "usage": "all" } ],
+        "VIDEO_Y": [ { "value": "480", "resolve_type": "user", "format": "long", "usage": "all" } ],
+        "H_COORDINATE": [ { "value": "640", "resolve_type": "user", "format": "long", "usage": "all" } ],
+        "V_COORDINATE": [ { "value": "480", "resolve_type": "user", "format": "long", "usage": "all" } ],
+        "N_pixel": [ { "value": "10", "resolve_type": "user", "format": "long", "usage": "all" } ],
+        "VIDEO_pixel": [ { "value": "9", "resolve_type": "user", "format": "long", "usage": "all" } ],
+        "HF_PORCH": [ { "value": "16", "resolve_type": "user", "format": "long", "usage": "all" } ],
+        "HB_PORCH": [ { "value": "48", "resolve_type": "user", "format": "long", "usage": "all" } ],
+        "VF_PORCH": [ { "value": "10", "resolve_type": "user", "format": "long", "usage": "all" } ],
+        "VB_PORCH": [ { "value": "33", "resolve_type": "user", "format": "long", "usage": "all" } ],
+        "HSYNC": [ { "value": "96", "resolve_type": "user", "format": "long", "usage": "all" } ],
+        "VSYNC": [ { "value": "2", "resolve_type": "user", "format": "long", "usage": "all" } ],
+        "Component_Name": [ { "value": "design_1_vga_struct_0_0", "resolve_type": "user", "usage": "all" } ]
+      },
+      "model_parameters": {
+        "VIDEO_X": [ { "value": "640", "resolve_type": "generated", "format": "long", "usage": "all" } ],
+        "VIDEO_Y": [ { "value": "480", "resolve_type": "generated", "format": "long", "usage": "all" } ],
+        "H_COORDINATE": [ { "value": "640", "resolve_type": "generated", "format": "long", "usage": "all" } ],
+        "V_COORDINATE": [ { "value": "480", "resolve_type": "generated", "format": "long", "usage": "all" } ],
+        "N_pixel": [ { "value": "10", "resolve_type": "generated", "format": "long", "usage": "all" } ],
+        "VIDEO_pixel": [ { "value": "9", "resolve_type": "generated", "format": "long", "usage": "all" } ],
+        "HF_PORCH": [ { "value": "16", "resolve_type": "generated", "format": "long", "usage": "all" } ],
+        "HB_PORCH": [ { "value": "48", "resolve_type": "generated", "format": "long", "usage": "all" } ],
+        "VF_PORCH": [ { "value": "10", "resolve_type": "generated", "format": "long", "usage": "all" } ],
+        "VB_PORCH": [ { "value": "33", "resolve_type": "generated", "format": "long", "usage": "all" } ],
+        "HSYNC": [ { "value": "96", "resolve_type": "generated", "format": "long", "usage": "all" } ],
+        "VSYNC": [ { "value": "2", "resolve_type": "generated", "format": "long", "usage": "all" } ]
+      },
+      "project_parameters": {
+        "ARCHITECTURE": [ { "value": "zynq" } ],
+        "BASE_BOARD_PART": [ { "value": "www.digilentinc.com:pynq-z1:part0:1.0" } ],
+        "BOARD_CONNECTIONS": [ { "value": "" } ],
+        "DEVICE": [ { "value": "xc7z020" } ],
+        "PACKAGE": [ { "value": "clg400" } ],
+        "PREFHDL": [ { "value": "VHDL" } ],
+        "SILICON_REVISION": [ { "value": "" } ],
+        "SIMULATOR_LANGUAGE": [ { "value": "MIXED" } ],
+        "SPEEDGRADE": [ { "value": "-1" } ],
+        "STATIC_POWER": [ { "value": "" } ],
+        "TEMPERATURE_GRADE": [ { "value": "" } ]
+      },
+      "runtime_parameters": {
+        "IPCONTEXT": [ { "value": "IP_Integrator" } ],
+        "IPREVISION": [ { "value": "1" } ],
+        "MANAGED": [ { "value": "TRUE" } ],
+        "OUTPUTDIR": [ { "value": "../../../../../../singlecoreGPU.gen/sources_1/bd/design_1/ip/design_1_vga_struct_0_0" } ],
+        "SELECTEDSIMMODEL": [ { "value": "" } ],
+        "SHAREDDIR": [ { "value": "../../ipshared" } ],
+        "SWVERSION": [ { "value": "2024.2" } ],
+        "SYNTHESISFLOW": [ { "value": "OOC_HIERARCHICAL" } ]
+      }
+    },
+    "boundary": {
+      "ports": {
+        "rst": [ { "direction": "in" } ],
+        "pixelclock": [ { "direction": "in" } ],
+        "serialclock": [ { "direction": "in" } ],
+        "video_data": [ { "direction": "in", "size_left": "14", "size_right": "0" } ],
+        "h_coord": [ { "direction": "out", "size_left": "8", "size_right": "0" } ],
+        "v_coord": [ { "direction": "out", "size_left": "8", "size_right": "0" } ],
+        "v_sync": [ { "direction": "out" } ],
+        "clk_n": [ { "direction": "out" } ],
+        "clk_p": [ { "direction": "out" } ],
+        "data_n": [ { "direction": "out", "size_left": "2", "size_right": "0" } ],
+        "data_p": [ { "direction": "out", "size_left": "2", "size_right": "0" } ]
+      },
+      "interfaces": {
+        "rst": {
+          "vlnv": "xilinx.com:signal:reset:1.0",
+          "abstraction_type": "xilinx.com:signal:reset_rtl:1.0",
+          "mode": "slave",
+          "parameters": {
+            "POLARITY": [ { "value": "ACTIVE_HIGH", "value_src": "constant_prop", "value_permission": "bd_and_user", "resolve_type": "generated", "is_ips_inferred": true, "is_static_object": false } ],
+            "INSERT_VIP": [ { "value": "0", "resolve_type": "user", "format": "long", "usage": "simulation.rtl", "is_ips_inferred": true, "is_static_object": false } ]
+          },
+          "port_maps": {
+            "RST": [ { "physical_name": "rst" } ]
+          }
+        },
+        "clk_n": {
+          "vlnv": "xilinx.com:signal:clock:1.0",
+          "abstraction_type": "xilinx.com:signal:clock_rtl:1.0",
+          "mode": "master",
+          "parameters": {
+            "FREQ_HZ": [ { "value": "100000000", "value_permission": "bd_and_user", "resolve_type": "generated", "format": "long", "is_ips_inferred": true, "is_static_object": false } ],
+            "FREQ_TOLERANCE_HZ": [ { "value": "0", "value_permission": "bd_and_user", "resolve_type": "generated", "format": "long", "is_ips_inferred": true, "is_static_object": false } ],
+            "PHASE": [ { "value": "0.0", "value_permission": "bd_and_user", "resolve_type": "generated", "format": "float", "is_ips_inferred": true, "is_static_object": false } ],
+            "CLK_DOMAIN": [ { "value": "design_1_vga_struct_0_0_clk_n", "value_permission": "bd_and_user", "resolve_type": "generated", "is_ips_inferred": true, "is_static_object": false } ],
+            "ASSOCIATED_BUSIF": [ { "value": "", "value_permission": "bd_and_user", "resolve_type": "generated", "is_ips_inferred": true, "is_static_object": false } ],
+            "ASSOCIATED_PORT": [ { "value": "", "value_permission": "bd_and_user", "resolve_type": "generated", "is_ips_inferred": true, "is_static_object": false } ],
+            "ASSOCIATED_RESET": [ { "value": "", "value_permission": "bd_and_user", "resolve_type": "generated", "is_ips_inferred": true, "is_static_object": false } ],
+            "INSERT_VIP": [ { "value": "0", "resolve_type": "user", "format": "long", "usage": "simulation.rtl", "is_ips_inferred": true, "is_static_object": false } ]
+          },
+          "port_maps": {
+            "CLK": [ { "physical_name": "clk_n" } ]
+          }
+        },
+        "clk_p": {
+          "vlnv": "xilinx.com:signal:clock:1.0",
+          "abstraction_type": "xilinx.com:signal:clock_rtl:1.0",
+          "mode": "master",
+          "parameters": {
+            "FREQ_HZ": [ { "value": "100000000", "value_permission": "bd_and_user", "resolve_type": "generated", "format": "long", "is_ips_inferred": true, "is_static_object": false } ],
+            "FREQ_TOLERANCE_HZ": [ { "value": "0", "value_permission": "bd_and_user", "resolve_type": "generated", "format": "long", "is_ips_inferred": true, "is_static_object": false } ],
+            "PHASE": [ { "value": "0.0", "value_permission": "bd_and_user", "resolve_type": "generated", "format": "float", "is_ips_inferred": true, "is_static_object": false } ],
+            "CLK_DOMAIN": [ { "value": "design_1_vga_struct_0_0_clk_p", "value_permission": "bd_and_user", "resolve_type": "generated", "is_ips_inferred": true, "is_static_object": false } ],
+            "ASSOCIATED_BUSIF": [ { "value": "", "value_permission": "bd_and_user", "resolve_type": "generated", "is_ips_inferred": true, "is_static_object": false } ],
+            "ASSOCIATED_PORT": [ { "value": "", "value_permission": "bd_and_user", "resolve_type": "generated", "is_ips_inferred": true, "is_static_object": false } ],
+            "ASSOCIATED_RESET": [ { "value": "", "value_permission": "bd_and_user", "resolve_type": "generated", "is_ips_inferred": true, "is_static_object": false } ],
+            "INSERT_VIP": [ { "value": "0", "resolve_type": "user", "format": "long", "usage": "simulation.rtl", "is_ips_inferred": true, "is_static_object": false } ]
+          },
+          "port_maps": {
+            "CLK": [ { "physical_name": "clk_p" } ]
+          }
+        }
+      }
+    }
+  }
+}
