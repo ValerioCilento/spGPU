@@ -8,7 +8,7 @@ entity spANALYZER is
 generic(
 	CLK_CNT : integer := 27; --#bit used to represent #clock cycles per second log2(10^8)
 	SWAP_CNT : integer := 10; --#bit used to count #swaps per second (#FPS) max 1024 fps
-	TC_VALUE :  integer := 99999999--terminal count value for a 100MHz clk (10^8 - 1)
+	TC_VALUE :  integer := 99999999 --terminal count value for a 100MHz clk (10^8 - 1)
 );
 port (
 	clk, rst : in std_logic;
@@ -25,9 +25,9 @@ architecture RTL of spANALYZER is
 begin
 
 	fps <= fps_int_reg;
-	one_sec_elapsed <= '1' when unsigned(sync_vector) = to_unsigned(TC_VALUE, SWAP_CNT) else '0';
+	one_sec_elapsed <= '1' when unsigned(sync_vector) = to_unsigned(TC_VALUE, CLK_CNT) else '0';
 
-	time_cnt : process(clk, rst)
+	time_cnt_proc : process(clk, rst)
 	begin
 		if rst = '1' then
 			sync_vector <= (others => '0');
@@ -38,7 +38,7 @@ begin
 				sync_vector <= std_logic_vector(unsigned(sync_vector) + 1);
 			end if;
 	end if;
-	end process time_cnt;
+	end process time_cnt_proc;
 
 	swap_cnt_proc: process(clk, rst)
 	begin

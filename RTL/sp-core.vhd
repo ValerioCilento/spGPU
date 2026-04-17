@@ -13,7 +13,7 @@ generic (
 	N_Accelerators : integer := 6; --#Accelerators
 	SWAP_CNT : integer := 10 ; --#bit used to count #swaps per second (#FPS) max 1024 fps
 	CLK_CNT : integer := 27; --#bit used to represent #clock cycles per second log2(10^8)
-	TC_VALUE : std_logic_vector := "101111101011110000011111111" --terminal count value for a 100MHz clk (10^8 - 1)
+	TC_VALUE :  integer := 99999999 --terminal count value for a 100MHz clk (10^8 - 1)
 );
 Port(
 	clk, rst                         : in std_logic;
@@ -90,7 +90,7 @@ architecture STRUCTURAL of spCORE is
 		generic(
 			CLK_CNT : integer; --#bit used to represent #clock cycles per second log2(10^8)
 			SWAP_CNT : integer; --#bit used to count #swaps per second (#FPS) max 1024 fps
-			TC_VALUE : std_logic_vector --terminal count value for a 100MHz clk (10^8 - 1)
+			TC_VALUE : integer --terminal count value for a 100MHz clk (10^8 - 1)
 		);
 		port (
 			clk, rst : in std_logic;
