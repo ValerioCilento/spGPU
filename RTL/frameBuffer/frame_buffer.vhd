@@ -5,9 +5,9 @@ use work.spPKG.all;
 
 entity frame_buffer is
     generic(
-        VIDEO_X     : integer;
-        VIDEO_Y     : integer;
-        VIDEO_PIXEL     : integer  -- MODIFICATO: 9 bit necessari per arrivare a 320
+        VIDEO_X     : integer := 320;
+        VIDEO_Y     : integer := 240;
+        VIDEO_PIXEL     : integer := 9 -- MODIFICATO: 9 bit necessari per arrivare a 320
     );
     Port (
         clock_w, clock_r, rst : in std_logic;

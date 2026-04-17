@@ -12,7 +12,7 @@ entity frame_buffer is
         clock_w, clock_r, rst : in std_logic;
         z_in         : in std_logic_vector(3 downto 0);
         fb_swap      : in std_logic;
-        enb          : in std_logic;
+        pixel_valid          : in std_logic;
         v_sync       : in std_logic;
         swapped      : out std_logic;
         x_w, y_w     : in std_logic_vector(N_PIXEL-1 downto 0);
@@ -44,6 +44,13 @@ architecture Behavioral of frame_buffer is
 
     signal z_prev : std_logic_vector(3 downto 0);
     signal z_enb : std_logic; 
+
+    --Registers
+    signal pixel_valid_reg : std_logic;
+    signal address_w_reg : std_logic_vector(17 downto 0);
+    signal z_in_reg : std_logic_vector(3 downto 0);
+    signal color_reg : std_logic_vector(14 downto 0);
+    signal normal_reg : std_logic;
 begin
 
     -- ==========================================
@@ -65,14 +72,14 @@ begin
     offset_w <= std_logic_vector(to_unsigned(FB_SIZE,18)) when current_fb = '0' else (others => '0');
     offset_r <= std_logic_vector(to_unsigned(FB_SIZE,18)) when current_fb = '1' else (others => '0');
     
-    address_w_final <= std_logic_vector(unsigned(address_w) + unsigned(offset_w));
+    address_w_final <= std_logic_vector(unsigned(address_w_reg) + unsigned(offset_w));
     address_r_final <= std_logic_vector(unsigned(address_r) + unsigned(offset_r));
 
     addr_clear <= std_logic_vector(unsigned(clear_cnt) + unsigned(offset_w));
 
-    write_addr <= address_w_final when normal = '1' else addr_clear;
-    write_enb <= (enb and z_enb) when normal = '1' else '1';
-    write_data <= data_w when normal = '1' else "111111111111111";
+    write_addr <= address_w_final when normal_reg = '1' else addr_clear;
+    write_enb <= (pixel_valid_reg and z_enb) when normal_reg = '1' else '1';
+    write_data <= color_reg when normal_reg = '1' else "111111111111111";
     -- ==============================================
 
     rst_fsm : process(clock_w, rst)
@@ -139,28 +146,50 @@ begin
     end process;
     
     --====================================================================
-    --ZBUFFER HANDLER TODO: SYNCRONOUS CHECK
+    --ZBUFFER HANDLER 
     --====================================================================
-    zbuf_wr : process(clock_w, rst) begin
+    process(clock_w) begin
         if rising_edge(clock_w) then
-            if normal = '0' then
+            if normal_reg = '0' then
                 zbuf(to_integer(unsigned(clear_cnt))) <= (others => '1');
             elsif z_enb = '1' then 
-                zbuf(to_integer(unsigned(address_w))) <= z_in;
+                zbuf(to_integer(unsigned(address_w_reg))) <= z_in_reg;
             end if;
+
+            z_prev <= zbuf(to_integer(unsigned(address_w)));
+
         end if;
     end process;
     
-    z_prev <= zbuf(to_integer(unsigned(address_w)));
-    
-    z_comp : process(z_prev, z_in)
+        
+    z_comp : process(z_prev, z_in_reg,pixel_valid_reg)
     begin
-        if unsigned(z_prev) >= unsigned(z_in) then 
-            z_enb <= '1';
+        if pixel_valid_reg = '1' then
+            if unsigned(z_prev) >= unsigned(z_in_reg) then 
+                z_enb <= '1';
+            else 
+                z_enb <= '0';
+            end if;
         else 
             z_enb <= '0';
         end if;
     end process;
-            
+        
+    pipeline_reg : process(clock_w, rst) begin
+        if rst = '1' then
+            pixel_valid_reg <= '0';
+            z_in_reg <= (others => '1');
+            address_w_reg <= (others => '0');
+            color_reg <= (others => '0');
+            normal_reg <= '0';
+        elsif rising_edge(clock_w) then
+            pixel_valid_reg <= pixel_valid;
+            z_in_reg <= z_in;
+            address_w_reg <= address_w;
+            color_reg <= data_w;
+            normal_reg <= normal;
+        end if;
+    end process;    
+
 
 end Behavioral;

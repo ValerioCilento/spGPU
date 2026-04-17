@@ -8,7 +8,6 @@ entity spPIPE is
 generic(
 	INSTR_LENGTH : integer   := 64; --#Istruction bits
 	N_opcode : integer       := 8; --#Opcode bits
-	N_zdepth : integer       := 4;
 	N_color : integer        := 24; --#RGB bits
 	N_pixel : integer        := 8; --#Pixel coordinates bits
 	N_Accelerators : integer := 6 --#Accelerators
@@ -20,7 +19,7 @@ port(
 	finish_exec	    		: in std_logic;
 	core_halt               : in std_logic;
 	instr_req   			: out std_logic;
-	z_depth                 : out std_logic_vector(N_zdepth-1 downto 0);
+	z_depth                 : out std_logic_vector(3 downto 0);
 	dec_instr_o             : out instr_isa;
 	x1, y1, x2, y2, x3, y3  : out std_logic_vector(N_pixel-1 downto 0);
 	color                   : out std_logic_vector(N_color-1 downto 0);
@@ -77,13 +76,13 @@ begin
 							when "0001" =>
 								dec_instr      <= DRAWPIXEL;
 								swap           <= '0';
-								x1             <= instr((N_pixel+N_opcode+N_zdepth)-1 downto N_opcode+N_zdepth);
-								y1             <= instr(((2*N_pixel)+N_opcode+N_zdepth)-1 downto (N_pixel+N_opcode+N_zdepth));
+								x1             <= instr((N_pixel+N_opcode+4)-1 downto N_opcode+4);
+								y1             <= instr(((2*N_pixel)+N_opcode+4)-1 downto (N_pixel+N_opcode+4));
 							    x2             <= (others => '0');
 								y2             <= (others => '0');
 								x3             <= (others => '0');
 								y3             <= (others => '0');
-								z_depth        <= instr((N_opcode+N_zdepth)-1 downto N_opcode);
+								z_depth        <= instr((N_opcode+4)-1 downto N_opcode);
 								state 		   <= drawing;	
 								instr_req_int 	   <= '0';		
 								acc_busy_vec   <= "000001";				
@@ -91,14 +90,14 @@ begin
 							when "0010" =>
 								dec_instr      <= DRAWLINE;
 								swap           <= '0';
-								x1             <= instr((N_pixel+N_opcode+N_zdepth)-1 downto N_opcode+N_zdepth);
-								y1             <= instr(((2*N_pixel)+N_opcode+N_zdepth)-1 downto (N_pixel+N_opcode+N_zdepth));
-								x2             <= instr(((3*N_pixel)+N_opcode+N_zdepth)-1 downto ((2*N_pixel)+N_opcode+N_zdepth));
-								y2             <= instr(((4*N_pixel)+N_opcode+N_zdepth)-1 downto ((3*N_pixel)+N_opcode+N_zdepth));
+								x1             <= instr((N_pixel+N_opcode+4)-1 downto N_opcode+4);
+								y1             <= instr(((2*N_pixel)+N_opcode+4)-1 downto (N_pixel+N_opcode+4));
+								x2             <= instr(((3*N_pixel)+N_opcode+4)-1 downto ((2*N_pixel)+N_opcode+4));
+								y2             <= instr(((4*N_pixel)+N_opcode+4)-1 downto ((3*N_pixel)+N_opcode+4));
 								x3             <= (others => '0');
 								y3             <= (others => '0');	
 								state 		   <= drawing;	
-								z_depth        <= instr((N_opcode+N_zdepth)-1 downto N_opcode);
+								z_depth        <= instr((N_opcode+4)-1 downto N_opcode);
 								instr_req_int      <= '0';	
 								acc_busy_vec   <= "000010";				
 								acc_enable_vec <= "000010";
@@ -112,21 +111,21 @@ begin
 								x3             <= instr(((5*N_pixel)+N_opcode)-1 downto ((4*N_pixel)+N_opcode));
 								y3             <= instr(((6*N_pixel)+N_opcode)-1 downto ((5*N_pixel)+N_opcode));
 								state 		   <= drawing;	
-								z_depth        <= instr((N_opcode+N_zdepth)-1 downto N_opcode);
+								z_depth        <= instr((N_opcode+4)-1 downto N_opcode);
 								instr_req_int 	   <= '0';		
 								acc_busy_vec   <= "000100";	
 								acc_enable_vec <= "000100";
 							when "0100" =>
 								dec_instr      <= DRAWTRIANGLE_F;
 								swap           <= '0';
-								x1             <= instr((N_pixel+N_opcode+N_zdepth)-1 downto N_opcode+N_zdepth);
-								y1             <= instr(((2*N_pixel)+N_opcode+N_zdepth)-1 downto (N_pixel+N_opcode+N_zdepth));
-								x2             <= instr(((3*N_pixel)+N_opcode+N_zdepth)-1 downto ((2*N_pixel)+N_opcode+N_zdepth));
-								y2             <= instr(((4*N_pixel)+N_opcode+N_zdepth)-1 downto ((3*N_pixel)+N_opcode+N_zdepth));
-								x3             <= instr(((5*N_pixel)+N_opcode+N_zdepth)-1 downto ((4*N_pixel)+N_opcode+N_zdepth));
-								y3             <= instr(((6*N_pixel)+N_opcode+N_zdepth)-1 downto ((5*N_pixel)+N_opcode+N_zdepth));	
+								x1             <= instr((N_pixel+N_opcode+4)-1 downto N_opcode+4);
+								y1             <= instr(((2*N_pixel)+N_opcode+4)-1 downto (N_pixel+N_opcode+4));
+								x2             <= instr(((3*N_pixel)+N_opcode+4)-1 downto ((2*N_pixel)+N_opcode+4));
+								y2             <= instr(((4*N_pixel)+N_opcode+4)-1 downto ((3*N_pixel)+N_opcode+4));
+								x3             <= instr(((5*N_pixel)+N_opcode+4)-1 downto ((4*N_pixel)+N_opcode+4));
+								y3             <= instr(((6*N_pixel)+N_opcode+4)-1 downto ((5*N_pixel)+N_opcode+4));	
 								state 		   <= drawing;	
-								z_depth        <= instr((N_opcode+N_zdepth)-1 downto N_opcode);
+								z_depth        <= instr((N_opcode+4)-1 downto N_opcode);
 								instr_req_int      <= '0';		
 								acc_busy_vec   <= "001000";	
 								acc_enable_vec <= "001000";
@@ -134,27 +133,27 @@ begin
 								dec_instr      <= DRAWCIRCLE;
 								swap           <= '0';
 								x1             <= instr((N_pixel+N_opcode)-1 downto N_opcode); --Center x coord (xc)
-								y1             <= instr(((2*N_pixel)+N_opcode+N_zdepth)-1 downto (N_pixel+N_opcode+N_zdepth)); --Center y coord (yc)
-								x2             <= instr(((3*N_pixel)+N_opcode+N_zdepth)-1 downto ((2*N_pixel)+N_opcode+N_zdepth)); --Radius	(r)	
-								y2             <= instr(((4*N_pixel)+N_opcode+N_zdepth)-1 downto ((3*N_pixel)+N_opcode+N_zdepth));
-								x3             <= instr(((5*N_pixel)+N_opcode+N_zdepth)-1 downto ((4*N_pixel)+N_opcode+N_zdepth));
-								y3             <= instr(((6*N_pixel)+N_opcode+N_zdepth)-1 downto ((5*N_pixel)+N_opcode+N_zdepth));
+								y1             <= instr(((2*N_pixel)+N_opcode+4)-1 downto (N_pixel+N_opcode+4)); --Center y coord (yc)
+								x2             <= instr(((3*N_pixel)+N_opcode+4)-1 downto ((2*N_pixel)+N_opcode+4)); --Radius	(r)	
+								y2             <= instr(((4*N_pixel)+N_opcode+4)-1 downto ((3*N_pixel)+N_opcode+4));
+								x3             <= instr(((5*N_pixel)+N_opcode+4)-1 downto ((4*N_pixel)+N_opcode+4));
+								y3             <= instr(((6*N_pixel)+N_opcode+4)-1 downto ((5*N_pixel)+N_opcode+4));
 								state 		   <= drawing;
-								z_depth        <= instr((N_opcode+N_zdepth)-1 downto N_opcode);
+								z_depth        <= instr((N_opcode+4)-1 downto N_opcode);
 								instr_req_int      <= '0';	
 								acc_busy_vec   <= "010000";	
 								acc_enable_vec <= "010000";
 							when "0110" => 
 								dec_instr      <= DRAWCIRCLE_F;
 								swap           <= '0';
-								x1             <= instr((N_pixel+N_opcode+N_zdepth)-1 downto N_opcode+N_zdepth); --Center x coord (xc)
-								y1             <= instr(((2*N_pixel)+N_opcode+N_zdepth)-1 downto (N_pixel+N_opcode+N_zdepth)); --Center y coord (yc)
-								x2             <= instr(((3*N_pixel)+N_opcode+N_zdepth)-1 downto ((2*N_pixel)+N_opcode+N_zdepth)); --Radius	(r)	
-								y2             <= instr(((4*N_pixel)+N_opcode+N_zdepth)-1 downto ((3*N_pixel)+N_opcode+N_zdepth));
-								x3             <= instr(((5*N_pixel)+N_opcode+N_zdepth)-1 downto ((4*N_pixel)+N_opcode+N_zdepth));
-								y3             <= instr(((6*N_pixel)+N_opcode+N_zdepth)-1 downto ((5*N_pixel)+N_opcode+N_zdepth));
+								x1             <= instr((N_pixel+N_opcode+4)-1 downto N_opcode+4); --Center x coord (xc)
+								y1             <= instr(((2*N_pixel)+N_opcode+4)-1 downto (N_pixel+N_opcode+4)); --Center y coord (yc)
+								x2             <= instr(((3*N_pixel)+N_opcode+4)-1 downto ((2*N_pixel)+N_opcode+4)); --Radius	(r)	
+								y2             <= instr(((4*N_pixel)+N_opcode+4)-1 downto ((3*N_pixel)+N_opcode+4));
+								x3             <= instr(((5*N_pixel)+N_opcode+4)-1 downto ((4*N_pixel)+N_opcode+4));
+								y3             <= instr(((6*N_pixel)+N_opcode+4)-1 downto ((5*N_pixel)+N_opcode+4));
 								state 		   <= drawing;	
-								z_depth        <= instr((N_opcode+N_zdepth)-1 downto N_opcode);
+								z_depth        <= instr((N_opcode+4)-1 downto N_opcode);
 								instr_req_int      <= '0';
 								acc_busy_vec   <= "100000";
 								acc_enable_vec <= "100000";

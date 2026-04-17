@@ -6,14 +6,14 @@ use work.spPKG.all;
 
 entity spCORE is 
 generic (
-	INSTR_LENGTH : integer; --#Istruction bits
-	N_opcode : integer; --#Opcode bits
-	N_color : integer ; --#RGB bits
-	N_pixel : integer; --#Pixel coordinates bits
-	N_Accelerators : integer; --#Accelerators
-	SWAP_CNT : integer ; --#bit used to count #swaps per second (#FPS) max 1024 fps
-	CLK_CNT : integer ; --#bit used to represent #clock cycles per second log2(10^8)
-	TC_VALUE : std_logic_vector --terminal count value for a 100MHz clk (10^8 - 1)
+	INSTR_LENGTH : integer := 64; --#Istruction bits
+	N_opcode : integer := 8; --#Opcode bits
+	N_color : integer := 15; --#RGB bits
+	N_pixel : integer := 9; --#Pixel coordinates bits
+	N_Accelerators : integer := 6; --#Accelerators
+	SWAP_CNT : integer := 10 ; --#bit used to count #swaps per second (#FPS) max 1024 fps
+	CLK_CNT : integer := 27; --#bit used to represent #clock cycles per second log2(10^8)
+	TC_VALUE : std_logic_vector := "101111101011110000011111111" --terminal count value for a 100MHz clk (10^8 - 1)
 );
 Port(
 	clk, rst                         : in std_logic;

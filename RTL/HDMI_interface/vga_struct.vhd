@@ -3,16 +3,16 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity vga_struct is
 generic(
-        H_COORDINATE : integer; 
-        V_COORDINATE : integer;
-        N_coordinates      : integer ;
-        VIDEO_pixel  : integer ;
-        HF_PORCH      : integer ;
-        HB_PORCH      : integer;
-        VF_PORCH      : integer ;
-        VB_PORCH      : integer ;
-        HSYNC         : integer;
-        VSYNC         : integer
+        H_COORDINATE : integer := 640; 
+        V_COORDINATE : integer := 480;
+        N_coordinates      : integer := 10;
+        VIDEO_pixel  : integer := 9;
+        HF_PORCH      : integer := 16;
+        HB_PORCH      : integer := 48;
+        VF_PORCH      : integer := 10;
+        VB_PORCH      : integer := 33;
+        HSYNC         : integer := 96;
+        VSYNC         : integer := 2
     );
 Port ( 
     rst : in std_logic;
