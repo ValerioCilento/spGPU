@@ -39,12 +39,12 @@ architecture RTL of spPIPE is
 	signal color_int : std_logic_vector(N_color-1 downto 0);
 begin
    
-    color <= color_int;
-	opcode <= instr(N_opcode-1 downto 0); 
-	instr_o <= instr;
+    color       <= color_int;
+	opcode      <= instr(N_opcode-1 downto 0); 
+	instr_o     <= instr;
 	dec_instr_o <= dec_instr;
-	instr_req <= instr_req_int;
-	instr  <= instr_word when instr_req_int = '1' else (others => '0');
+	instr_req   <= instr_req_int;
+	instr       <= instr_word when instr_req_int = '1' else (others => '0');
 	fetch_proc : process(clk, rst)
 	begin 
 		if rst = '1' then
@@ -129,9 +129,9 @@ begin
 								x1             <= instr((N_pixel+N_opcode)-1 downto N_opcode); --Center x coord (xc)
 								y1             <= instr(((2*N_pixel)+N_opcode)-1 downto (N_pixel+N_opcode)); --Center y coord (yc)
 								x2             <= instr(((3*N_pixel)+N_opcode)-1 downto ((2*N_pixel)+N_opcode)); --Radius	(r)	
-								y2             <= instr(((4*N_pixel)+N_opcode)-1 downto ((3*N_pixel)+N_opcode));
-								x3             <= instr(((5*N_pixel)+N_opcode)-1 downto ((4*N_pixel)+N_opcode));
-								y3             <= instr(((6*N_pixel)+N_opcode)-1 downto ((5*N_pixel)+N_opcode));
+								y2             <= (others => '0');
+								x3             <= (others => '0');
+								y3             <= (others => '0');
 								state 		   <= drawing;
 								instr_req_int      <= '0';	
 								acc_busy_vec   <= "010000";	
@@ -142,9 +142,9 @@ begin
 								x1             <= instr((N_pixel+N_opcode)-1 downto N_opcode); --Center x coord (xc)
 								y1             <= instr(((2*N_pixel)+N_opcode)-1 downto (N_pixel+N_opcode)); --Center y coord (yc)
 								x2             <= instr(((3*N_pixel)+N_opcode)-1 downto ((2*N_pixel)+N_opcode)); --Radius	(r)	
-								y2             <= instr(((4*N_pixel)+N_opcode)-1 downto ((3*N_pixel)+N_opcode));
-								x3             <= instr(((5*N_pixel)+N_opcode)-1 downto ((4*N_pixel)+N_opcode));
-								y3             <= instr(((6*N_pixel)+N_opcode)-1 downto ((5*N_pixel)+N_opcode));
+								y2             <= (others => '0');
+								x3             <= (others => '0');
+								y3             <= (others => '0');
 								state 		   <= drawing;	
 								instr_req_int      <= '0';
 								acc_busy_vec   <= "100000";
