@@ -1,6 +1,7 @@
 library IEEE;
-use IEEE.STD_LOGIC_1164.ALL;
-use IEEE.NUMERIC_STD.ALL;
+use IEEE.STD_LOGIC_1164.all;
+use IEEE.NUMERIC_STD.all;
+use WORK.spPKG.all;
 
 entity sc_fifo is
 --generic(
@@ -37,7 +38,7 @@ begin
 
 	full_int  <= '1' when fifo_cnt = FIFO_DEPTH else '0';
 	empty_int <= '1' when fifo_cnt = 0 else '0';
-	valid_int <= '1' when fifo_rd_en = '1' else '0';
+	valid_int <= '1' when fifo_rd_en = '1' and empty_int = '0' else '0';
 
 	fifo_full  <= full_int;
 	fifo_empty <= empty_int;

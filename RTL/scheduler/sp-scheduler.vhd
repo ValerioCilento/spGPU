@@ -29,7 +29,6 @@ architecture RTL of spScheduler is
 
 	--type sch_instr is array(0 to N_cores-1) of std_logic_vector(INSTR_LENGTH-1 downto 0);
 	signal sch_instr_vector  : sch_instr;
-	signal core_instr_vector : sch_instr;
 	signal state             : sch_fsm;
 	signal opcode            : std_logic_vector(N_opcode-1 downto 0);
 	signal y1, y2, y3, r     : std_logic_vector(N_pixel-1 downto 0);
@@ -95,7 +94,7 @@ begin
 			fifo_wr_en   => fifo_we_vector(i),
 			fifo_wr_data => sch_instr_vector(i),
 			fifo_rd_en   => instr_req_core(i),
-			fifo_rd_data => core_instr_vector(i),
+			fifo_rd_data => fifo_out_core(i),
 			fifo_valid   => fifo_valid_vector(i),
 			fifo_empty   => fifo_empty_vector(i),
 			fifo_full    => fifo_full_vector(i)
