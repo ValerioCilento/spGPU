@@ -3,10 +3,10 @@ use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 
 entity sc_fifo is
-generic(
-	INSTR_LENGTH : integer := 64; --#Istruction bits
-	FIFO_DEPTH   : integer := 12 --#Fifo available instruction locations
-);
+--generic(
+	--INSTR_LENGTH : integer := 64; --#Istruction bits
+	--FIFO_DEPTH   : integer := 12 --#Fifo available instruction locations
+--);
 port(
 	clk, rst        : in std_logic;
 	-- wr interface --
@@ -24,14 +24,14 @@ end entity sc_fifo;
 
 architecture RTL of sc_fifo is
 
-	type scfifo is array(0 to FIFO_DEPTH-1) of std_logic_vector(INSTR_LENGTH-1 downto 0);
+	--type scfifo is array(0 to FIFO_DEPTH-1) of std_logic_vector(INSTR_LENGTH-1 downto 0);
 	signal fifo      : scfifo;
-	signal fifo_cnt  : integer range 0 to FIFO_DEPTH;
-	signal wr_index  : integer range 0 to FIFO_DEPTH-1;
-	signal rd_index  : integer range 0 to FIFO_DEPTH-1;
 	signal full_int  : std_logic;
 	signal empty_int : std_logic;
 	signal valid_int : std_logic;
+	signal fifo_cnt  : integer range 0 to FIFO_DEPTH;
+	signal wr_index  : integer range 0 to FIFO_DEPTH-1;
+	signal rd_index  : integer range 0 to FIFO_DEPTH-1;
 
 begin
 
