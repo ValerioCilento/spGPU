@@ -9,7 +9,9 @@ generic(
 	INSTR_LENGTH   : integer := 64; --#Istruction bits
 	N_cores        : integer := 10; --#Cores/Tiles
 	N_pixel        : integer := 8;  --#Pixel coordinates bits
-	N_opcode       : integer := 8   --#Opcode bits
+	N_opcode       : integer := 8;   --#Opcode bits
+	VIDEO_X        : integer := 320;
+    VIDEO_Y        : integer := 240;
 );
 port(
 	clk, rst        : in std_logic;
@@ -28,11 +30,11 @@ architecture RTL of spScheduler is
 	type sch_instr is array(0 to N_cores) of std_logic_vector(INSTR_LENGTH-1 downto 0);
 	signal fifo_empty_wire  : std_logic;
 	signal fifo_full_wire   : std_logic;
-	signal instr_req_sc_int : std_logic; 
+	--signal instr_req_sc_int : std_logic; 
 	signal opcode           : std_logic_vector(N_opcode-1 downto 0);
 	signal scheduled_instr  : sch_instr;
-	signal x1, y1, x2, y2, x3, y3  : std_logic_vector(N_pixel-1 downto 0);
-	signal xb_1, yb_1, xb_2, yb_2, xb_3, yb_3, xb_4, yb_4  : std_logic_vector(N_pixel-1 downto 0);
+	signal y1, y2, y3, r  : std_logic_vector(N_pixel-1 downto 0);
+	signal y_max, y_min  : std_logic_vector(N_pixel-1 downto 0);
 	signal state : sch_fsm;
 	--signal instr_valid_axi_wire : std_logic;
 	--signal instr_word_axi_wire  : std_logic_vector(INSTR_LENGTH-1 downto 0);
@@ -71,14 +73,14 @@ begin
 
 	opcode <= instr_word_axi(N_opcode-1 downto 0);
 
-	x1 <= instr((N_pixel+N_opcode)-1 downto N_opcode);
-	y1 <= instr(((2*N_pixel)+N_opcode)-1 downto (N_pixel+N_opcode));
-	x2 <= instr(((3*N_pixel)+N_opcode)-1 downto ((2*N_pixel)+N_opcode));
-	y2 <= instr(((4*N_pixel)+N_opcode)-1 downto ((3*N_pixel)+N_opcode));
-	x3 <= instr(((5*N_pixel)+N_opcode)-1 downto ((4*N_pixel)+N_opcode));
-	y3 <= instr(((6*N_pixel)+N_opcode)-1 downto ((5*N_pixel)+N_opcode));
+	y1 <= instr_word_axi(((2*N_pixel)+N_opcode)-1 downto (N_pixel+N_opcode));
+	y2 <= instr_word_axi(((4*N_pixel)+N_opcode)-1 downto ((3*N_pixel)+N_opcode));
+	y3 <= instr_word_axi(((6*N_pixel)+N_opcode)-1 downto ((5*N_pixel)+N_opcode));
+	r  <= instr_word_axi(((3*N_pixel)+N_opcode)-1 downto ((2*N_pixel)+N_opcode)); --Radius	(r)
 	
-	instr_req_sc <= instr_req_sc_int;
+	--instr_req_sc <= instr_req_sc_int;
+
+	instr_req_sc <= '1' when (state = request and fifo_full_wire = '0') else '0';
 	
 	FIFO : sc_fifo
 	generic map(
@@ -97,91 +99,86 @@ begin
 		fifo_full    => fifo_full_wire
 	);
 
+
+	pre_decode : process(opcode, y1, y2, y3, r)
+	begin
+
+	    case opcode is
+	        when "0001" => -- DRAWPIXEL
+	            y_max <= y1;
+	            y_min <= y1;
+
+	        when "0010" => -- DRAWLINE
+	            y_max <= std_logic_vector(max_val(unsigned(y1), unsigned(y2)));
+	            y_min <= std_logic_vector(min_val(unsigned(y1), unsigned(y2)));
+
+	        when "0011" => -- DRAWTRIANGLE
+	            y_max <= std_logic_vector(max_val(max_val(unsigned(y1), unsigned(y2)), unsigned(y3)));
+	            y_min <= std_logic_vector(min_val(min_val(unsigned(y1), unsigned(y2)), unsigned(y3)));
+
+	        when "0101" | "0110" => -- DRAWCIRCLE
+	        	if unsigned(y1) > (VIDEO_Y - unsigned(r)) then
+	        		y_max <= std_logic_vector(to_unsigned(N_pixel, VIDEO_Y) - 1);
+	        	else
+	            	y_max <= std_logic_vector(unsigned(y1) + unsigned(r));
+	            end if;
+
+	            if unsigned(y1) < unsigned(r) then
+	                y_min <= (others => '0');
+	            else
+	                y_min <= unsigned(y1) - unsigned(r);
+	            end if;
+
+	        when others =>
+	            y_max <= (others => '0');
+	            y_min <= (others => '0');
+	    end case;
+	end process pre_decode;
+
 	sch_fsm : process(clk, rst)
 	begin
 		if rst = '0' then
-			instr_req_sc_int <= '0';
+			--instr_req_sc_int <= '0';
 			state <= request;
 		elsif rising_edge(clk) then
 			case state is
 				when request =>
 					if fifo_full_wire = '1' then
-						instr_req_sc_int <= '0';
+						--instr_req_sc_int <= '0';
 						state <= request;
 					elsif instr_valid_axi = '1' then
-						instr_req_sc_int <= '0';
-						state <= bbox;
+						--instr_req_sc_int <= '0';
+						state <= schedule;
 					else 
 						instr_req_sc_int <= '1';
 						state <= request;
 					end if;
-				when bbox =>
-					case opcode is 
-						when "0001" => -- DRAWPIXEL
-							xb_1 <= x1;
-							yb_1 <= y1;
-
-							xb_2 <= (others => '0');
-							yb_2 <= (others => '0');
-
-							xb_3 <= (others => '0');
-							yb_3 <= (others => '0');
-
-							xb_4 <= (others => '0');
-							yb_4 <= (others => '0');					 
-						when "0010" => -- DRAWLINE
-							xb_1 <= x1;
-							yb_1 <= y1;
-
-							xb_2 <= std_logic_vector(max_val(unsigned(x1), unsigned(x2))); ---- (max_x ; max_y)
-							yb_2 <= std_logic_vector(max_val(unsigned(y1), unsigned(y2))); --
-
-							xb_3 <= x2;
-							yb_3 <= y2;
-
-							xb_4 <= std_logic_vector(min_val(unsigned(x1), unsigned(x2))); ---- (min_x ; min_y)
-							yb_4 <= std_logic_vector(min_val(unsigned(y1), unsigned(y2))); --
-						when "0011" => -- DRAWTRIANGLE
-							xb_1 <= std_logic_vector(max_val(max_val(unsigned(x1), unsigned(x2)), unsigned(x3))); ---- (max_x ; max_y)
-							yb_1 <= std_logic_vector(max_val(max_val(unsigned(y1), unsigned(y2)), unsigned(y3))); --
-
-							xb_2 <= std_logic_vector(max_val(max_val(unsigned(x1), unsigned(x2)), unsigned(x3))); ---- (max_x ; min_y)
-							yb_2 <= std_logic_vector(min_val(min_val(unsigned(y1), unsigned(y2)), unsigned(y3))); --
-
-							xb_3 <= std_logic_vector(min_val(min_val(unsigned(x1), unsigned(x2)), unsigned(x3))); ---- (min_x ; max_y)
-							yb_3 <= std_logic_vector(max_val(max_val(unsigned(y1), unsigned(y2)), unsigned(y3))); --
-
-							xb_4 <= std_logic_vector(min_val(min_val(unsigned(x1), unsigned(x2)), unsigned(x3))); ---- (min_x ; min_y)
-							yb_4 <= std_logic_vector(min_val(min_val(unsigned(y1), unsigned(y2)), unsigned(y3))); --
-						when "0101" | "0110" => -- DRAWCIRCLE/DRAWCIRCLE_F
-							xb_1 <= std_logic_vector(unsigned(x1) + unsigned(x2)); ---- (xc + r ; yc + r)
-							yb_1 <= std_logic_vector(unsigned(y1) + unsigned(x2)); --
-
-							xb_2 <= std_logic_vector(unsigned(x1) + unsigned(x2)); ---- (xc + r ; yc - r)
-							yb_2 <= std_logic_vector(unsigned(y1) - unsigned(x2)); --
-
-							xb_3 <= std_logic_vector(unsigned(x1) - unsigned(x2)); ---- (xc - r ; yc + r)
-							yb_3 <= std_logic_vector(unsigned(y1) + unsigned(x2)); --
-
-							xb_4 <= std_logic_vector(unsigned(x1) - unsigned(x2)); ---- (xc - r ; yc - r)
-							yb_4 <= std_logic_vector(unsigned(y1) - unsigned(x2)); --
-						when others => NULL;
-					end case;
-					state <= schedule;
 				when schedule =>
-					case opcode is 
-						when "0000" | "0111" | "1000" => -- NOP/SETCOLOR/SWAP
-							for i in 0 to N_cores loop
-								scheduled_instr(i) <= instr_word_axi;
-							end loop;
-						when "0001" => -- DRAWPIXEL					 
-						when "0010" => -- DRAWLINE
-						when "0011" => -- DRAWTRIANGLE
-						when "0101" | "0110" => -- DRAWCIRCLE/DRAWCIRCLE_F
-						when others => NULL;
-					end case;
+	                v_core_start := 0;
+	                v_core_end   := 0;
+	                for i in 0 to N_cores-1 loop
+	                    if unsigned(y_min) >= (i * TILE_H) then v_core_start := i; end if;
+	                    if unsigned(y_max) >= (i * TILE_H) then v_core_end   := i; end if;
+	                end loop;
+
+	                case opcode is 
+	                    when "0000" | "0111" | "1000" => 
+	                        for i in 0 to N_cores-1 loop
+	                            scheduled_instr(i) <= instr_word_axi;
+	                            fifo_we_vector(i)  <= '1';
+	                        end loop;
+
+	                    when "0001" | "0010" | "0011" | "0101" | "0110" =>
+	                        for i in 0 to N_cores-1 loop
+	                            if i >= v_core_start and i <= v_core_end then
+	                                scheduled_instr(i) <= instr_word_axi;
+	                                fifo_we_vector(i)  <= '1';
+	                            end if;
+	                        end loop;
+	                    when others => NULL;
+	                end case;
+	            when others => NULL;
 		    end case;
 		end if;
 	end process sch_fsm;
-
 end architecture RTL;
