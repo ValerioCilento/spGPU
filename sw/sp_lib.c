@@ -31,13 +31,13 @@ int SetColor(unsigned int color)
 	}
 	instr.opcode = 7;
 	instr.color = color;
-	printf("SETCOLOR: %llu\n", instr.instr);
+	//printf("SETCOLOR: %llu\n", instr.instr);
 	StartDMATransfer(&instr, sizeof(SetColor_t));
 	return 0;
 }
 // The function takes the coordinates of 2 Points and a color and send to the GPU two different instrunctions: 
 // SetColor and DrawLine
-int DrawLine(unsigned char x1, unsigned char y1, unsigned char x2, unsigned char y2, unsigned int color, unsigned char z)
+int DrawLine(uint64_t x1, uint64_t y1, uint64_t x2, uint64_t y2, unsigned int color, unsigned char z)
 {
 	DrawLine_t instr = {0};
 	if(x1 >= VIDEO_X || x2 >= VIDEO_X){
@@ -59,11 +59,11 @@ int DrawLine(unsigned char x1, unsigned char y1, unsigned char x2, unsigned char
 		return 1;
 	}
 	StartDMATransfer(&instr, sizeof(DrawLine_t));
-	printf("DRAWLINE: %llu\n", instr.instr);
+	//printf("DRAWLINE: %llu\n", instr.instr);
 	return 0;
 
 }
-int DrawCircle(unsigned char xc, unsigned char yc, unsigned char r, unsigned int color, unsigned char z)
+int DrawCircle(uint64_t xc, uint64_t yc, uint64_t r, unsigned int color, unsigned char z)
 {
 	DrawCircle_t instr = {0};
 
@@ -85,11 +85,11 @@ int DrawCircle(unsigned char xc, unsigned char yc, unsigned char r, unsigned int
 		return 1;
 	}
 	StartDMATransfer(&instr, sizeof(DrawCircle_t));
-	printf("DRAWCIRCLE: %llu\n", instr.instr);
+	//printf("DRAWCIRCLE: %llu\n", instr.instr);
 	return 0;
 }
 
-int DrawCircleF(unsigned char xc, unsigned char yc, unsigned char r, unsigned int color, unsigned char z)
+int DrawCircleF(uint64_t xc, uint64_t yc, uint64_t r, unsigned int color, unsigned char z)
 {
 	DrawCircle_t instr = {0};
 
@@ -111,7 +111,7 @@ int DrawCircleF(unsigned char xc, unsigned char yc, unsigned char r, unsigned in
 		return 1;
 	}
 	StartDMATransfer(&instr, sizeof(DrawCircle_t));
-	printf("DRAWCIRCLEF: %llu\n", instr.instr);
+	//printf("DRAWCIRCLEF: %llu\n", instr.instr);
 	return 0;
 }
 
@@ -156,7 +156,7 @@ int DrawTriangleF(unsigned char x1, unsigned char y1, unsigned char x2, unsigned
 		printf("Y coordinates exceed screen dimension\n");
 		return 1; 
 	}
-	instr.opcode = 3; // 0b0011
+	instr.opcode = 4; // 0b0011
 	instr.x1 = x1;
 	instr.y1 = y1;
 	instr.x2 = x2;
@@ -169,7 +169,7 @@ int DrawTriangleF(unsigned char x1, unsigned char y1, unsigned char x2, unsigned
 		return 1;
 	}
 	StartDMATransfer(&instr, sizeof(DrawTriangle_t));
-	printf("DRAWTRIANGLE: %llu\n", instr.instr);
+	//printf("DRAWTRIANGLE: %llu\n", instr.instr);
 	return 0;
 }
 
@@ -178,4 +178,27 @@ void SwapBuffers(void)
 	unsigned long long int instr;
 	instr = 8; //1000
 	StartDMATransfer(&instr, sizeof(unsigned long long));
+}
+
+int DrawPixel(uint64_t x1, uint64_t y1, unsigned int color)
+{
+	DrawPixel_t instr = {0};
+	if(x1 >= VIDEO_X){
+		printf("X coordinates exceed screen dimension\n");
+		return 1; 
+	}
+	if(y1 >= VIDEO_Y){
+		printf("Y coordinates exceed screen dimension\n");
+		return 1; 
+	}
+	instr.opcode = 1; // 0b0001
+	instr.x1 = x1;
+	instr.y1 = y1;
+	if (SetColor(color)){
+		printf("Error in SetColor Instrunction\n");
+		return 1;
+	}
+	StartDMATransfer(&instr, sizeof(DrawPixel_t));
+	return 0;
+
 }
