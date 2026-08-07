@@ -142,15 +142,14 @@ begin
                     swap_state <= 2;
                 when 2 => --Swap until it's finished
                     finish_swap <= '0';
-                    fb_swap <= '0';
                     if swapped = '1' then
+                        fb_swap <= '0';
                         swap_state <= 3;
                     else 
                         swap_state <= 2;
                     end if;
                 when 3 => --Swap finished
                     finish_swap <= '1';
-                    fb_swap <= '0';
                     swap_state <= 0;
                 when others => 
                     finish_swap <= '0';

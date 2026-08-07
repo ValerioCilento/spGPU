@@ -1,30 +1,28 @@
 library ieee;
 use ieee.STD_LOGIC_1164.all;
 use ieee.NUMERIC_STD.all;
-
 use work.spPKG.all;
 
---This structural combines the single core with the framebuffer. In this case we added the single core to the 10 tiles.
+-- Structural top-level combining 10 Cores, 10 Framebuffer Tiles, and the Instruction Scheduler (Non-SIMD)
 entity spgpu is 
 generic(
-    INSTR_LENGTH   : integer := 64; --#Istruction bits
-    N_opcode       : integer := 8;  --#Opcode bits
-    N_color        : integer := 15; --#RGB bits
-    N_pixel        : integer := 9;  --#Pixel coordinates bits
-    N_Accelerators : integer := 6;  --#Accelerators
+    INSTR_LENGTH   : integer := 64; -- #Instruction bits
+    N_opcode       : integer := 8;  -- #Opcode bits
+    N_color        : integer := 15; -- #RGB bits
+    N_pixel        : integer := 9;  -- #Pixel coordinates bits
+    N_Accelerators : integer := 6;  -- #Accelerators
     TILE_X         : integer := 320;
     TILE_Y         : integer := 24
-    );
+);
 port(
     clk, rst             : in std_logic;
     clock_r              : in std_logic;
     instr_valid          : in std_logic;
-    instr_word_low       : in std_logic_vector(INSTR_LENGTH/2-1 downto 0);
-    instr_word_upper     : in std_logic_vector(INSTR_LENGTH/2-1 downto 0);
+    instr_word           : in std_logic_vector(INSTR_LENGTH-1 downto 0);
     core_halt            : in std_logic;
     v_sync               : in std_logic;
     instr_req            : out std_logic;
-    int_pin : out std_logic;
+    int_pin              : out std_logic;
     x_r, y_r             : in std_logic_vector(N_PIXEL-1 downto 0); -- Coordinate GLOBALI
     fps                  : out std_logic_vector(9 downto 0);
     data_r               : out std_logic_vector(14 downto 0)
@@ -32,47 +30,69 @@ port(
 end entity;
 
 architecture structural of spgpu is 
+
+    -- =========================================================================
+    -- COMPONENT DECLARATIONS
+    -- =========================================================================
+    
+    -- Scheduler Component for dynamic instruction dispatching (Non-SIMD)
+    component spScheduler is
+    generic(
+        INSTR_LENGTH   : integer := 64;
+        FIFO_DEPTH     : integer := 12;
+        N_cores        : integer := 10;
+        N_pixel        : integer := 9;
+        N_opcode       : integer := 8;
+        VIDEO_X        : integer := 320;
+        VIDEO_Y        : integer := 240
+    );
+    port(
+        clk, rst        : in std_logic;
+        core_halt       : in std_logic;
+        instr_word_axi  : in std_logic_vector(INSTR_LENGTH-1 downto 0);
+        instr_req_core  : in std_logic_vector(N_cores-1 downto 0);
+        instr_valid_axi : in std_logic;
+        fifo_out_core   : out sch_instr;
+        fifo_valid_core : out std_logic_vector(N_cores-1 downto 0);
+        instr_req_sc    : out std_logic
+    );
+    end component spScheduler;
+
     component spANALYZER is
     generic(
-        CLK_CNT : integer := 27; --#bit used to represent #clock cycles per second log2(10^8)
-        SWAP_CNT : integer := 10; --#bit used to count #swaps per second (#FPS) max 1024 fps
-        TC_VALUE :  integer := 99999999 --terminal count value for a 100MHz clk (10^8 - 1)
+        CLK_CNT  : integer := 27;
+        SWAP_CNT : integer := 10;
+        TC_VALUE : integer := 99999999
     );
     port (
         clk, rst : in std_logic;
         swapped  : in std_logic;
-        int_pin : out std_logic;
+        int_pin  : out std_logic;
         fps      : out std_logic_vector(SWAP_CNT-1 downto 0)
     );
     end component spANALYZER;
     
     component tile is
-        generic(
-            TILE_X      : integer := 320;
-            TILE_Y      : integer := 24;
-            N_PIXEL     : integer := 9  
-        );
-        Port (
-            clock_w      : in std_logic;
-            clock_r      : in std_logic;
-            rst          : in std_logic;
-            
-            -- Core input signals
-            z_in         : in std_logic_vector(3 downto 0);
-            pixel_valid  : in std_logic;
-            x_w, y_w     : in std_logic_vector(N_PIXEL-1 downto 0); -- Global Coordinates
-            data_w       : in std_logic_vector(14 downto 0);
-            
-            -- Synchronization signals
-            fb_swap      : in std_logic;
-            v_sync       : in std_logic;
-            swapped      : out std_logic;
-            tile_index   : in std_logic_vector(3 downto 0); 
-            
-            -- Output signals to VGA controller
-            x_r, y_r     : in std_logic_vector(N_PIXEL-1 downto 0); 
-            data_r       : out std_logic_vector(14 downto 0)
-         );
+    generic(
+        TILE_X      : integer := 320;
+        TILE_Y      : integer := 24;
+        N_PIXEL     : integer := 9  
+    );
+    Port (
+        clock_w      : in std_logic;
+        clock_r      : in std_logic;
+        rst          : in std_logic;
+        z_in         : in std_logic_vector(3 downto 0);
+        pixel_valid  : in std_logic;
+        x_w, y_w     : in std_logic_vector(N_PIXEL-1 downto 0);
+        data_w       : in std_logic_vector(14 downto 0);
+        fb_swap      : in std_logic;
+        v_sync       : in std_logic;
+        swapped      : out std_logic;
+        tile_index   : in std_logic_vector(3 downto 0); 
+        x_r, y_r     : in std_logic_vector(N_PIXEL-1 downto 0); 
+        data_r       : out std_logic_vector(14 downto 0)
+    );
     end component;
 
     component spCORE is 
@@ -102,27 +122,41 @@ architecture structural of spgpu is
     );
     end component;
 
-    type data_r_array is array (0 to 9) of std_logic_vector(14 downto 0);
+    -- =========================================================================
+    -- INTERNAL SIGNALS
+    -- =========================================================================
+    
+    -- Scheduler bus signals
+    signal instr_word_axi_sig : std_logic_vector(INSTR_LENGTH-1 downto 0);
+    signal fifo_out_core_sig  : sch_instr;
+    signal fifo_valid_core_sig: std_logic_vector(N_cores-1 downto 0);
+
+    -- Core and Tile interconnected signals
+    type data_r_array is array (0 to N_cores-1) of std_logic_vector(14 downto 0);
     signal tile_data_r : data_r_array;
 
-    type coord_array is array (0 to 9) of std_logic_vector(N_pixel-1 downto 0);
+    type coord_array is array (0 to N_cores-1) of std_logic_vector(N_pixel-1 downto 0);
     signal pixel_x_sig : coord_array;
     signal pixel_y_sig : coord_array;
 
-    type color_array is array (0 to 9) of std_logic_vector(N_color-1 downto 0);
+    type color_array is array (0 to N_cores-1) of std_logic_vector(N_color-1 downto 0);
     signal pixel_color_sig : color_array;
 
-    signal swapped_sig     : std_logic_vector(9 downto 0);
-    signal fb_swap_sig     : std_logic_vector(9 downto 0);
-    signal pixel_valid_sig : std_logic_vector(9 downto 0);
-    signal instr_req_sig   : std_logic_vector(9 downto 0);
-    
+    signal swapped_sig     : std_logic_vector(N_cores-1 downto 0);
+    signal fb_swap_sig     : std_logic_vector(N_cores-1 downto 0);
+    signal pixel_valid_sig : std_logic_vector(N_cores-1 downto 0);
+    signal instr_req_sig   : std_logic_vector(N_cores-1 downto 0);
+
+    signal fb_swap_general : std_logic;
     signal swapped_general : std_logic;
     signal y_r_reg         : std_logic_vector(N_pixel-1 downto 0);
 
 begin
 
-    
+    -- 64-bit instruction assembly for Scheduler
+    instr_word_axi_sig <= instr_word;
+
+    -- Synchronous register for display Y coordinate
     process(clock_r)
     begin
         if rising_edge(clock_r) then
@@ -130,21 +164,52 @@ begin
         end if;
     end process;
 
+    -- =========================================================================
+    -- SCHEDULER INSTANTIATION
+    -- =========================================================================
+    SCHEDULER_INST : spScheduler
+    generic map(
+        INSTR_LENGTH => INSTR_LENGTH,
+        FIFO_DEPTH   => 12,
+        N_cores      => N_cores,
+        N_pixel      => N_pixel,
+        N_opcode     => N_opcode,
+        VIDEO_X      => 320,
+        VIDEO_Y      => 240
+    )
+    port map(
+        clk             => clk,
+        rst             => rst,
+        core_halt       => core_halt,
+        instr_word_axi  => instr_word_axi_sig,
+        instr_req_core  => instr_req_sig,       -- Collects requests from all 10 cores
+        instr_valid_axi => instr_valid,
+        fifo_out_core   => fifo_out_core_sig,   -- Array/Record containing instructions per core
+        fifo_valid_core => fifo_valid_core_sig, -- Valid per core
+        instr_req_sc    => instr_req            -- Main request signal to top interface
+    );
+
+    -- =========================================================================
+    -- ANALYZER INSTANTIATION
+    -- =========================================================================
     ANALYZER : spANALYZER 
     generic map(
-      CLK_CNT => 27,
+      CLK_CNT  => 27,
       SWAP_CNT => 10,
       TC_VALUE => 99999999
     )
     port map(
-      clk => clk,
-      rst => rst,
+      clk     => clk,
+      rst     => rst,
       swapped => swapped_general,
       int_pin => int_pin, 
-      fps => fps
+      fps     => fps
     );
 
-    GEN_CORES_TILES: for i in 0 to 9 generate
+    -- =========================================================================
+    -- CORE & TILE GENERATION
+    -- =========================================================================
+    GEN_CORES_TILES: for i in 0 to N_cores-1 generate
         
         core_inst : spCORE
         generic map (
@@ -157,20 +222,21 @@ begin
             TILE_Y         => TILE_Y
         )
         port map (
-            clk              => clk,
-            rst              => rst,
-            instr_valid      => instr_valid,
-            instr_word_low   => instr_word_low,
-            instr_word_upper => instr_word_upper,
-            core_halt        => core_halt,
-            swapped          => swapped_sig(i),
-            tile_index       => std_logic_vector(to_unsigned(i, 4)),
-            instr_req        => instr_req_sig(i),
-            fb_swap          => fb_swap_sig(i),
-            pixel_valid_o    => pixel_valid_sig(i),
-            pixel_x_o        => pixel_x_sig(i),
-            pixel_y_o        => pixel_y_sig(i),
-            pixel_color_o    => pixel_color_sig(i)
+            clk               => clk,
+            rst               => rst,
+            -- Instruction fed dynamically per core from Scheduler
+            instr_valid       => fifo_valid_core_sig(i),
+            instr_word_low    => fifo_out_core_sig(i)(INSTR_LENGTH/2-1 downto 0),
+            instr_word_upper  => fifo_out_core_sig(i)(INSTR_LENGTH-1 downto INSTR_LENGTH/2),
+            core_halt         => core_halt,
+            swapped           => swapped_sig(i),
+            tile_index        => std_logic_vector(to_unsigned(i, 4)),
+            instr_req         => instr_req_sig(i), -- Core request back to Scheduler
+            fb_swap           => fb_swap_sig(i),
+            pixel_valid_o     => pixel_valid_sig(i),
+            pixel_x_o         => pixel_x_sig(i),
+            pixel_y_o         => pixel_y_sig(i),
+            pixel_color_o     => pixel_color_sig(i)
         );
 
         tile_inst : tile
@@ -188,7 +254,7 @@ begin
             x_w         => pixel_x_sig(i),
             y_w         => pixel_y_sig(i),
             data_w      => pixel_color_sig(i),
-            fb_swap     => fb_swap_sig(i),
+            fb_swap     => fb_swap_general,
             v_sync      => v_sync,
             swapped     => swapped_sig(i),
             tile_index  => std_logic_vector(to_unsigned(i, 4)),
@@ -199,7 +265,9 @@ begin
         
     end generate;
 
-    --OUTPUT MUX
+    -- =========================================================================
+    -- OUTPUT MUX FOR DISPLAY SCANNING
+    -- =========================================================================
     process(y_r_reg, tile_data_r)
         variable y_int : integer;
     begin
@@ -230,25 +298,18 @@ begin
         end if;
     end process;
 
+    -- =========================================================================
+    -- GLOBAL SWAP MONITORING
+    -- =========================================================================
+    swapped_general <= swapped_sig(0);
 
-    process(instr_req_sig)
-        variable req_tmp : std_logic;
-    begin
-        req_tmp := '1';
-        for i in 0 to 9 loop
-            req_tmp := req_tmp and instr_req_sig(i);
-        end loop;
-        instr_req <= req_tmp;
-    end process;
-
-
-        process(swapped_sig)
+    process(fb_swap_sig)
         variable req_tmp : std_logic;
     begin
         req_tmp := '0';
-        for i in 0 to 9 loop
-            req_tmp := req_tmp or swapped_sig(i);
+        for i in 0 to N_cores-1 loop
+            req_tmp := req_tmp and fb_swap_sig(i);
         end loop;
-        swapped_general <= req_tmp;
+        fb_swap_general <= req_tmp;
     end process;
 end structural;
