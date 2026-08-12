@@ -10,7 +10,7 @@ package spPKG is
 
 	--============================================== CORE GENERICS =====================
 	constant INSTR_LENGTH   : integer := 64; 
-	constant N_opcode       : integer := 8;  
+	constant N_opcode        : integer := 8;  
 	constant N_color        : integer := 15; 
 	constant N_pixel        : integer := 9;  
 	constant N_Accelerators : integer := 6;  
@@ -23,8 +23,8 @@ package spPKG is
 	--==================================================================================
 
 	--=============================================== FRAMEBUFFER GENERICS =============
-	constant VIDEO_X     	: integer := 320; 
-    constant VIDEO_Y     	: integer := 240; 
+	constant VIDEO_X        : integer := 320; 
+    constant VIDEO_Y        : integer := 240; 
     constant VIDEO_PIXEL    : integer := 9; 
     --==================================================================================
 
@@ -32,12 +32,12 @@ package spPKG is
     constant H_COORDINATE 	: integer := 640; 
     constant V_COORDINATE 	: integer := 480; 
     constant N_coordinates  : integer := 10; 
-    constant HF_PORCH      	: integer := 16; 
-    constant HB_PORCH      	: integer := 48; 
-    constant VF_PORCH      	: integer := 10; 
-    constant VB_PORCH      	: integer := 33; 
-    constant HSYNC         	: integer := 96; 
-    constant VSYNC         	: integer := 2;  
+    constant HF_PORCH       : integer := 16; 
+    constant HB_PORCH       : integer := 48; 
+    constant VF_PORCH       : integer := 10; 
+    constant VB_PORCH       : integer := 33; 
+    constant HSYNC          : integer := 96; 
+    constant VSYNC          : integer := 2;  
     --==================================================================================
 
     --============================================== SCHEDULER GENERICS ================
@@ -46,7 +46,6 @@ package spPKG is
     --==================================================================================
 
     --================================================= SP CUSTOM TYPES ================
-    -- I Tipi devono essere dichiarati PRIMA di usarli nelle costanti
 	type instr_isa   is (DRAWPIXEL, DRAWLINE, DRAWTRIANGLE, DRAWTRIANGLE_F, NOP, DRAWCIRCLE, DRAWCIRCLE_F, SETCOLOR, SWAP_BUFFERS);
 	type fsm_state 	 is (normal, drawing, halt);
 	type sch_state   is (request, schedule);
@@ -64,8 +63,8 @@ package spPKG is
     function calc_y_tile_start return y_tile_array_t;
     --==================================================================================
 
-    -- ======================================= COSTANTI CALCOLATE TRAMITE FUNZIONE =====
-    constant Y_TILE_START : y_tile_array_t := calc_y_tile_start;
+    -- ======================================= COSTANTE DIFFERITA (DEFERRED CONSTANT) ==
+    constant Y_TILE_START : y_tile_array_t;
     -- =================================================================================
 
 end package;
@@ -95,5 +94,7 @@ package body spPKG is
         end loop;
         return v_array;
     end function;
+
+    constant Y_TILE_START : y_tile_array_t := calc_y_tile_start;
 
 end package body;

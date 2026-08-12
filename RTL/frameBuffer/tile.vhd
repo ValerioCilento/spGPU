@@ -68,7 +68,7 @@ architecture Behavioral of tile is
     signal normal_reg      : std_logic;
     
     signal v_sync_reg : std_logic := '0';
-    signal v_sync_falling_edge : std_logic;
+    signal v_sync_fe  : std_logic;
 begin
 
     -- Calcolo dell'offset Y: (tile_index * 16) + (tile_index * 8) = tile_index * 24
@@ -109,6 +109,7 @@ begin
     z_write_enb  <= z_enb when normal_reg = '1' else '1';
     
 
+
     rst_fsm : process(clock_w, rst)
     begin
         if rst = '1' then
@@ -131,7 +132,7 @@ begin
                     swapped <= '0';
                     normal <= '0';
                     clear_cnt <= (others => '0');
-                    if v_sync_falling_edge = '1' then
+                    if v_sync_fe = '1' then
                         state <= 2;
                         current_fb <= not current_fb; --SWAP!
                     else 
@@ -214,13 +215,11 @@ begin
         end if;
     end process;    
 
----TEST 60 FPS
     process(clock_w) begin
         if rising_edge(clock_w) then 
             v_sync_reg <= v_sync;
         end if;
     end process;
 
-    v_sync_falling_edge <= '1' when (v_sync_reg = '1' and v_sync = '0') else '0';
-
+    v_sync_fe <= '1' when (v_sync_reg = '1' and v_sync = '0') else '0';
 end Behavioral;

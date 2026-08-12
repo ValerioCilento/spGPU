@@ -150,6 +150,7 @@ begin
                     end if;
                 when 3 => --Swap finished
                     finish_swap <= '1';
+                    fb_swap <= '0';
                     swap_state <= 0;
                 when others => 
                     finish_swap <= '0';

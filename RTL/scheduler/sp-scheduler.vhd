@@ -4,15 +4,15 @@ use IEEE.NUMERIC_STD.all;
 use WORK.spPKG.all;
 
 entity spScheduler is
---generic(
-	--INSTR_LENGTH   : integer := 64; --#Istruction bits
-	--FIFO_DEPTH     : integer := 12; --#Fifo available instruction locations
-	--N_cores        : integer := 10; --#Cores/Tiles
-	--N_pixel        : integer := 9;  --#Pixel coordinates bits
-	--N_opcode       : integer := 8;   --#Opcode bits
-	--VIDEO_X        : integer := 320;
-    --VIDEO_Y        : integer := 240;
---);
+generic(
+	INSTR_LENGTH   : integer := 64; --#Istruction bits
+	FIFO_DEPTH     : integer := 12; --#Fifo available instruction locations
+	N_cores        : integer := 10; --#Cores/Tiles
+	N_pixel        : integer := 9;  --#Pixel coordinates bits
+	N_opcode       : integer := 8;   --#Opcode bits
+	VIDEO_X        : integer := 320;
+    VIDEO_Y        : integer := 240
+);
 port(
 	clk, rst        : in std_logic;
 	core_halt       : in std_logic;
@@ -20,7 +20,9 @@ port(
 	instr_req_core  : in std_logic_vector(N_cores-1 downto 0);
 	instr_valid_axi : in std_logic;
 	fifo_out_core   : out sch_instr;
-	fifo_valid_core : out std_logic;
+	empty_pin       : out std_logic_vector(N_cores-1 downto 0);
+	full_pin        : out std_logic_vector(N_cores-1 downto 0);
+	fifo_valid_core : out std_logic_vector(N_cores-1 downto 0);
 	instr_req_sc    : out std_logic
 );
 end entity spScheduler;
@@ -29,7 +31,7 @@ architecture RTL of spScheduler is
 
 	--type sch_instr is array(0 to N_cores-1) of std_logic_vector(INSTR_LENGTH-1 downto 0);
 	signal sch_instr_vector  : sch_instr;
-	signal state             : sch_fsm;
+	signal state             : sch_state;
 	signal opcode            : std_logic_vector(N_opcode-1 downto 0);
 	signal y1, y2, y3, r     : std_logic_vector(N_pixel-1 downto 0);
 	signal y_max, y_min      : std_logic_vector(N_pixel-1 downto 0);
@@ -70,6 +72,10 @@ architecture RTL of spScheduler is
 
 begin
 
+    empty_pin <= fifo_empty_vector;
+    full_pin <= fifo_full_vector;
+    
+	fifo_valid_core <= fifo_valid_vector;
 	opcode <= instr_word_axi(N_opcode-1 downto 0);
 
 	y1 <= instr_word_axi(((2*N_pixel)+N_opcode)-1 downto (N_pixel+N_opcode));
@@ -79,7 +85,7 @@ begin
 	
 	--instr_req_sc <= instr_req_sc_int;
 	--fifo_full_wire <= or fifo_full_vector;
-
+    
 	instr_req_sc <= '1' when (state = request and unsigned(fifo_full_vector) = 0) else '0';
 	
 	GEN_FIFO: for i in 0 to N_cores-1 generate
@@ -119,7 +125,7 @@ begin
 
 	        when "0101" | "0110" => -- DRAWCIRCLE
 	        	if unsigned(y1) > (VIDEO_Y - unsigned(r)) then
-	        		y_max <= std_logic_vector(to_unsigned(N_pixel, VIDEO_Y) - 1);
+	        		y_max <= std_logic_vector(to_unsigned(VIDEO_Y, N_pixel) - 1);
 	        	else
 	            	y_max <= std_logic_vector(unsigned(y1) + unsigned(r));
 	            end if;
@@ -139,7 +145,7 @@ begin
 	sch_fsm : process(clk, rst)
 	variable v_core_start, v_core_end : integer range 0 to N_cores-1;
 	begin
-		if rst = '0' then
+		if rst = '1' then
 			--instr_req_sc_int <= '0';
 			for i in 0 to N_cores-1 loop
 				sch_instr_vector(i) <= (others => '0');
@@ -180,7 +186,7 @@ begin
 	                case opcode is 
 	                    when "0000" | "0111" | "1000" => 
 	                        for i in 0 to N_cores-1 loop
-	                            scheduled_instr(i) <= instr_word_axi;
+	                            sch_instr_vector(i) <= instr_word_axi;
 	                            fifo_we_vector(i)  <= '1';
 	                        end loop;
 

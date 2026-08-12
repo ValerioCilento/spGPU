@@ -16,7 +16,7 @@ end minmax;
 architecture Behavioral of minmax is
 
 begin
-    minx_process : process(enable) begin
+    minx_process : process(enable, x1, x2, x3) begin
         if enable = '1' then
             if x1 <= x2 then
                 if x1 <= x3 then
@@ -36,7 +36,7 @@ begin
        end if;
     end process;
     
-     miny_process : process(enable) begin
+     miny_process : process(enable, y1, y2, y3) begin
         if enable = '1' then
             if y1 <= y2 then
                 if y1 <= y3 then
@@ -56,7 +56,7 @@ begin
        end if;
     end process;
     
-     maxx_process : process(enable) begin
+     maxx_process : process(enable, x1, x2, x3) begin
         if enable = '1' then
             if x1 >= x2 then
                 if x1 >= x3 then
@@ -77,7 +77,7 @@ begin
     end process;
     
     
-    maxy_process : process(enable) begin
+    maxy_process : process(enable, y1, y2, y3) begin
         if enable = '1' then
             if y1 >= y2 then
                 if y1 >= y3 then

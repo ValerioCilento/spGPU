@@ -49,7 +49,7 @@ begin
     reset_p : process
     begin
         rst <= '0';
-        wait for 10*CLK_PERIOD;
+        wait for 5*CLK_PERIOD;
         rst <= '1';
         wait;
     end process;
@@ -86,7 +86,7 @@ begin
     -- Stimolo: leggi istruzioni da file e inviale allo scheduler
     -- ==========================================================
     stim_proc : process
-        file fin          : text open read_mode is "instructions.txt";
+        file fin          : text open read_mode is "instr_input.txt";
         variable L        : line;
         variable word_in  : std_logic_vector(INSTR_LENGTH-1 downto 0);
     begin

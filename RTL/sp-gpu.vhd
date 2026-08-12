@@ -23,6 +23,8 @@ port(
     v_sync               : in std_logic;
     instr_req            : out std_logic;
     int_pin              : out std_logic;
+	empty_pin            : out std_logic_vector(N_cores-1 downto 0); --Debug
+	full_pin             : out std_logic_vector(N_cores-1 downto 0); --Debug
     x_r, y_r             : in std_logic_vector(N_PIXEL-1 downto 0); -- Coordinate GLOBALI
     fps                  : out std_logic_vector(9 downto 0);
     data_r               : out std_logic_vector(14 downto 0)
@@ -53,6 +55,8 @@ architecture structural of spgpu is
         instr_req_core  : in std_logic_vector(N_cores-1 downto 0);
         instr_valid_axi : in std_logic;
         fifo_out_core   : out sch_instr;
+        empty_pin       : out std_logic_vector(N_cores-1 downto 0); --Debug
+	    full_pin        : out std_logic_vector(N_cores-1 downto 0); --Debug
         fifo_valid_core : out std_logic_vector(N_cores-1 downto 0);
         instr_req_sc    : out std_logic
     );
@@ -184,6 +188,8 @@ begin
         instr_word_axi  => instr_word_axi_sig,
         instr_req_core  => instr_req_sig,       -- Collects requests from all 10 cores
         instr_valid_axi => instr_valid,
+        empty_pin       => empty_pin, --Debug
+        full_pin        => full_pin, --Debug
         fifo_out_core   => fifo_out_core_sig,   -- Array/Record containing instructions per core
         fifo_valid_core => fifo_valid_core_sig, -- Valid per core
         instr_req_sc    => instr_req            -- Main request signal to top interface
@@ -306,7 +312,7 @@ begin
     process(fb_swap_sig)
         variable req_tmp : std_logic;
     begin
-        req_tmp := '0';
+        req_tmp := '1';
         for i in 0 to N_cores-1 loop
             req_tmp := req_tmp and fb_swap_sig(i);
         end loop;

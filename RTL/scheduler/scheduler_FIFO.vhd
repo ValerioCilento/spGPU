@@ -4,10 +4,10 @@ use IEEE.NUMERIC_STD.all;
 use WORK.spPKG.all;
 
 entity sc_fifo is
---generic(
-	--INSTR_LENGTH : integer := 64; --#Istruction bits
-	--FIFO_DEPTH   : integer := 12 --#Fifo available instruction locations
---);
+generic(
+	INSTR_LENGTH : integer := 64; --#Istruction bits
+	FIFO_DEPTH   : integer := 12 --#Fifo available instruction locations
+);
 port(
 	clk, rst        : in std_logic;
 	-- wr interface --
@@ -47,35 +47,39 @@ begin
 	fifo_rd_data <= fifo(rd_index);
 
 	process(clk, rst)
+	variable do_write, do_read : boolean;
 	begin
-		if rst = '0' then
+
+		if rst = '1' then
 			fifo     <= (others => (others => '0'));
 			fifo_cnt <= 0;
 			wr_index <= 0;
 			rd_index <= 0;
 		elsif rising_edge(clk) then
-			if fifo_wr_en = '1' and full_int = '0' then
+			do_write := (fifo_wr_en = '1' and full_int = '0');
+            do_read  := (fifo_rd_en = '1' and empty_int = '0');
+			if do_write then
 				if wr_index = FIFO_DEPTH-1 then
 					wr_index <= 0;
 				else 
 					wr_index <= wr_index + 1;
 				end if;
 				fifo(wr_index) <= fifo_wr_data;
-				if fifo_wr_en = '1' and fifo_rd_en = '0' then
-					fifo_cnt <= fifo_cnt + 1;
-				end if;
 			end if;
 
-			if fifo_rd_en = '1' and empty_int = '0' then
+			if do_read then
 				if rd_index = FIFO_DEPTH-1 then
 					rd_index <= 0;
 				else
 					rd_index <= rd_index + 1;
 				end if;
-				if fifo_wr_en = '0' and fifo_rd_en = '1' then
-					fifo_cnt <= fifo_cnt - 1;
-				end if;
 			end if;
+			
+			if do_write and not do_read then
+                fifo_cnt <= fifo_cnt + 1;
+            elsif do_read and not do_write then
+                fifo_cnt <= fifo_cnt - 1;
+            end if;
 		end if;
 	end process;
 
