@@ -6,7 +6,7 @@ use WORK.spPKG.all;
 entity sc_fifo is
 generic(
 	INSTR_LENGTH : integer := 64; --#Istruction bits
-	FIFO_DEPTH   : integer := 12 --#Fifo available instruction locations
+	FIFO_DEPTH   : integer := 32 --#Fifo available instruction locations
 );
 port(
 	clk, rst        : in std_logic;

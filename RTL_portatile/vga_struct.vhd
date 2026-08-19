@@ -3,8 +3,6 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity vga_struct is
 generic(
-        VIDEO_X      : integer := 640;
-        VIDEO_Y      : integer := 480;
         H_COORDINATE : integer := 640;
         V_COORDINATE : integer := 480;
         N_pixel      : integer := 10;
@@ -52,8 +50,6 @@ architecture structural of vga_struct is
     
     component counter_pixel is 
     generic(
-        VIDEO_X      : integer;
-        VIDEO_Y      : integer;
         H_COORDINATE : integer;
         V_COORDINATE : integer;
         N_pixel      : integer;
@@ -100,8 +96,6 @@ begin
     -- Generatore di temporizzazione VGA
     vga : counter_pixel 
     generic map(
-        VIDEO_X      => VIDEO_X,
-        VIDEO_Y      => VIDEO_Y,
         H_COORDINATE => H_COORDINATE,
         V_COORDINATE => V_COORDINATE,
         N_pixel      => N_pixel,
@@ -124,7 +118,7 @@ begin
     );
 
     -- =========================================================================
-    -- PROCESSO DI ALLINEAMENTO (LATENZA = 1 CICLO DI CLOCK)
+    -- PROCESSO DI ALLINEAMENTO (LATENZA = 1 CICLO DI CLOCK) TOLTO IN TEST2
     -- =========================================================================
     align_proc : process(pixelclock, rst)
     begin

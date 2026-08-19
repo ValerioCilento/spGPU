@@ -63,8 +63,17 @@ begin
                         finish <= '1';
                         state <= IDLE;
                     else
-                        i <= std_logic_vector(unsigned(xc) - unsigned(x));
-                        j <= std_logic_vector(unsigned(xc) - unsigned(y));
+                        if unsigned(xc) >= unsigned(x) then
+                            i <= std_logic_vector(unsigned(xc) - unsigned(x));
+                        else
+                            i <= (others => '0');
+                        end if;
+
+                        if unsigned(xc) >= unsigned(y) then
+                            j <= std_logic_vector(unsigned(xc) - unsigned(y));
+                        else
+                            j <= (others => '0');
+                        end if;
                         state <= DRAW1;
                     end if;
 
@@ -79,8 +88,8 @@ begin
                     pixel_y <= std_logic_vector(unsigned(yc) - unsigned(y));
                     pixel_valid <= '1';
                     
-                    -- Comparazione sicura tra tipi unsigned
-                    if unsigned(i) = (unsigned(xc) + unsigned(x)) then
+                    -- Comparazione sicura tra tipi unsigned (>=)
+                    if unsigned(i) >= (unsigned(xc) + unsigned(x)) then
                         state <= DRAW3;
                     else
                         i <= std_logic_vector(unsigned(i) + 1);
@@ -98,8 +107,8 @@ begin
                     pixel_y <= std_logic_vector(unsigned(yc) - unsigned(x));
                     pixel_valid <= '1';
                     
-                    -- Comparazione sicura tra tipi unsigned
-                    if unsigned(j) = (unsigned(xc) + unsigned(y)) then
+                    -- Comparazione sicura tra tipi unsigned (>=)
+                    if unsigned(j) >= (unsigned(xc) + unsigned(y)) then
                         state <= COMPUTE;
                     else
                         j <= std_logic_vector(unsigned(j) + 1);

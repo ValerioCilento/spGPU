@@ -20,8 +20,6 @@ port(
 	instr_req_core  : in std_logic_vector(N_cores-1 downto 0);
 	instr_valid_axi : in std_logic;
 	fifo_out_core   : out sch_instr;
-	empty_pin       : out std_logic_vector(N_cores-1 downto 0);
-	full_pin        : out std_logic_vector(N_cores-1 downto 0);
 	fifo_valid_core : out std_logic_vector(N_cores-1 downto 0);
 	instr_req_sc    : out std_logic
 );
@@ -72,8 +70,6 @@ architecture RTL of spScheduler is
 
 begin
 
-    empty_pin <= fifo_empty_vector;
-    full_pin <= fifo_full_vector;
     
 	fifo_valid_core <= fifo_valid_vector;
 	opcode <= instr_word_axi(N_opcode-1 downto 0);
@@ -110,7 +106,7 @@ begin
 	pre_decode : process(opcode, y1, y2, y3, r)
 	begin
 
-	    case opcode is
+	    case opcode(3 downto 0) is
 	        when "0001" => -- DRAWPIXEL
 	            y_max <= y1;
 	            y_min <= y1;
@@ -119,11 +115,11 @@ begin
 	            y_max <= std_logic_vector(max_val(unsigned(y1), unsigned(y2)));
 	            y_min <= std_logic_vector(min_val(unsigned(y1), unsigned(y2)));
 
-	        when "0011" => -- DRAWTRIANGLE
+	        when "0011" | "0100" => -- DRAWTRIANGLE | DRAWTRIANGLE_F
 	            y_max <= std_logic_vector(max_val(max_val(unsigned(y1), unsigned(y2)), unsigned(y3)));
 	            y_min <= std_logic_vector(min_val(min_val(unsigned(y1), unsigned(y2)), unsigned(y3)));
 
-	        when "0101" | "0110" => -- DRAWCIRCLE
+	        when "0101" | "0110" => -- DRAWCIRCLE | DRAWCIRCLE_F
 	        	if unsigned(y1) > (VIDEO_Y - unsigned(r)) then
 	        		y_max <= std_logic_vector(to_unsigned(VIDEO_Y, N_pixel) - 1);
 	        	else
@@ -183,14 +179,18 @@ begin
 				        end if;
 				    end loop;
 
-	                case opcode is 
+				    if v_core_start > v_core_end then
+				        v_core_end := v_core_start;
+				    end if;
+
+	                case opcode(3 downto 0) is 
 	                    when "0000" | "0111" | "1000" => 
 	                        for i in 0 to N_cores-1 loop
 	                            sch_instr_vector(i) <= instr_word_axi;
 	                            fifo_we_vector(i)  <= '1';
 	                        end loop;
 
-	                    when "0001" | "0010" | "0011" | "0101" | "0110" =>
+	                    when "0001" | "0010" | "0011" | "0100" | "0101" | "0110" =>
 	                        for i in 0 to N_cores-1 loop
 	                            if i >= v_core_start and i <= v_core_end then
 	                                sch_instr_vector(i) <= instr_word_axi;

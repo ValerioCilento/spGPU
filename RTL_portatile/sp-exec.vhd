@@ -9,7 +9,7 @@ generic(
     INSTR_LENGTH   : integer := 64; --#Istruction bits
     N_opcode       : integer := 8;  --#Opcode bits
     N_color        : integer := 15; --#RGB bits
-    N_pixel        : integer := 8;  --#Pixel coordinates bits
+    N_pixel        : integer := 9;  --#Pixel coordinates bits
     N_Accelerators : integer := 6   --#Accelerators
 );
 port(
@@ -143,8 +143,8 @@ begin
                 when 2 => --Swap until it's finished
                     finish_swap <= '0';
                     if swapped = '1' then
-                        fb_swap <= '0';
                         swap_state <= 3;
+                        fb_swap <= '0';
                     else 
                         swap_state <= 2;
                     end if;

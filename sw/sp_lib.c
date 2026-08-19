@@ -93,11 +93,11 @@ int DrawCircleF(uint64_t xc, uint64_t yc, uint64_t r, unsigned int color, unsign
 {
 	DrawCircle_t instr = {0};
 
-	if(xc >= VIDEO_X){
+	if(xc > VIDEO_X){
 		printf("X coordinates exceed screen dimension\n");
 		return 1; 
 	}
-	if(yc >= VIDEO_Y){
+	if(yc > VIDEO_Y){
 		printf("Y coordinates exceed screen dimension\n");
 		return 1; 
 	}

@@ -54,7 +54,7 @@ begin
                 end if;
             
             when DRAW1 =>
-                if x > y then
+                if unsigned(x) > unsigned(y) then
                     finish <= '1';
                     state <= IDLE;
                 else 

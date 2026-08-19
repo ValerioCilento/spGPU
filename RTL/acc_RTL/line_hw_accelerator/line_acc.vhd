@@ -68,18 +68,18 @@ begin
                when DRAW => 
                     finish <= '0';
                     pixel_valid <= '1';
-                    if unsigned(x_temp) /= unsigned(x2) or unsigned(y_temp) /= unsigned(y2) then
+                    if unsigned(x_temp(N_pixel-1 downto 0)) /= unsigned(x2) or unsigned(y_temp(N_pixel-1 downto 0)) /= unsigned(y2) then
                         pixel_x <= x_temp(N_pixel-1 downto 0);
                         pixel_y <= y_temp(N_pixel-1 downto 0);
                         e2 := 2*err;
                         if(e2 > (-dy)) then
                             err := err - dy;
-                            x_temp <= std_logic_vector(signed(x_temp) + to_signed(sx, 9));
+                            x_temp <= std_logic_vector(signed(x_temp) + sx);
                         end if;
                         
                         if (e2 < dx) then
                             err := err + dx;
-                            y_temp <= std_logic_vector(signed(y_temp) + to_signed(sy, 9));
+                            y_temp <= std_logic_vector(signed(y_temp) + sy);
                         end if;
                         
                         state <= DRAW;

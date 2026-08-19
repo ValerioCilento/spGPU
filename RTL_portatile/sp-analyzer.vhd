@@ -60,18 +60,18 @@ begin
 		end if;
 	end process swap_cnt_proc;
 
-	-- Registro di uscita e generazione impulso Active-HIGH (0 -> 1 -> 0)
+	-- Registro di uscita FPS e generazione impulso interrupt ogni secondo
 	out_reg : process(clk, rst)
 	begin
 		if rst = '1' then
 			fps_int_reg <= (others => '0');
-			int_pin     <= '0'; -- Inattivo a riposo
+			int_pin     <= '0';
 		elsif rising_edge(clk) then
 			if one_sec_elapsed = '1' then
 				fps_int_reg <= swap_vector;
-				int_pin     <= '1'; -- Impulso ALTO per 1 ciclo di clock
+				int_pin     <= '1'; -- Impulso ogni secondo per triggerare la stampa FPS
 			else
-				int_pin     <= '0'; -- Torna a BASSO
+				int_pin     <= '0';
 			end if;
 		end if;			
 	end process out_reg;

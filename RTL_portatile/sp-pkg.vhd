@@ -23,12 +23,14 @@ package spPKG is
 	--==================================================================================
 
 	--=============================================== FRAMEBUFFER GENERICS =============
-	constant VIDEO_X        : integer := 320; 
-    constant VIDEO_Y        : integer := 240; 
     constant VIDEO_PIXEL    : integer := 9; 
+    constant TILE_X         : integer := 320;
+    constant TILE_Y         : integer := 24;
     --==================================================================================
 
-    --=====================================================VGA GENERICS=================
+    --=====================================================VGA GENERICS=================7
+    constant VIDEO_X        : integer := 640; 
+    constant VIDEO_Y        : integer := 480; 
     constant H_COORDINATE 	: integer := 640; 
     constant V_COORDINATE 	: integer := 480; 
     constant N_coordinates  : integer := 10; 
@@ -41,7 +43,7 @@ package spPKG is
     --==================================================================================
 
     --============================================== SCHEDULER GENERICS ================
-	constant FIFO_DEPTH     : integer := 12; 
+	constant FIFO_DEPTH     : integer := 32; 
 	constant N_cores        : integer := 10;
     --==================================================================================
 
@@ -87,7 +89,7 @@ package body spPKG is
 
     function calc_y_tile_start return y_tile_array_t is
         variable v_array : y_tile_array_t;
-        constant TILE_H  : integer := VIDEO_Y / N_cores;
+        constant TILE_H  : integer := TILE_Y; -- TILE_Y = 24 (240 / 10 = 24)
     begin
         for i in 0 to N_cores - 1 loop
             v_array(i) := i * TILE_H;

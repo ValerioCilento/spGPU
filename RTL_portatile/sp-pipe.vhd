@@ -7,10 +7,10 @@ use work.spPKG.all;
 entity spPIPE is 
 generic(
 	INSTR_LENGTH : integer   := 64; --#Istruction bits
-	N_opcode : integer       := 8; --#Opcode bits
-	N_color : integer        := 24; --#RGB bits
-	N_pixel : integer        := 8; --#Pixel coordinates bits
-	N_Accelerators : integer := 6 --#Accelerators
+	N_opcode : integer       := 8;  --#Opcode bits
+	N_color : integer        := 15; --#RGB bits
+	N_pixel : integer        := 9;  --#Pixel coordinates bits
+	N_Accelerators : integer := 6   --#Accelerators
 );
 port(
 	clk, rst 				: in std_logic;
@@ -58,7 +58,7 @@ begin
 						instr_req_int <= '0';
 					elsif instr_valid = '1' then
 						instr_req_int <= '0';
-						case opcode is 
+						case opcode(3 downto 0) is 
 							when "0000" => 
 								dec_instr      <= NOP;
 								swap           <= '0';
@@ -217,4 +217,5 @@ begin
 	end process;
 
 end RTL;
+
 
