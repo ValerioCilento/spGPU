@@ -10,6 +10,7 @@ generic(
 	N_opcode : integer       := 8;  --#Opcode bits
 	N_color : integer        := 15; --#RGB bits
 	N_pixel : integer        := 9;  --#Pixel coordinates bits
+	N_z : integer            := 4;  --#Z coordinates bits
 	N_Accelerators : integer := 6   --#Accelerators
 );
 port(
@@ -22,6 +23,7 @@ port(
 	dec_instr_o             : out instr_isa;
 	x1, y1, x2, y2, x3, y3  : out std_logic_vector(N_pixel-1 downto 0);
 	color                   : out std_logic_vector(N_color-1 downto 0);
+	z_o                     : out std_logic_vector(N_z-1 downto 0);
 	acc_enable_vec          : out std_logic_vector(N_Accelerators-1 downto 0); --1Pixel|2Line|3Triangle|4Filled Triangle|5Circle|6Filled Circle
 	acc_busy_vec 			: out std_logic_vector(N_Accelerators-1 downto 0);
 	swap 					: out std_logic;
@@ -50,6 +52,7 @@ begin
 		if rst = '1' then
 			instr_req_int <= '0';
 			state <= normal;
+			z_o <= (others => '0');
 		elsif rising_edge(clk) then
 			case state is 
 				when normal =>
@@ -62,6 +65,7 @@ begin
 							when "0000" => 
 								dec_instr      <= NOP;
 								swap           <= '0';
+								z_o            <= (others => '0');
 								x1             <= (others => '0');
 								y1             <= (others => '0');
 								x2             <= (others => '0');
@@ -74,6 +78,7 @@ begin
 							when "0001" =>
 								dec_instr      <= DRAWPIXEL;
 								swap           <= '0';
+								z_o            <= instr(7 downto 4);
 								x1             <= instr((N_pixel+N_opcode)-1 downto N_opcode);
 								y1             <= instr(((2*N_pixel)+N_opcode)-1 downto (N_pixel+N_opcode));
 							    x2             <= (others => '0');
@@ -87,6 +92,7 @@ begin
 							when "0010" =>
 								dec_instr      <= DRAWLINE;
 								swap           <= '0';
+								z_o            <= instr(7 downto 4);
 								x1             <= instr((N_pixel+N_opcode)-1 downto N_opcode);
 								y1             <= instr(((2*N_pixel)+N_opcode)-1 downto (N_pixel+N_opcode));
 								x2             <= instr(((3*N_pixel)+N_opcode)-1 downto ((2*N_pixel)+N_opcode));
@@ -100,6 +106,7 @@ begin
 							when "0011" => 
 								dec_instr      <= DRAWTRIANGLE;
 								swap           <= '0';
+								z_o            <= instr(7 downto 4);
 								x1             <= instr((N_pixel+N_opcode)-1 downto N_opcode);
 								y1             <= instr(((2*N_pixel)+N_opcode)-1 downto (N_pixel+N_opcode));
 								x2             <= instr(((3*N_pixel)+N_opcode)-1 downto ((2*N_pixel)+N_opcode));
@@ -113,6 +120,7 @@ begin
 							when "0100" =>
 								dec_instr      <= DRAWTRIANGLE_F;
 								swap           <= '0';
+								z_o            <= instr(7 downto 4);
 								x1             <= instr((N_pixel+N_opcode)-1 downto N_opcode);
 								y1             <= instr(((2*N_pixel)+N_opcode)-1 downto (N_pixel+N_opcode));
 								x2             <= instr(((3*N_pixel)+N_opcode)-1 downto ((2*N_pixel)+N_opcode));
@@ -126,6 +134,7 @@ begin
 							when "0101" => 
 								dec_instr      <= DRAWCIRCLE;
 								swap           <= '0';
+								z_o            <= instr(7 downto 4);
 								x1             <= instr((N_pixel+N_opcode)-1 downto N_opcode); --Center x coord (xc)
 								y1             <= instr(((2*N_pixel)+N_opcode)-1 downto (N_pixel+N_opcode)); --Center y coord (yc)
 								x2             <= instr(((3*N_pixel)+N_opcode)-1 downto ((2*N_pixel)+N_opcode)); --Radius	(r)	
@@ -139,6 +148,7 @@ begin
 							when "0110" => 
 								dec_instr      <= DRAWCIRCLE_F;
 								swap           <= '0';
+								z_o            <= instr(7 downto 4);
 								x1             <= instr((N_pixel+N_opcode)-1 downto N_opcode); --Center x coord (xc)
 								y1             <= instr(((2*N_pixel)+N_opcode)-1 downto (N_pixel+N_opcode)); --Center y coord (yc)
 								x2             <= instr(((3*N_pixel)+N_opcode)-1 downto ((2*N_pixel)+N_opcode)); --Radius	(r)	
@@ -152,6 +162,7 @@ begin
 							when "0111" => 
 							    swap           <= '0';
 								dec_instr      <= SETCOLOR;
+								z_o            <= (others => '0');
 								x1             <= (others => '0');
 								y1             <= (others => '0');
 								x2             <= (others => '0');
@@ -165,6 +176,7 @@ begin
 							when "1000" => 
 								dec_instr      <= SWAP_BUFFERS;
 								swap           <= '1';
+								z_o            <= (others => '0');
 								x1             <= (others => '0');
 								y1             <= (others => '0');
 								x2             <= (others => '0');
@@ -177,6 +189,7 @@ begin
 							when others => 
 								dec_instr      <= NOP;
 								swap           <= '0';
+								z_o            <= (others => '0');
 								x1             <= (others => '0');
 								y1             <= (others => '0');
 								x2             <= (others => '0');

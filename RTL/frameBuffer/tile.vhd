@@ -6,9 +6,10 @@ use work.spPKG.all;
 
 entity tile is
     generic(
-        TILE_X     : integer := 320;
-        TILE_Y     : integer := 24;
-        VIDEO_PIXEL     : integer := 9 -- MODIFICATO: 9 bit necessari per arrivare a 320
+        TILE_X      : integer := 320;
+        TILE_Y      : integer := 24;
+        VIDEO_PIXEL : integer := 9; -- 9 bit necessari per arrivare a 320
+        N_Z         : integer := 4  -- 4 bit per coordinate di profondita' Z
     );
     Port (
         clock_w, clock_r, rst : in std_logic;
@@ -20,6 +21,7 @@ entity tile is
         x_r, y_r     : in std_logic_vector(VIDEO_PIXEL-1 downto 0);
         tile_index   : in std_logic_vector(3 downto 0);
         data_w       : in std_logic_vector(14 downto 0);
+        z_w          : in std_logic_vector(N_Z-1 downto 0);
         data_r       : out std_logic_vector(14 downto 0)
      );
 end tile;
@@ -28,6 +30,10 @@ architecture Behavioral of tile is
     constant FB_SIZE : integer := TILE_X*TILE_Y; -- 320 * 24 = 7680
     type mem_type is array (0 to 2*FB_SIZE-1) of std_logic_vector(14 downto 0);
     signal VRAM : mem_type;
+    
+    -- Z-Buffer per la tile corrente
+    type z_mem_type is array (0 to FB_SIZE-1) of std_logic_vector(N_Z-1 downto 0);
+    signal ZRAM : z_mem_type := (others => (others => '1'));
     
     signal state : integer := 0;
     signal current_fb : std_logic := '0';
@@ -41,6 +47,9 @@ architecture Behavioral of tile is
     signal write_addr : std_logic_vector(17 downto 0);
     signal write_data : std_logic_vector(14 downto 0);
     signal write_enb : std_logic;
+
+    signal z_current : std_logic_vector(N_Z-1 downto 0);
+    signal z_pass    : std_logic;
 
     signal y_offset   : unsigned(N_PIXEL-1 downto 0);
     signal y_w_local  : unsigned(N_PIXEL-1 downto 0);
@@ -102,9 +111,15 @@ begin
 
     addr_clear <= std_logic_vector(unsigned(clear_cnt) + unsigned(offset_w));
 
+    -- ==========================================
+    -- LOGICA DI CONFRONTO Z (DEPTH TEST)
+    -- ==========================================
+    z_current <= ZRAM(to_integer(unsigned(address_w)));
+    z_pass    <= '1' when (unsigned(z_w) <= unsigned(z_current)) else '0';
+
     write_addr <= address_w_final when normal = '1' else addr_clear;
     write_data <= data_w when normal = '1' else "111111111111111";
-    write_enb  <= (enb and hit_w) when normal = '1' else '1';
+    write_enb  <= (enb and hit_w and z_pass) when normal = '1' else '1';
 
     rst_fsm : process(clock_w, rst)
     begin
@@ -164,6 +179,16 @@ begin
         if rising_edge(clock_w) then     
             if write_enb = '1' then
                 VRAM(to_integer(unsigned(write_addr))) <= write_data;
+            end if;
+
+            if normal = '1' then
+                if (enb = '1' and hit_w = '1' and z_pass = '1') then
+                    ZRAM(to_integer(unsigned(address_w))) <= z_w;
+                end if;
+            else
+                if state = 2 then
+                    ZRAM(to_integer(unsigned(clear_cnt))) <= (others => '1');
+                end if;
             end if;
         end if;
     end process;    

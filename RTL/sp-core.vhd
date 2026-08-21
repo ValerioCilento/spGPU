@@ -7,10 +7,11 @@ use work.spPKG.all;
 entity spCORE is 
 generic (
 	INSTR_LENGTH : integer   := 64; --#Istruction bits
-	N_opcode : integer       := 8; --#Opcode bits
+	N_opcode : integer       := 8;  --#Opcode bits
 	N_color : integer        := 15; --#RGB bits
-	N_pixel : integer        := 9; --#Pixel coordinates bits
-	N_Accelerators : integer := 6 --#Accelerators
+	N_pixel : integer        := 9;  --#Pixel coordinates bits
+	N_z : integer            := 4;  --#Z coordinates bits
+	N_Accelerators : integer := 6   --#Accelerators
 );
 Port(
 	clk, rst : in std_logic;
@@ -25,7 +26,8 @@ Port(
 	pixel_valid_o           : out std_logic;
 	pixel_x_o               : out std_logic_vector(N_pixel-1 downto 0);
 	pixel_y_o               : out std_logic_vector(N_pixel-1 downto 0);
-	pixel_color_o           : out std_logic_vector(N_color-1 downto 0)
+	pixel_color_o           : out std_logic_vector(N_color-1 downto 0);
+	pixel_z_o               : out std_logic_vector(N_z-1 downto 0)
 );
 end entity;
 
@@ -37,6 +39,7 @@ architecture STRUCTURAL of spCORE is
 			N_opcode : integer; --#Opcode bits
 			N_color : integer; --#RGB bits
 			N_pixel : integer; --#Pixel coordinates bits
+			N_z : integer;     --#Z coordinates bits
 			N_Accelerators : integer --#Accelerators
 		);
 		port(
@@ -49,9 +52,10 @@ architecture STRUCTURAL of spCORE is
 			dec_instr_o             : out instr_isa;
 			x1, y1, x2, y2, x3, y3  : out std_logic_vector(N_pixel-1 downto 0);
 			color                   : out std_logic_vector(N_color-1 downto 0);
-			acc_busy_vec            : out std_logic_vector(N_Accelerators-1 downto 0);
-			swap 					: out std_logic;
+			z_o                     : out std_logic_vector(N_z-1 downto 0);
 			acc_enable_vec          : out std_logic_vector(N_Accelerators-1 downto 0); --1Pixel|2Line|3Triangle|4Filled Triangle|5Circle|6Filled Circle
+			acc_busy_vec 			: out std_logic_vector(N_Accelerators-1 downto 0);
+			swap 					: out std_logic;
 			instr_o                 : out std_logic_vector(INSTR_LENGTH-1 downto 0)
 		);
 	end component;
@@ -62,6 +66,7 @@ architecture STRUCTURAL of spCORE is
 			N_opcode : integer; --#Opcode bits
 			N_color : integer; --#RGB bits
 			N_pixel : integer; --#Pixel coordinates bits
+			N_z : integer;     --#Z coordinates bits
 			N_Accelerators : integer  --#Accelerators
 		);
 		port(
@@ -71,9 +76,10 @@ architecture STRUCTURAL of spCORE is
 			instr_i                 : in std_logic_vector(INSTR_LENGTH-1 downto 0);
 			x1, y1, x2, y2, x3, y3  : in std_logic_vector(N_pixel-1 downto 0);
 			color                   : in std_logic_vector(N_color-1 downto 0);
+			z_i                     : in std_logic_vector(N_z-1 downto 0);
 			acc_enable_vec          : in std_logic_vector(N_Accelerators-1 downto 0);
 			acc_busy_vec            : in std_logic_vector(N_Accelerators-1 downto 0);
-			swap 					: in std_logic;
+			swap 					: out std_logic;
 			swapped                 : in std_logic;
 		    tile_index              : in std_logic_vector(3 downto 0);
 
@@ -82,13 +88,15 @@ architecture STRUCTURAL of spCORE is
 			fb_swap 				: out std_logic;
 			pixel_x_o               : out std_logic_vector(N_pixel-1 downto 0);
 			pixel_y_o               : out std_logic_vector(N_pixel-1 downto 0);
-			pixel_color_o           : out std_logic_vector(N_color-1 downto 0)
+			pixel_color_o           : out std_logic_vector(N_color-1 downto 0);
+			pixel_z_o               : out std_logic_vector(N_z-1 downto 0)
 		);
 	end component;
 	signal finish_exec_wire : std_logic;
 	signal dec_instr_wire : instr_isa;
 	signal x1_wire, x2_wire, y1_wire, y2_wire, x3_wire, y3_wire : std_logic_vector(N_pixel-1 downto 0);
 	signal color_wire : std_logic_vector(N_color-1 downto 0);
+	signal z_wire : std_logic_vector(N_z-1 downto 0);
 	signal acc_enable_wire : std_logic_vector(N_Accelerators-1 downto 0);
 	signal acc_busy_wire : std_logic_vector(N_Accelerators-1 downto 0);
 	signal instr_wire : std_logic_vector(INSTR_LENGTH-1 downto 0);
@@ -99,6 +107,7 @@ begin
 		N_opcode 		=> N_opcode,
 		N_color 		=> N_color,
 		N_pixel 		=> N_pixel,
+		N_z             => N_z,
 		N_Accelerators	=> N_Accelerators
 	)
 	port map(
@@ -117,6 +126,7 @@ begin
 		x3 				=> x3_wire,
 		y3 				=> y3_wire,
 		color 			=> color_wire,
+		z_o             => z_wire,
 		acc_enable_vec 	=> acc_enable_wire,
 		acc_busy_vec    => acc_busy_wire,
 		swap 			=> swap_wire,
@@ -128,6 +138,7 @@ begin
 		N_opcode 		=> N_opcode,
 		N_color 		=> N_color,
 		N_pixel 		=> N_pixel,
+		N_z             => N_z,
 		N_Accelerators	=> N_Accelerators
 	)
 	port map(
@@ -143,6 +154,7 @@ begin
 		x3 				=> x3_wire,
 		y3 				=> y3_wire,
 		color 			=> color_wire,
+		z_i             => z_wire,
 		swapped 		=> swapped,
 		tile_index 		=> tile_index,
 		acc_enable_vec 	=> acc_enable_wire,
@@ -152,7 +164,8 @@ begin
 		pixel_valid_o   => pixel_valid_o,
 		pixel_x_o		=> pixel_x_o,
 		pixel_y_o		=> pixel_y_o,
-		pixel_color_o	=> pixel_color_o
+		pixel_color_o	=> pixel_color_o,
+		pixel_z_o       => pixel_z_o
 	);
 
 end STRUCTURAL;

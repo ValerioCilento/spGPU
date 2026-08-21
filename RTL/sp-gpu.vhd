@@ -14,6 +14,7 @@ generic(
     N_opcode        : integer := 8;  -- #Opcode bits
     N_color         : integer := 15; -- #RGB bits
     N_pixel         : integer := 9;  -- #Pixel coordinates bits
+    N_z             : integer := 4;  -- #Z coordinates bits
     N_Accelerators  : integer := 6;  -- #Accelerators
     CLK_CNT         : integer := 27; 
     SWAP_CNT        : integer := 10; 
@@ -95,20 +96,22 @@ architecture structural of spgpu is
     generic(
         TILE_X      : integer := 320;
         TILE_Y      : integer := 24;
-        N_PIXEL     : integer := 9  
+        VIDEO_PIXEL : integer := 9;
+        N_Z         : integer := 4
     );
     Port (
         clock_w      : in std_logic;
         clock_r      : in std_logic;
         rst          : in std_logic;
-        enb  : in std_logic;
-        x_w, y_w     : in std_logic_vector(N_PIXEL-1 downto 0);
+        enb          : in std_logic;
+        x_w, y_w     : in std_logic_vector(VIDEO_PIXEL-1 downto 0);
         data_w       : in std_logic_vector(14 downto 0);
+        z_w          : in std_logic_vector(N_Z-1 downto 0);
         fb_swap      : in std_logic;
         v_sync       : in std_logic;
         swapped      : out std_logic;
         tile_index   : in std_logic_vector(3 downto 0); 
-        x_r, y_r     : in std_logic_vector(N_PIXEL-1 downto 0); 
+        x_r, y_r     : in std_logic_vector(VIDEO_PIXEL-1 downto 0); 
         data_r       : out std_logic_vector(14 downto 0)
     );
     end component;
@@ -119,6 +122,7 @@ architecture structural of spgpu is
         N_opcode       : integer := 8;  
         N_color        : integer := 15; 
         N_pixel        : integer := 9;  
+        N_z            : integer := 4;
         N_Accelerators : integer := 6;  
         TILE_X         : integer := 320;
         TILE_Y         : integer := 24
@@ -135,7 +139,8 @@ architecture structural of spgpu is
         pixel_valid_o    : out std_logic;
         pixel_x_o        : out std_logic_vector(N_pixel-1 downto 0);
         pixel_y_o        : out std_logic_vector(N_pixel-1 downto 0);
-        pixel_color_o    : out std_logic_vector(N_color-1 downto 0)
+        pixel_color_o    : out std_logic_vector(N_color-1 downto 0);
+        pixel_z_o        : out std_logic_vector(N_z-1 downto 0)
     );
     end component;
     
@@ -183,6 +188,9 @@ architecture structural of spgpu is
 
     type color_array is array (0 to N_cores-1) of std_logic_vector(N_color-1 downto 0);
     signal pixel_color_sig : color_array;
+
+    type z_array is array (0 to N_cores-1) of std_logic_vector(N_z-1 downto 0);
+    signal pixel_z_sig : z_array;
 
     signal swapped_sig     : std_logic_vector(N_cores-1 downto 0);
     signal fb_swap_sig     : std_logic_vector(N_cores-1 downto 0);
@@ -269,6 +277,7 @@ begin
             N_opcode       => N_opcode,
             N_color        => N_color,
             N_pixel        => N_pixel,
+            N_z            => N_z,
             N_Accelerators => N_Accelerators,
             TILE_X         => TILE_X,
             TILE_Y         => TILE_Y
@@ -287,23 +296,26 @@ begin
             pixel_valid_o     => pixel_valid_sig(i),
             pixel_x_o         => pixel_x_sig(i),
             pixel_y_o         => pixel_y_sig(i),
-            pixel_color_o     => pixel_color_sig(i)
+            pixel_color_o     => pixel_color_sig(i),
+            pixel_z_o         => pixel_z_sig(i)
         );
 
         tile_inst : tile
         generic map (
-            TILE_X  => TILE_X,
-            TILE_Y  => TILE_Y,
-            N_PIXEL => N_pixel
+            TILE_X      => TILE_X,
+            TILE_Y      => TILE_Y,
+            VIDEO_PIXEL => N_pixel,
+            N_Z         => N_z
         )
         port map (
             clock_w     => clk,           
             clock_r     => pixelclock,       
             rst         => rst,
-            enb => pixel_valid_sig(i),
+            enb         => pixel_valid_sig(i),
             x_w         => pixel_x_sig(i),
             y_w         => pixel_y_sig(i),
             data_w      => pixel_color_sig(i),
+            z_w         => pixel_z_sig(i),
             fb_swap     => fb_swap_general,
             v_sync      => v_sync_int,
             swapped     => swapped_sig(i),

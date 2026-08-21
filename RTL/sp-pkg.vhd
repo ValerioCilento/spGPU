@@ -13,6 +13,7 @@ package spPKG is
 	constant N_opcode        : integer := 8;  
 	constant N_color        : integer := 15; 
 	constant N_pixel        : integer := 9;  
+	constant N_z            : integer := 4;
 	constant N_Accelerators : integer := 6;  
 	--==================================================================================
 

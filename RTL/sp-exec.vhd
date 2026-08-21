@@ -10,6 +10,7 @@ generic(
     N_opcode       : integer := 8;  --#Opcode bits
     N_color        : integer := 15; --#RGB bits
     N_pixel        : integer := 9;  --#Pixel coordinates bits
+    N_z            : integer := 4;  --#Z coordinates bits
     N_Accelerators : integer := 6   --#Accelerators
 );
 port(
@@ -18,6 +19,7 @@ port(
     instr_i                 : in std_logic_vector(INSTR_LENGTH-1 downto 0);
     x1, y1, x2, y2, x3, y3  : in std_logic_vector(N_pixel-1 downto 0);
     color                   : in std_logic_vector(N_color-1 downto 0);
+    z_i                     : in std_logic_vector(N_z-1 downto 0);
     acc_enable_vec          : in std_logic_vector(N_Accelerators-1 downto 0);
     acc_busy_vec            : in std_logic_vector(N_Accelerators-1 downto 0);
     swap                    : in std_logic;
@@ -28,7 +30,8 @@ port(
     fb_swap                 : out std_logic;
     pixel_x_o               : out std_logic_vector(N_pixel-1 downto 0);
     pixel_y_o               : out std_logic_vector(N_pixel-1 downto 0);
-    pixel_color_o           : out std_logic_vector(N_color-1 downto 0)
+    pixel_color_o           : out std_logic_vector(N_color-1 downto 0);
+    pixel_z_o               : out std_logic_vector(N_z-1 downto 0)
 );
 end entity;
 
@@ -196,7 +199,7 @@ begin
     -- ==========================================
     -- PROCESSO DI CLIPPING
     -- ==========================================
-    pixel_clip_proc : process(pixel_x_int, pixel_y_int, pixel_color_int, pixel_valid_int, tile_index)
+    pixel_clip_proc : process(pixel_x_int, pixel_y_int, pixel_color_int, z_i, pixel_valid_int, tile_index)
         variable x_coord, y_coord : integer;
         variable y_min, y_max : integer;
     begin
@@ -213,6 +216,7 @@ begin
         pixel_x_o     <= pixel_x_int;
         pixel_y_o     <= pixel_y_int;
         pixel_color_o <= pixel_color_int;
+        pixel_z_o     <= z_i;
         
         if pixel_valid_int = '1' then
             -- Verifica se le coordinate ricadono all'interno del riquadro corretto
